@@ -1,0 +1,3 @@
+<div class="return">
+	[ <a href="<%= board_url %>">Return to board</a> ]
+</div>

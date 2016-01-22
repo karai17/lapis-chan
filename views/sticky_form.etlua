@@ -1,0 +1,9 @@
+<form action="<%= form_url %>" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<input name="board" type="hidden" value="<%= params.board %>" />
+	<% if post.thread then %>
+	<input name="thread" type="hidden" value="<%= post.thread %>" />
+	<% end %>
+	<input name="post_id" type="hidden" value="<%= post.post_id %>" />
+	<button name="sticky">📌 Sticky Post</button>
+</form>

@@ -1,0 +1,41 @@
+<% render("views.board_title") %>
+<% render("views.submit_form") %>
+<% if #announcements > 0 then %>
+<hr />
+<% end %>
+<% for _, announcement in ipairs(announcements) do %>
+<p class="announcement"><%= announcement.text %></p>
+<% end %>
+<hr />
+[<a href="<%= catalog_url %>">Catalog</a>]
+[<a href="<%= archive_url %>">Archive</a>]
+[<a href="<%= board_url %>">Refresh</a>]
+<hr />
+<% for _, thread in ipairs(threads) do %>
+<div class="thread_container">
+<%
+	local posts = thread.posts
+	for i=#posts, 1, -1 do
+		local post = posts[i]
+		local op   = posts[#posts]
+		if post.post_id == op.post_id then
+			render("views.op_content", { thread=thread, post=post, posts=posts, is_board=true })
+		else
+			render("views.post_content", { thread=thread, post=post, posts=posts, is_board=true, op=op })
+		end
+	end
+%>
+</div>
+<hr />
+<% end %>
+<div class="pages">
+	<% for i=1, pages do %>
+		<% if i == params.page then %>
+		[<a href="<%= board_url .. i %>"><strong><%= i %></strong></a>]
+		<% else %>
+		[<a href="<%= board_url .. i %>"><%= i %></a>]
+		<% end %>
+	<% end %>
+	[<a href="<%= catalog_url %>">Catalog</a>]
+	[<a href="<%= archive_url %>">Archive</a>]
+</div>

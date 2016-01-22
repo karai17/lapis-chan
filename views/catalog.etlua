@@ -1,0 +1,34 @@
+<% render("views.board_title") %>
+<% render("views.submit_form") %>
+<% if #announcements > 0 then %>
+<hr />
+<% end %>
+<% for _, announcement in ipairs(announcements) do %>
+<p class="announcement"><%= announcement.text %></p>
+<% end %>
+<hr />
+[<a href="<%= board_url %>">Return</a>]
+[<a href="<%= archive_url %>">Archive</a>]
+[<a href="#bottom">Bottom</a>]
+[<a href="<%= catalog_url %>">Refresh</a>]
+<hr />
+<% for t, thread in ipairs(threads) do %>
+<div class="catalog_container">
+	<a href="<%= thread.url %>">
+		<% if thread.op.file_name then %>
+		<img src="<%= thread.op.thumb %>" alt="" /><br />
+		<% end %>
+		<span class="catalog_stats">R: <strong><%= thread.replies %></strong> / I: <strong><%= thread.files %></strong></span><br />
+		<% if thread.op.subject then %>
+		<strong><%= thread.op.subject %>:</strong>
+		<% end %>
+		<%- thread.op.comment %>
+	</a>
+</div>
+<% end %>
+<hr />
+[<a href="<%= board_url %>">Return</a>]
+[<a href="<%= archive_url %>">Archive</a>]
+[<a href="#top">Top</a>]
+[<a href="<%= catalog_url %>">Refresh</a>]
+<hr />

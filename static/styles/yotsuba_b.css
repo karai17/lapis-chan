@@ -1,0 +1,56 @@
+body {
+  background-color: #eef2ff;
+  color: #000000; }
+
+h1, h2 {
+  color: #af0a0f; }
+
+a, a:visited, .broken_link {
+  color: #34345c; }
+
+a:hover, .quote_link, .quote_link:visited, .broken_link:hover {
+  color: #dd0000; }
+
+.quote {
+  color: #789922; }
+
+.announcement {
+  color: #af0a0f; }
+
+#post_form form, .post_container {
+  background-color: #d6daf0;
+  border: 1px solid #b7c5d9; }
+
+table thead td {
+  background-color: #d6daf0;
+  border: 1px solid #b7c5d9; }
+table tr:nth-of-type(odd) {
+  background-color: #eef2ff; }
+table tr:nth-of-type(even) {
+  background-color: #f7f9ff; }
+
+.post_container {
+  border-top: none !important;
+  border-left: none !important; }
+  .post_container:target {
+    background-color: #d6bad0;
+    border: 1px solid #ba9dbf; }
+
+.post_subject {
+  color: #0f0c5d; }
+
+.post_name, .post_trip {
+  color: #117743; }
+
+.post_menu .menu {
+  background-color: #d6daf0;
+  border: 1px solid #b7c5d9; }
+  .post_menu .menu div {
+    border-right: 1px solid #b7c5d9;
+    border-bottom: 1px solid #b7c5d9; }
+    .post_menu .menu div form button {
+      color: #34345c; }
+      .post_menu .menu div form button:hover {
+        color: #dd0000; }
+
+/*# sourceMappingURL=yotsuba_b.css.map */

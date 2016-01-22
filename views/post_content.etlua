@@ -1,0 +1,39 @@
+<div class="post_container" id="p<%= post.post_id %>">
+	<div class="post_info">
+		<% render("views.post_menu", { post=post }) %>
+		<% if post.subject then %>
+		<span class="post_subject"><%= post.subject %></span>
+		<% end %>
+		<span class="post_name"><%= post.name %></span>
+		<% if post.trip then %>
+		<span class="post_trip"><%= post.trip %></span>
+		<% end %>
+		<span class="post_time"><%= post.timestamp %></span>
+		<span class="post_number"><a href="<%= post.link %>" title="Link to this post">No.</a><a class="link_reply" href="<%= post.reply %>" title="Reply to this post"><%= post.post_id %></a></span>
+	</div>
+	<% if post.file_name then %>
+	<div class="post_file">
+		File:
+		<%
+			if post.file_name:len() > 35 then
+				local short = string.sub(post.file_name, 1, 25)
+				local ext   = post.file_name:match("^.+(%..+)$")
+				local name  = string.format("%s(...)%s", short, ext)
+		%>
+		<a href="<%= post.file_path %>" target="_blank" title="<%= post.file_name %>"><%= name %></a>
+		<% else %>
+		<a href="<%= post.file_path %>" target="_blank"><%= post.file_name %></a>
+		<% end%>
+		(<%= post.file_size %> KB, <%= post.file_width %>x<%= post.file_height %>)
+	</div>
+	<div class="post_image">
+		<a href="<%= post.file_path %>" target="_blank"><img src="<%= post.thumb %>" alt="" /></a>
+	</div>
+	<% end %>
+	<div class="post_comment">
+		<%- post.comment %>
+		<% if post.banned then %>
+		<p class="post_banned">(<%= board.ban_message %>)</p>
+		<% end %>
+	</div>
+</div>

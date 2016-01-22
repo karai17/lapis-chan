@@ -1,0 +1,130 @@
+$spacing: 10px;
+
+#submit_form {
+	width: 340px;
+
+	textarea {
+		margin: 2px 0 !important;
+		height: 100px !important;
+		width: 100% !important;
+	}
+
+	input[type="submit"] {
+		margin: 2px;
+		width: 100px;
+	}
+
+	label {
+		display: inline;
+	}
+}
+
+.thread_container, .post_container {
+	margin: $spacing 0 0 0;
+	padding: $spacing;
+}
+
+.thread_container {
+	overflow: visible;
+
+	.op, .post_container {
+		position: relative;
+	}
+
+	.op {
+		.post_admin {
+			margin-left: $spacing * 35;
+		}
+	}
+
+	.post_container {
+		display: table;
+		min-width: 300px;
+		max-width: 100%;
+
+		.post_admin {
+			margin-left: $spacing * 2;
+		}
+	}
+
+	.post_file {
+		margin: 0 0 3px 0;
+
+		a {
+			text-decoration: underline;
+		}
+	}
+
+	.post_image {
+		float: left;
+		margin: 0 $spacing * 2 0 $spacing;
+
+		img {
+			max-width: 1000px;
+			max-height: 1000px;
+		}
+	}
+
+	.post_subject, .post_name {
+		font-weight: bold;
+	}
+
+	.post_comment {
+		padding: $spacing $spacing * 1.5;
+
+		a {
+			text-decoration: underline;
+		}
+
+		.broken_link {
+			text-decoration: line-through;
+		}
+
+		.spoiler {
+			background-color: #000000;
+			color: #000000;
+
+			&:hover {
+				color: #ffffff;
+			}
+		}
+
+		.post_banned {
+			color: #ff0000;
+			font-weight: bold;
+			margin-top: $spacing * 2;
+		}
+	}
+
+	.post_flag, .post_menu {
+		cursor: pointer;
+	}
+
+	.post_menu {
+		position: relative;
+		display: inline-block;
+
+		.menu {
+			display: none;
+			position: absolute;
+			z-index: 9;
+
+			div {
+				padding: 3px;
+
+				form {
+					margin: 0;
+					padding: 0;
+
+					input[type="submit"], button {
+						background: none;
+						border: none;
+						padding: 0;
+					}
+				}
+			}
+		}
+	}
+
+
+}

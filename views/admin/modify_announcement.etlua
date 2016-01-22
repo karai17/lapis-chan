@@ -1,0 +1,19 @@
+<div class="admin_panel">
+	<form action="" method="post">
+		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+		<label>
+			<span>Board</span>
+			<select name="board_id">
+				<option value="0" <%= announcement.board_id == 0 and 'selected' or '' %>>Global</option>
+				<% for _, board in ipairs(boards) do %>
+				<option value="<%= board.id %>" <%= announcement.board_id == board.id and 'selected' or '' %>>/<%= board.short_name %>/ - <%= board.name %></option>
+				<% end %>
+			</select>
+		</label>
+		<label>
+			<span>Announcement</span>
+			<input type="text" name="text" value="<%= announcement.text %>" />
+		</label>
+		<input type="submit" name="modify_announcement" value="Modify Announcement" />
+	</form>
+</div>

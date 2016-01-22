@@ -1,0 +1,8 @@
+<h1><%= page_title %></h1>
+<div class="banned">
+	<p>You have been banned for the following reason:</p>
+	<p><strong><%= reason %></strong></p>
+	<p>Your ban will expire on <strong><%= expire %></strong>.</p>
+	<p>Accourding to our server, your IP is: <strong><%= ip %></strong>.</p>
+	<div><img src="<%= static_url %>banned.jpg" alt="Catfish." /></div>
+</div>

@@ -1,0 +1,98 @@
+$background:    #eef2ff;
+$bg_light:      #f7f9ff;
+$border:        #b7c5d9;
+$subject:       #0f0c5d;
+$header:        #af0a0f;
+$link:          #34345c;
+$hover:         #dd0000;
+$post:          #d6daf0;
+$name:          #117743;
+$black:         #000000;
+$green:         #789922;
+$active:        #d6bad0;
+$active_border: #ba9dbf;
+
+body {
+	background-color: $background;
+	color: $black;
+}
+
+h1, h2 {
+	color: $header;
+}
+
+a, a:visited, .broken_link {
+	color: $link;
+}
+
+a:hover, .quote_link, .quote_link:visited, .broken_link:hover {
+	color: $hover;
+}
+
+.quote {
+	color: $green;
+}
+
+.announcement {
+	color: $header;
+}
+
+#post_form form, .post_container {
+	background-color: $post;
+	border: 1px solid $border;
+}
+
+table {
+	thead {
+		td {
+			background-color: $post;
+			border: 1px solid $border;
+		}
+	}
+
+	tr:nth-of-type(odd) {
+		background-color: $background;
+	}
+
+	tr:nth-of-type(even) {
+		background-color: $bg_light;
+	}
+}
+
+.post_container {
+	border-top: none !important;
+	border-left: none !important;
+
+	&:target {
+		background-color: $active;
+		border: 1px solid $active_border;
+	}
+}
+
+.post_subject {
+	color: $subject;
+}
+
+.post_name, .post_trip {
+	color: $name;
+}
+
+.post_menu .menu {
+	background-color: $post;
+	border:1px solid $border;
+
+	div {
+		border-right: 1px solid $border;
+		border-bottom: 1px solid $border;
+
+		form {
+			button {
+				color: $link;
+
+				&:hover {
+					color: $hover;
+				}
+			}
+		}
+	}
+}

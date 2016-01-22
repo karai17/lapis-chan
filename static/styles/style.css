@@ -1,0 +1,449 @@
+/*
+	HTML5 Reset :: style.css
+	----------------------------------------------------------
+	We have learned much from/been inspired by/taken code where offered from:
+
+	Eric Meyer					:: http://meyerweb.com
+	HTML5 Doctor				:: http://html5doctor.com
+	and the HTML5 Boilerplate	:: http://html5boilerplate.com
+
+-------------------------------------------------------------------------------*/
+/* Let's default this puppy out
+-------------------------------------------------------------------------------*/
+html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, menu, nav, section, time, mark, audio, video, details, summary {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font-weight: normal;
+  vertical-align: baseline;
+  background: transparent; }
+
+article, aside, figure, footer, header, nav, section, details, summary {
+  display: block; }
+
+/* Handle box-sizing while better addressing child elements:
+   http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
+html {
+  box-sizing: border-box; }
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit; }
+
+/* consider resetting the default cursor: https://gist.github.com/murtaugh/5247154 */
+/* Responsive images and other embedded objects */
+/* if you don't have full control over `img` tags (if you have to overcome attributes), consider adding height: auto */
+img,
+object,
+embed {
+  max-width: 100%; }
+
+/*
+   Note: keeping IMG here will cause problems if you're using foreground images as sprites.
+	In fact, it *will* cause problems with Google Maps' controls at small size.
+	If this is the case for you, try uncommenting the following:
+
+#map img {
+		max-width: none;
+}
+*/
+/* force a vertical scrollbar to prevent a jumpy page */
+html {
+  overflow-y: scroll; }
+
+/* we use a lot of ULs that aren't bulleted.
+	you'll have to restore the bullets within content,
+	which is fine because they're probably customized anyway */
+ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none; }
+
+a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent; }
+
+del {
+  text-decoration: line-through; }
+
+abbr[title], dfn[title] {
+  border-bottom: 1px dotted #000;
+  cursor: help; }
+
+/* tables still need cellspacing="0" in the markup */
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+th {
+  font-weight: bold;
+  vertical-align: bottom; }
+
+td {
+  font-weight: normal;
+  vertical-align: top; }
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0; }
+
+input, select {
+  vertical-align: middle; }
+
+pre {
+  white-space: pre;
+  /* CSS2 */
+  white-space: pre-wrap;
+  /* CSS 2.1 */
+  white-space: pre-line;
+  /* CSS 3 (and 2.1 as well, actually) */
+  word-wrap: break-word;
+  /* IE */ }
+
+input[type="radio"] {
+  vertical-align: text-bottom; }
+
+.ie7 input[type="checkbox"] {
+  vertical-align: baseline; }
+
+.ie6 input {
+  vertical-align: text-bottom; }
+
+select, input, textarea {
+  font: 99% sans-serif; }
+
+table {
+  font-size: inherit;
+  font: 100%; }
+
+small {
+  font-size: 85%; }
+
+strong {
+  font-weight: bold; }
+
+td, td img {
+  vertical-align: top; }
+
+/* Make sure sup and sub don't mess with your line-heights http://gist.github.com/413930 */
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative; }
+
+sup {
+  top: -0.5em; }
+
+sub {
+  bottom: -0.25em; }
+
+/* standardize any monospaced elements */
+pre, code, kbd, samp {
+  font-family: monospace, sans-serif; }
+
+/* hand cursor on clickable elements */
+.clickable,
+input[type=button],
+input[type=submit],
+input[type=file],
+button {
+  cursor: pointer; }
+
+/* Webkit browsers add a 2px margin outside the chrome of form elements */
+button, input, select, textarea {
+  margin: 0; }
+
+/* make buttons play nice in IE */
+button,
+input[type=button] {
+  width: auto;
+  overflow: visible; }
+
+/* scale images in IE7 more attractively */
+.ie7 img {
+  -ms-interpolation-mode: bicubic; }
+
+/* prevent BG image flicker upon hover
+   (commented out as usage is rare, and the filter syntax messes with some pre-processors)
+.ie6 html {filter: expression(document.execCommand("BackgroundImageCache", false, true));}
+*/
+/* let's clear some floats */
+.clearfix:before, .clearfix:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  overflow: hidden; }
+
+.clearfix:after {
+  clear: both; }
+
+.clearfix {
+  zoom: 1; }
+
+#submit_form {
+  width: 340px; }
+  #submit_form textarea {
+    margin: 2px 0 !important;
+    height: 100px !important;
+    width: 100% !important; }
+  #submit_form input[type="submit"] {
+    margin: 2px;
+    width: 100px; }
+  #submit_form label {
+    display: inline; }
+
+.thread_container, .post_container {
+  margin: 10px 0 0 0;
+  padding: 10px; }
+
+.thread_container {
+  overflow: visible; }
+  .thread_container .op, .thread_container .post_container {
+    position: relative; }
+  .thread_container .op .post_admin {
+    margin-left: 350px; }
+  .thread_container .post_container {
+    display: table;
+    min-width: 300px;
+    max-width: 100%; }
+    .thread_container .post_container .post_admin {
+      margin-left: 20px; }
+  .thread_container .post_file {
+    margin: 0 0 3px 0; }
+    .thread_container .post_file a {
+      text-decoration: underline; }
+  .thread_container .post_image {
+    float: left;
+    margin: 0 20px 0 10px; }
+    .thread_container .post_image img {
+      max-width: 1000px;
+      max-height: 1000px; }
+  .thread_container .post_subject, .thread_container .post_name {
+    font-weight: bold; }
+  .thread_container .post_comment {
+    padding: 10px 15px; }
+    .thread_container .post_comment a {
+      text-decoration: underline; }
+    .thread_container .post_comment .broken_link {
+      text-decoration: line-through; }
+    .thread_container .post_comment .spoiler {
+      background-color: #000000;
+      color: #000000; }
+      .thread_container .post_comment .spoiler:hover {
+        color: #ffffff; }
+    .thread_container .post_comment .post_banned {
+      color: #ff0000;
+      font-weight: bold;
+      margin-top: 20px; }
+  .thread_container .post_flag, .thread_container .post_menu {
+    cursor: pointer; }
+  .thread_container .post_menu {
+    position: relative;
+    display: inline-block; }
+    .thread_container .post_menu .menu {
+      display: none;
+      position: absolute;
+      z-index: 9; }
+      .thread_container .post_menu .menu div {
+        padding: 3px; }
+        .thread_container .post_menu .menu div form {
+          margin: 0;
+          padding: 0; }
+          .thread_container .post_menu .menu div form input[type="submit"], .thread_container .post_menu .menu div form button {
+            background: none;
+            border: none;
+            padding: 0; }
+
+body {
+  margin: 10px;
+  font-size: 10pt;
+  font-family: Helvetica, "Noto Sans", "Roboto Sans", Arial, sans-serif; }
+
+a {
+  text-decoration: none; }
+
+input[type="text"], input[type="password"], textarea {
+  border: 1px solid #aaaaaa;
+  margin: 2px;
+  padding: 4px;
+  width: 280px; }
+
+textarea {
+  height: 500px; }
+
+input[type="file"] {
+  margin: 2px, 0;
+  padding: 4px, 0;
+  width: 170px; }
+
+input[type="checkbox"] {
+  margin: 0;
+  padding: 0;
+  width: 13px; }
+
+h1 {
+  font-size: 240%;
+  font-weight: bolder;
+  margin-top: 10px;
+  text-align: center; }
+
+h2 {
+  margin: 10px 0;
+  text-align: center; }
+
+hr {
+  clear: left; }
+
+form {
+  display: inline-block;
+  margin: 5px auto;
+  padding: 10px; }
+
+table {
+  border-collapse: separate;
+  border-spacing: 1px;
+  margin: 0 auto;
+  max-width: 80%; }
+  table thead {
+    vertical-align: middle; }
+    table thead td {
+      font-weight: bolder;
+      padding: 5px 10px; }
+  table td {
+    padding: 3px 5px;
+    text-align: center; }
+  table .rules {
+    text-align: left; }
+
+label {
+  display: block; }
+  label span {
+    display: inline-block;
+    vertical-align: top;
+    width: 180px; }
+
+ul {
+  list-style: disc; }
+  ul li {
+    margin-left: 20px; }
+
+ol {
+  list-style: decimal; }
+  ol li {
+    margin-left: 20px; }
+
+#post_form, .boards, .return, .error, .copyright {
+  text-align: center; }
+
+.admin_panel {
+  display: inline-block; }
+
+.archive_stats {
+  text-align: center;
+  margin-bottom: 10px; }
+
+.announcement {
+  text-align: center;
+  font-weight: bold; }
+
+.error, .banned {
+  border: 7px dashed #000000;
+  display: table;
+  font-size: 180%;
+  min-width: 200px;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 10px; }
+  .error p, .banned p {
+    margin: 10px; }
+  .error div, .banned div {
+    text-align: center; }
+
+.medium {
+  width: 120px !important; }
+
+.short {
+  width: 40px !important; }
+
+.catalog_container {
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: top;
+  width: 135px; }
+  .catalog_container .catalog_stats {
+    font-size: 70%; }
+  .catalog_container img {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    max-width: 125px;
+    max-height: 125px; }
+
+.logout {
+  top: 10px;
+  right: 10px;
+  position: absolute; }
+
+.copyright {
+  margin-top: 10px; }
+
+.front_page h2 {
+  font-size: 180%; }
+.front_page h3 {
+  font-size: 140%;
+  margin-top: 10px; }
+.front_page .board {
+  display: inline-block;
+  max-width: 300px;
+  margin: 20px;
+  vertical-align: top; }
+  .front_page .board a {
+    font-size: 160%;
+    font-weight: bold; }
+  .front_page .board .subtext {
+    display: block;
+    font-size: 120%; }
+
+.table_of_contents {
+  display: table;
+  margin: 0 auto;
+  max-width: 400px; }
+
+.answers {
+  max-width: 600px;
+  margin: 0 auto; }
+  .answers h2 {
+    font-size: 160%; }
+
+.install {
+  max-width: 300px;
+  margin: 0 auto; }
+  .install h2 {
+    font-size: 160%;
+    margin-top: 20px; }
+  .install label {
+    font-weight: bold;
+    margin-top: 20px; }
+  .install button {
+    font-size: 120%;
+    font-weight: bold;
+    margin-top: 20px;
+    padding: 5px; }
+
+/*# sourceMappingURL=style.css.map */

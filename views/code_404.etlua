@@ -1,0 +1,2 @@
+<h1>404 - Gerrouttahere!</h1>
+<p><a href="<%= index_url %>">Return home</a></p>

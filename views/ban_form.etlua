@@ -1,0 +1,15 @@
+<form action="<%= form_url %>" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<input name="board" type="hidden" value="<%= params.board %>" />
+	<% if post.thread then %>
+	<input name="thread" type="hidden" value="<%= post.thread %>" />
+	<% end %>
+	<input name="post_id" type="hidden" value="<%= post.post_id %>" />
+	Display ban message
+	<input name="banned" type="checkbox" value="t" title="Display ban message on this post" /><br />
+	Ban only on this board
+	<input name="board_id" type="checkbox" value="<%= params.board %>" title="Ban user only on this board" checked /><br />
+	<input name="reason" type="text" class="medium" placeholder="Reason for ban" />
+	<input name="duration" type="text" class="short" placeholder="3" title="Length of time (in days) to ban user" /><br />
+	<button name="ban">🔨 Ban User</button>
+</form>

@@ -1,0 +1,162 @@
+<h1>Admin Panel</h1>
+
+<hr />
+
+<!-- Report Junk -->
+<p><strong>View Reported Post</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="report">
+			<% for _, report in ipairs(reports) do %>
+			<option value="<%= report.id %>"><%= report.id %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="view_report" value="View Report" />
+</form>
+
+<p><strong>Delete Report</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="report">
+			<% for _, report in ipairs(reports) do %>
+			<option value="<%= report.id %>"><%= report.id %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="delete_report" value="Delete Report" />
+</form>
+
+<hr />
+
+<!-- User Junk -->
+<a href="<%= admin_cu_url %>">Create New User</a>
+
+<p><strong>Modify User</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="user">
+			<% for _, user in ipairs(users) do %>
+			<option value="<%= user.id %>"><%= user.username %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="modify_user" value="Modify User" />
+</form>
+
+<p><strong>Delete User</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="user">
+			<% for _, user in ipairs(users) do %>
+			<option value="<%= user.id %>"><%= user.username %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="delete_user" value="Delete User" />
+</form>
+
+<hr />
+
+<!-- Board Junk -->
+<a href="<%= admin_cb_url %>">Create New Board</a>
+
+<p><strong>Modify Board</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="board">
+			<% for _, board in ipairs(boards) do %>
+			<option value="<%= board.short_name %>"><%= string.format("/%s/ - %s", board.short_name, board.name) %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="modify_board" value="Modify Board" />
+</form>
+
+<p><strong>Delete Board</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="board">
+			<% for _, board in ipairs(boards) do %>
+			<option value="<%= board.short_name %>"><%= string.format("/%s/ - %s", board.short_name, board.name) %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="delete_board" value="Delete Board" />
+</form>
+
+<hr />
+
+<!-- Announcement Junk -->
+<a href="<%= admin_ca_url %>">Create New Announcement</a>
+
+<p><strong>Modify Announcement</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="ann">
+			<% for _, ann in ipairs(announcements) do %>
+			<option value="<%= ann.id %>"><%= ann.text %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="modify_announcement" value="Modify Announcement" />
+</form>
+
+<p><strong>Delete Announcement</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="ann">
+			<% for _, ann in ipairs(announcements) do %>
+			<option value="<%= ann.id %>"><%= ann.text %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="delete_announcement" value="Delete Announcement" />
+</form>
+
+<hr />
+
+<!-- Page Junk -->
+<a href="<%= admin_cp_url %>">Create New Page</a>
+
+<p><strong>Modify Page</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="page">
+			<% for _, page in ipairs(pages) do %>
+			<option value="<%= page.url %>"><%= page.url %> - <%= page.name %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="modify_page" value="Modify Page" />
+</form>
+
+<p><strong>Delete Page</strong></p>
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<label>
+		<select name="page">
+			<% for _, page in ipairs(pages) do %>
+			<option value="<%= page.url %>"><%= page.url %> - <%= page.name %></option>
+			<% end %>
+		</select>
+	</label>
+	<input type="submit" name="delete_page" value="Delete Page" />
+</form>
+
+<hr />
+
+<!-- Regen Thumbs -->
+<form action="" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<input type="submit" name="regen_thumbs" value="Regenerate Thumbnails" />
+</form>

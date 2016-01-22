@@ -1,0 +1,3 @@
+<div class="return">
+	[ <a href="<%= thread_url ..op.post_id %>">Return to thread</a> ]
+</div>

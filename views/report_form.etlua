@@ -1,0 +1,6 @@
+<form action="<%= form_url %>" method="post">
+	<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+	<input name="board" type="hidden" value="<%= params.board %>" />
+	<input name="post_id" type="hidden" value="<%= post.post_id %>" />
+	<button name="report">📄 Report Post</button>
+</form>

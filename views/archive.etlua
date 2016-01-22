@@ -1,0 +1,45 @@
+<% render("views.board_title") %>
+<% if #announcements > 0 then %>
+<hr />
+<% end %>
+<% for _, announcement in ipairs(announcements) do %>
+<p class="announcement"><%= announcement.text %></p>
+<% end %>
+<hr />
+[<a href="<%= board_url %>">Return</a>]
+[<a href="<%= catalog_url %>">Catalog</a>]
+[<a href="#bottom">Bottom</a>]
+<hr />
+<p class="archive_stats"><strong>Displaying <%= #threads %> expired <%= plural.threads %> from the past <%= days %> <%= plural.days %></strong></p>
+<table id="archive_table">
+	<thead>
+		<tr>
+			<td>No.</td>
+			<td>Name</td>
+			<td>Excerpt</td>
+			<td>Replies</td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<% for _, thread in ipairs(threads) do %>
+		<tr>
+			<td><%= thread.op.post_id %></td>
+			<td><strong><%= thread.op.name %><strong> <%= thread.op.trip %></td>
+			<td>
+				<% if thread.op.subject then %>
+				<strong><%= thread.op.subject %>:</strong>
+				<% end %>
+				<%- thread.op.comment %>
+			</td>
+			<td><%= thread.replies %></td>
+			<td>[<a href="<%= thread.url %>">View</a>]</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+<hr />
+[<a href="<%= board_url %>">Return</a>]
+[<a href="<%= catalog_url %>">Catalog</a>]
+[<a href="#top">Top</a>]
+<hr />

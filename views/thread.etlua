@@ -1,0 +1,35 @@
+<% render("views.board_title") %>
+<%
+	if not thread.lock or session.admin or session.mod then
+		render("views.submit_form")
+	end
+%>
+<% if #announcements > 0 then %>
+<hr />
+<% end %>
+<% for _, announcement in ipairs(announcements) do %>
+<p class="announcement"><%= announcement.text %></p>
+<% end %>
+<hr />
+[<a href="<%= board_url %>">Return</a>]
+[<a href="<%= catalog_url %>">Catalog</a>]
+[<a href="#bottom">Bottom</a>]
+[<a href="<%= thread_url %>">Refresh</a>]
+<hr />
+<div class="thread_container">
+	<%
+		for i, post in ipairs(posts) do
+			if i == 1 then
+				render("views.op_content", { thread=thread, post=post })
+			else
+				render("views.post_content", { thread=thread, post=post, op=posts[1] })
+			end
+		end
+	%>
+</div>
+<hr />
+[<a href="<%= board_url %>">Return</a>]
+[<a href="<%= catalog_url %>">Catalog</a>]
+[<a href="#top">Top</a>]
+[<a href="<%= thread_url %>">Refresh</a>]
+<hr />

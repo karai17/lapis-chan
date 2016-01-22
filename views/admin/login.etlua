@@ -1,0 +1,14 @@
+<div class="admin_panel">
+	<form action="<%= admin_url %>" method="post">
+		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+		<label>
+			<span>Username</span>
+			<input type="text" name="username" />
+		</label>
+		<label>
+			<span>Password</span>
+			<input type="password" name="password" />
+		</label>
+		<input type="submit" name="login" value="Login" />
+	</form>
+</div>

@@ -1,0 +1,75 @@
+#submit_form {
+  width: 340px; }
+  #submit_form textarea {
+    margin: 2px 0 !important;
+    height: 100px !important;
+    width: 100% !important; }
+  #submit_form input[type="submit"] {
+    margin: 2px;
+    width: 100px; }
+  #submit_form label {
+    display: inline; }
+
+.thread_container, .post_container {
+  margin: 10px 0 0 0;
+  padding: 10px; }
+
+.thread_container {
+  overflow: visible; }
+  .thread_container .op, .thread_container .post_container {
+    position: relative; }
+  .thread_container .op .post_admin {
+    margin-left: 350px; }
+  .thread_container .post_container {
+    display: table;
+    min-width: 300px;
+    max-width: 100%; }
+    .thread_container .post_container .post_admin {
+      margin-left: 20px; }
+  .thread_container .post_file {
+    margin: 0 0 3px 0; }
+    .thread_container .post_file a {
+      text-decoration: underline; }
+  .thread_container .post_image {
+    float: left;
+    margin: 0 20px 0 10px; }
+    .thread_container .post_image img {
+      max-width: 1000px;
+      max-height: 1000px; }
+  .thread_container .post_subject, .thread_container .post_name {
+    font-weight: bold; }
+  .thread_container .post_comment {
+    padding: 10px 15px; }
+    .thread_container .post_comment a {
+      text-decoration: underline; }
+    .thread_container .post_comment .broken_link {
+      text-decoration: line-through; }
+    .thread_container .post_comment .spoiler {
+      background-color: #000000;
+      color: #000000; }
+      .thread_container .post_comment .spoiler:hover {
+        color: #ffffff; }
+    .thread_container .post_comment .post_banned {
+      color: #ff0000;
+      font-weight: bold;
+      margin-top: 20px; }
+  .thread_container .post_flag, .thread_container .post_menu {
+    cursor: pointer; }
+  .thread_container .post_menu {
+    position: relative;
+    display: inline-block; }
+    .thread_container .post_menu .menu {
+      display: none;
+      position: absolute;
+      z-index: 9; }
+      .thread_container .post_menu .menu div {
+        padding: 3px; }
+        .thread_container .post_menu .menu div form {
+          margin: 0;
+          padding: 0; }
+          .thread_container .post_menu .menu div form input[type="submit"], .thread_container .post_menu .menu div form button {
+            background: none;
+            border: none;
+            padding: 0; }
+
+/*# sourceMappingURL=posts.css.map */

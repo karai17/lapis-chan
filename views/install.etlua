@@ -1,0 +1,120 @@
+<h1>Install Lapis-chan</h1>
+
+<h2>Welcome to Lapis-chan v1.0.0!</h2>
+
+<div class="install">
+	<form action="" method="post">
+		<h2>Administrator Account Information</h2>
+
+		<label>Username</label>
+		<input name="user_username" type="text" placeholder="super_cool_admin" />
+
+		<label>Password</label>
+		<input name="user_password" type="password" placeholder="XxXiluvmykittenXxX" />
+
+		<h2>First Board Information</h2>
+
+		<label>Short Name</label>
+		<input name="short_name" type="text" placeholder="b" />
+
+		<label>Long Name</label>
+		<input name="name" type="text" placeholder="Random" />
+
+		<label>Subtext (optional)</label>
+		<input name="subtext" type="text" placeholder="Post at your own peril." />
+
+		<label>Rules (Written in Markdown)</label>
+		<textarea name="rules"></textarea>
+
+		<label>Ban Message</label>
+		<input name="ban_message" type="text" placeholder="USER WAS BANNED FOR THIS POST" />
+
+		<label>Default Name</label>
+		<input name="anon_name" type="text" placeholder="Anonymous" />
+
+		<label>Theme</label>
+		<select name="theme">
+			<% for _, theme in ipairs(themes) do %>
+			<option value="<%= theme %>"><%= theme %></option>
+			<% end %>
+		</select>
+
+		<label>Number of Pages</label>
+		<select name="pages">
+			<% for i=1, 100 do %>
+			<option value="<%= i %>" <%= i == 10 and "selected" or "" %>><%= i %></option>
+			<% end %>
+		</select>
+
+		<label>Number of Threads per Page</label>
+		<select name="threads_per_page">
+			<% for i=1, 100 do %>
+			<option value="<%= i %>" <%= i == 10 and "selected" or "" %>><%= i %></option>
+			<% end %>
+		</select>
+
+		<label>Total Number of Files per Thread</label>
+		<select name="thread_file_limit">
+			<% for i=1, 1000 do %>
+			<option value="<%= i %>" <%= i == 100 and "selected" or "" %>><%= i %></option>
+			<% end %>
+		</select>
+
+		<label>Soft Limit of Posts per Thread (thread no longer bumps)</label>
+		<select name="post_limit">
+			<% for i=1, 1000 do %>
+			<option value="<%= i %>" <%= i == 250 and "selected" or "" %>><%= i %></option>
+			<% end %>
+		</select>
+
+		<label>New Thread Requires a File</label>
+		<select name="thread_file">
+			<option value="true" selected>True</option>
+			<option value="false">False</option>
+		</select>
+
+		<label>New Thread Requires a Comment</label>
+		<select name="thread_comment">
+			<option value="true">True</option>
+			<option value="false" selected>False</option>
+		</select>
+
+		<label>New Reply Requires a File</label>
+		<select name="post_file">
+			<option value="true">True</option>
+			<option value="false" selected>False</option>
+		</select>
+
+		<label>New Reply Requires a Comment</label>
+		<select name="post_comment">
+			<option value="true">True</option>
+			<option value="false" selected>False</option>
+		</select>
+
+		<label>Text-only Board</label>
+		<select name="text_only">
+			<option value="true">True</option>
+			<option value="false" selected>False</option>
+		</select>
+
+		<label>Draw/Remix Board</label>
+		<select name="draw">
+			<option value="true">True</option>
+			<option value="false" selected>False</option>
+		</select>
+
+		<label>Archive Old Posts</label>
+		<select name="archive">
+			<option value="true" selected>True</option>
+			<option value="false">False</option>
+		</select>
+
+		<label>How Long to Archive (in days)</label>
+		<input name="archive_time" type="text" placeholder="30" />
+
+		<label>Board Group</label>
+		<input name="group" type="text" placeholder="1" />
+
+		<button>Install Lapis-chan</button>
+	</form>
+</div>

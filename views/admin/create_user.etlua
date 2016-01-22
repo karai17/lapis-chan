@@ -1,0 +1,35 @@
+<div class="admin_panel">
+	<form action="" method="post">
+		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+		<label>
+			<span>Username</span>
+			<input type="text" name="username" />
+		</label>
+		<label>
+			<span>Password</span>
+			<input type="password" name="password" />
+		</label>
+		<label>
+			<span>Administrator</span>
+			<select name="admin">
+				<option value="t">Yes</option>
+				<option value="f" selected>No</option>
+			</select>
+		</label>
+		<label>
+			<span>Moderator</span>
+			<select name="mod">
+				<option value="t">Yes</option>
+				<option value="f" selected>No</option>
+			</select>
+		</label>
+		<label>
+			<span>Janitor</span>
+			<select name="janitor">
+				<option value="t">Yes</option>
+				<option value="f" selected>No</option>
+			</select>
+		</label>
+		<input type="submit" name="create_user" value="Create User" />
+	</form>
+</div>

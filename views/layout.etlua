@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html id="top">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<link rel="stylesheet" href="<%= styles_url %>style.css" />
+		<% if board then %>
+		<link rel="stylesheet" href="<%= styles_url .. board.theme %>.css" />
+			<% if board.draw then %>
+			<link rel="stylesheet" href="<%= styles_url %>tegaki.css" />
+			<script src="<%= scripts_url %>tegaki/tegaki.js"></script>
+			<% end %>
+		<% end %>
+		<script src="<%= scripts_url %>script.js"></script>
+		<title><%= page_title %></title>
+	</head>
+	<body>
+		<% render("views.list_boards") %>
+		<% if session.name then %>
+		<span class="logout">[<a href="<%= logout_url %>">Logout</a>]</span>
+		<% end %>
+		<% content_for("inner") %>
+		<% render("views.list_boards") %>
+		<% render("views.copyright") %>
+	</body>
+</html>

@@ -1,0 +1,17 @@
+<h1>Rules</h1>
+<table id="rules_table">
+	<thead>
+		<tr>
+			<td>Board</td>
+			<td>Rules</td>
+		</tr>
+	</thead>
+	<tbody>
+		<% for _, board in ipairs(boards) do %>
+		<tr>
+			<td><a href="<%= board.url %>"><%= board.name %></a></td>
+			<td class="rules"><%- board.rules %></td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
