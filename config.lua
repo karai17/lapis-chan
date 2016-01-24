@@ -29,3 +29,13 @@ config("production", {
 	},
 	code_cache = "on"
 })
+
+config("test", {
+	subdomains = false,--true,
+	site_name  = "Lapis-chan",
+	port       = 80,
+	secret     = "test-token",
+	postgres   = {
+		database = "lapischan_test"
+	}
+})
