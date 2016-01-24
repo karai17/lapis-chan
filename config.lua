@@ -1,8 +1,11 @@
-local config = require "lapis.config"
-local token  = require "secrets.token"
+local config    = require "lapis.config"
+local token     = require "secrets.token"
+local lua_path  = ""
+local lua_cpath = ""
+
 
 config("development", {
-	subdomains = false,--true,
+	subdomains = false,
 	site_name  = "Lapis-chan",
 	port       = 8080,
 	secret     = token,
@@ -12,11 +15,15 @@ config("development", {
 		user     = "db_user",
 		password = "db_pass",
 		database = "db_schema"
-	}
+	},
+	lua_path  = lua_path,
+	lua_cpath = lua_cpath,
+	body_size = "15m"
 })
 
 config("production", {
-	subdomains = false,--true,
+	code_cache = "on",
+	subdomains = false,
 	site_name  = "Lapis-chan",
 	port       = 80,
 	secret     = token,
@@ -27,15 +34,20 @@ config("production", {
 		password = "db_pass",
 		database = "db_schema"
 	},
-	code_cache = "on"
+	lua_path  = lua_path,
+	lua_cpath = lua_cpath,
+	body_size = "15m"
 })
 
 config("test", {
-	subdomains = false,--true,
+	subdomains = false,
 	site_name  = "Lapis-chan",
 	port       = 80,
 	secret     = "test-token",
 	postgres   = {
 		database = "lapischan_test"
-	}
+	},
+	lua_path  = lua_path,
+	lua_cpath = lua_cpath,
+	body_size = "15m"
 })
