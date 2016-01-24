@@ -38,7 +38,7 @@ return {
 		self.staticb_url = self.static_url .. self.board.short_name .. "/"
 		self.board_url   = self.boards_url .. self.board.short_name .. "/"
 		self.thread_url  = self.board_url  .. "thread/"
-		self.catalog_url = self.board_url  .. "catalog"
+		self.catalog_url = self.board_url  .. "catalog/"
 
 		-- Nav links link to sub page if available
 		self.sub_page = "archive"

@@ -12,7 +12,9 @@ return function(self)
 
 	for _, board in ipairs(self.boards) do
 		board.url   = self.boards_url .. board.short_name .. "/"
-		board.rules = markdown(board.rules)
+		if board.rules then
+			board.rules = markdown(board.rules)
+		end
 	end
 
 	return { render = "rules" }

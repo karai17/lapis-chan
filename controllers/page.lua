@@ -18,7 +18,9 @@ return function(self)
 	self.page_title = self.page.name
 
 	-- Markdown
-	self.page.content = markdown(self.page.content)
+	if self.page.content then
+		self.page.content = markdown(self.page.content)
+	end
 
 	-- Display a theme
 	self.board = { theme = "yotsuba_b" }

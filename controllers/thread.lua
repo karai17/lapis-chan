@@ -69,9 +69,9 @@ return {
 		-- Page URLs
 		self.staticb_url = self.static_url .. self.board.short_name .. "/"
 		self.board_url   = self.boards_url .. self.board.short_name .. "/"
-		self.form_url    = self.index_url  .. "process"
-		self.archive_url = self.board_url  .. "archive"
-		self.catalog_url = self.board_url  .. "catalog"
+		self.form_url    = self.index_url  .. "process/"
+		self.archive_url = self.board_url  .. "archive/"
+		self.catalog_url = self.board_url  .. "catalog/"
 
 		-- Flag comments as required or not
 		self.comment_flag = self.board.thread_comment
