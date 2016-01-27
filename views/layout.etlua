@@ -20,7 +20,7 @@
 		<% end %>
 		<% render("views.list_boards") %>
 		<% if session.name then %>
-		<span class="logout">[<a href="<%= logout_url %>">Logout</a>]</span>
+		<span class="logout">[<a href="<%= logout_url %>"><%= i18n("logout") %></a>]</span>
 		<% end %>
 		<% content_for("inner") %>
 		<% render("views.list_boards") %>

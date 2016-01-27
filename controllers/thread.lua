@@ -1,7 +1,6 @@
 local assert_error  = require("lapis.application").assert_error
 local assert_valid  = require("lapis.validate").assert_valid
 local csrf          = require "lapis.csrf"
-local i18n          = require "i18n"
 local format        = require "utils.text_formatter"
 local process       = require "utils.request_processor"
 local Announcements = require "models.announcements"
@@ -11,11 +10,6 @@ local Threads       = require "models.threads"
 
 return {
 	before = function(self)
-		-- Set localization
-		i18n.setLocale(self.session.locale or "en")
-		i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
-		self.i18n = i18n
-
 		-- Get all board data
 		self.boards = Boards:get_boards()
 
@@ -135,15 +129,9 @@ return {
 		end
 	end,
 	on_error = function(self)
-		self.err = i18n(unpack(self.errors))
-
-		if self.err then
-			self.err = "<p>" .. self.err .. "</p>"
-		else
-			self.err = ""
-			for _, e in ipairs(self.errors) do
-				self.err = self.err .. "<p>" .. tostring(e) .. "</p>\n"
-			end
+		local err = self.i18n(unpack(self.errors))
+		if err then
+			self.errors = { err }
 		end
 
 		return { render = "thread"}
@@ -152,7 +140,6 @@ return {
 		return { render = "thread" }
 	end,
 	POST = function(self)
-		print("1111111111111111111111")
 		-- Validate CSRF token
 		csrf.assert_token(self)
 

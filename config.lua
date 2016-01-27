@@ -1,10 +1,14 @@
 local config    = require "lapis.config"
 local token     = require "secrets.token"
+local software  = "Lapis-chan"
+local version   = "1.1.0"
 local lua_path  = ""
 local lua_cpath = ""
 
 
 config("development", {
+	software   = software,
+	version    = version,
 	subdomains = false,
 	site_name  = "Lapis-chan",
 	port       = 8080,
@@ -22,6 +26,8 @@ config("development", {
 })
 
 config("production", {
+	software   = software,
+	version    = version,
 	code_cache = "on",
 	subdomains = false,
 	site_name  = "Lapis-chan",
@@ -40,6 +46,8 @@ config("production", {
 })
 
 config("test", {
+	software   = software,
+	version    = version,
 	subdomains = false,
 	site_name  = "Lapis-chan",
 	port       = 80,

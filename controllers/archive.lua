@@ -1,4 +1,3 @@
-local i18n          = require "i18n"
 local format        = require "utils.text_formatter"
 local Announcements = require "models.announcements"
 local Boards        = require "models.boards"
@@ -6,11 +5,6 @@ local Posts         = require "models.posts"
 local Threads       = require "models.threads"
 
 return function(self)
-	-- Set localization
-	i18n.setLocale(self.session.locale or "en")
-	i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
-	self.i18n = i18n
-
 	-- Get all board data
 	self.boards = Boards:get_boards()
 

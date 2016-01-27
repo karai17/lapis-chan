@@ -3,19 +3,19 @@
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 
 		<div>
-			<label class="title">Username</label>
+			<label class="title"><%= i18n("username") %></label>
 			<span class="fields">
 				<input type="text" name="username" value="<%= params.username or '' %>" />
 			</span>
 		</div>
 
 		<div>
-			<label class="title">Password</label>
+			<label class="title"><%= i18n("password") %></label>
 			<span class="fields">
 				<input type="password" name="password" />
 			</span>
 		</div>
 
-		<button name="login">Login</button>
+		<button name="login"><%= i18n("login") %></button>
 	</form>
 </div>

@@ -4,8 +4,7 @@
 	<% for i, board in ipairs(boards) do %>
 		<% local sub = sub_page or "" %>
 		<% if board.group ~= group then %>
-			<% group = board.group %>
-			] [
+			<% group = board.group %> ] [
 		<% else %>
 			<%= i == 1 and "[" or "/" %>
 		<% end %>

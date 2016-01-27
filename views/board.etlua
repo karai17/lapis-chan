@@ -7,9 +7,10 @@
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= catalog_url %>">Catalog</a>]
-[<a href="<%= archive_url %>">Archive</a>]
-[<a href="<%= board_url %>">Refresh</a>]
+[<a href="<%= index_url %>"><%= i18n("index") %></a>]
+[<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
+[<a href="<%= archive_url %>"><%= i18n("archive") %></a>]
+[<a href="<%= board_url %>"><%= i18n("refresh") %></a>]
 <hr />
 <% for _, thread in ipairs(threads) do %>
 <div class="thread_container">
@@ -29,6 +30,7 @@
 <hr />
 <% end %>
 <div class="pages">
+	[<a href="<%= index_url %>"><%= i18n("index") %></a>]
 	<% for i=1, pages do %>
 		<% if i == params.page then %>
 		[<a href="<%= board_url .. i %>"><strong><%= i %></strong></a>]
@@ -36,6 +38,6 @@
 		[<a href="<%= board_url .. i %>"><%= i %></a>]
 		<% end %>
 	<% end %>
-	[<a href="<%= catalog_url %>">Catalog</a>]
-	[<a href="<%= archive_url %>">Archive</a>]
+	[<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
+	[<a href="<%= archive_url %>"><%= i18n("archive") %></a>]
 </div>

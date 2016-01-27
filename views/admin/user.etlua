@@ -3,7 +3,7 @@
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 
 		<div>
-			<label class="title">Username</label>
+			<label class="title"><%= i18n("username") %></label>
 			<span class="fields">
 				<input type="text" name="username" placeholder="moot" value="<%= user.username or '' %>" />
 			</span>
@@ -11,7 +11,7 @@
 
 		<% if params.action == "modify" then %>
 		<div>
-			<label class="title">Old Password</label>
+			<label class="title"><%= i18n("password_old") %></label>
 			<span class="fields">
 				<input type="password" name="old_password" />
 			</span>
@@ -19,53 +19,53 @@
 		<% end %>
 
 		<div>
-			<label class="title"><%= params.action == "modify" and "New" or "" %> Password</label>
+			<label class="title"><%= i18n("password") %></label>
 			<span class="fields">
 				<input type="password" name="new_password" />
 			</span>
 		</div>
 
 		<div>
-			<label class="title">Retype Password</label>
+			<label class="title"><%= i18n("password_retype") %></label>
 			<span class="fields">
 				<input type="password" name="retype_password" />
 			</span>
 		</div>
 
 		<div>
-			<label class="title">Administrator</label>
+			<label class="title"><%= i18n("administrator") %></label>
 			<span class="fields">
 				<select name="admin">
-					<option value="t" <%= user.admin == true  and 'selected' or '' %>>Yes</option>
-					<option value="f" <%= user.admin == false and 'selected' or '' %>>No</option>
+					<option value="t" <%= user.admin == true  and 'selected' or '' %>><%= i18n("yes") %></option>
+					<option value="f" <%= user.admin == false and 'selected' or '' %>><%= i18n("no") %></option>
 				</select>
 			</span>
 		</div>
 
 		<div>
-			<label class="title">Moderator</label>
+			<label class="title"><%= i18n("moderator") %></label>
 			<span class="fields">
 				<select name="mod">
-					<option value="t" <%= user.mod == true  and 'selected' or '' %>>Yes</option>
-					<option value="f" <%= user.mod == false and 'selected' or '' %>>No</option>
+					<option value="t" <%= user.mod == true  and 'selected' or '' %>><%= i18n("yes") %></option>
+					<option value="f" <%= user.mod == false and 'selected' or '' %>><%= i18n("no") %></option>
 				</select>
 			</span>
 		</div>
 
 		<div>
-			<label class="title">Janitor</label>
+			<label class="title"><%= i18n("janitor") %></label>
 			<span class="fields">
 				<select name="janitor">
-					<option value="t" <%= user.janitor == true  and 'selected' or '' %>>Yes</option>
-					<option value="f" <%= user.janitor == false and 'selected' or '' %>>No</option>
+					<option value="t" <%= user.janitor == true  and 'selected' or '' %>><%= i18n("yes") %></option>
+					<option value="f" <%= user.janitor == false and 'selected' or '' %>><%= i18n("no") %></option>
 				</select>
 			</span>
 		</div>
 
 		<% if params.action == "create" then %>
-		<button name="create_user">Create User</button>
+		<button name="create_user"><%= i18n("create_user") %></button>
 		<% elseif params.action == "modify" then %>
-		<button name="modify_user">Modify User</button>
+		<button name="modify_user"><%= i18n("modify_user") %></button>
 		<% end %>
 	</form>
 </div>

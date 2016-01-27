@@ -6,18 +6,29 @@
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= board_url %>">Return</a>]
-[<a href="<%= catalog_url %>">Catalog</a>]
-[<a href="#bottom">Bottom</a>]
+[<a href="<%= board_url %>"><%= i18n("return") %></a>]
+[<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
+[<a href="#bottom"><%= i18n("bottom") %></a>]
 <hr />
-<p class="archive_stats"><strong><%= i18n("thread", { count=#threads }) %> <%= i18n("day", { count=days }) %></strong></p>
+<p class="archive_stats">
+	<strong>
+		<%=
+		i18n("arc_display", {
+			n_thread = #threads,
+			p_thread = i18n("threads", { count=#threads }),
+			n_day = days,
+			p_day = i18n("days", { count=days })
+		})
+		%>
+	</strong>
+</p>
 <table id="archive_table">
 	<thead>
 		<tr>
-			<td>No.</td>
-			<td>Name</td>
-			<td>Excerpt</td>
-			<td>Replies</td>
+			<td><%= i18n("arc_number") %></td>
+			<td><%= i18n("arc_name") %></td>
+			<td><%= i18n("arc_excerpt") %></td>
+			<td><%= i18n("arc_replies") %></td>
 			<td></td>
 		</tr>
 	</thead>
@@ -33,13 +44,13 @@
 				<%- thread.op.comment %>
 			</td>
 			<td><%= thread.replies %></td>
-			<td>[<a href="<%= thread.url %>">View</a>]</td>
+			<td>[<a href="<%= thread.url %>"><%= i18n("arc_view") %></a>]</td>
 		</tr>
 		<% end %>
 	</tbody>
 </table>
 <hr />
-[<a href="<%= board_url %>">Return</a>]
-[<a href="<%= catalog_url %>">Catalog</a>]
-[<a href="#top">Top</a>]
+[<a href="<%= board_url %>"><%= i18n("return") %></a>]
+[<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
+[<a href="#top"><%= i18n("top") %></a>]
 <hr />

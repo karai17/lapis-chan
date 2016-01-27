@@ -5,5 +5,5 @@
 	<input name="thread" type="hidden" value="<%= post.thread %>" />
 	<% end %>
 	<input name="post_id" type="hidden" value="<%= post.post_id %>" />
-	<button name="sticky">📌 Sticky Post</button>
+	<button name="sticky">📌 <%= i18n("form_sticky") %></button>
 </form>

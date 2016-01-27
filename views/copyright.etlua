@@ -1,4 +1,17 @@
 <div id="bottom" class="copyright">
-	<p>Powered by <a href="http://lapchan.moe">Lapis-chan</a> v1.0.0</p>
-	<p>Download from <a href="https://github.com/karai17/lapis-chan/" target="blank">GitHub</a></p>
+	<p>
+		<%-
+		i18n("copy_software", {
+			software = '<a href="http://lapchan.moe">'..software..'</a>',
+			version  = 'v'..version
+		})
+		%>
+	</p>
+	<p>
+		<%-
+		i18n("copy_download", {
+			github = '<a href="https://github.com/karai17/lapis-chan/" target="blank">GitHub</a>'
+		})
+		%>
+	</p>
 </div>

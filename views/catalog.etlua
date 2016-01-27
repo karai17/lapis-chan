@@ -7,10 +7,10 @@
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= board_url %>">Return</a>]
-[<a href="<%= archive_url %>">Archive</a>]
-[<a href="#bottom">Bottom</a>]
-[<a href="<%= catalog_url %>">Refresh</a>]
+[<a href="<%= board_url %>"><%= i18n("return") %></a>]
+[<a href="<%= archive_url %>"><%= i18n("archive") %></a>]
+[<a href="#bottom"><%= i18n("bottom") %></a>]
+[<a href="<%= catalog_url %>"><%= i18n("refresh") %></a>]
 <hr />
 <% for t, thread in ipairs(threads) do %>
 <div class="catalog_container">
@@ -18,7 +18,14 @@
 		<% if thread.op.file_name then %>
 		<img src="<%= thread.op.thumb %>" alt="" /><br />
 		<% end %>
-		<span class="catalog_stats">R: <strong><%= thread.replies %></strong> / I: <strong><%= thread.files %></strong></span><br />
+		<span class="catalog_stats">
+			<%-
+			i18n("cat_stats", {
+				replies = "<strong>"..thread.replies.."</strong>",
+				files   = "<strong>"..thread.files.."</strong>"
+			})
+			%>
+		</span><br />
 		<% if thread.op.subject then %>
 		<strong><%= thread.op.subject %>:</strong>
 		<% end %>
@@ -27,8 +34,8 @@
 </div>
 <% end %>
 <hr />
-[<a href="<%= board_url %>">Return</a>]
-[<a href="<%= archive_url %>">Archive</a>]
-[<a href="#top">Top</a>]
-[<a href="<%= catalog_url %>">Refresh</a>]
+[<a href="<%= board_url %>"><%= i18n("return") %></a>]
+[<a href="<%= archive_url %>"><%= i18n("archive") %></a>]
+[<a href="#top"><%= i18n("top") %></a>]
+[<a href="<%= catalog_url %>"><%= i18n("refresh") %></a>]
 <hr />

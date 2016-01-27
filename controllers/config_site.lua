@@ -1,6 +1,14 @@
 local config = require("lapis.config").get()
+local i18n   = require "i18n"
 
 return function(self)
+	-- Set localization
+	i18n.setLocale(self.session.locale or "en")
+	i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
+	self.i18n = i18n
+
+	self.software  = config.software
+	self.version   = config.version
 	self.site_name = config.site_name
 
 	if config.subdomains then

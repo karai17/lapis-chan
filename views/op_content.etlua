@@ -1,7 +1,7 @@
 <div class="op" id="p<%= post.post_id %>">
 	<% if post.file_name then %>
 	<div class="post_file">
-		File:
+		<%= i18n("file") %>:
 		<%
 			if post.file_name:len() > 35 then
 				local short = string.sub(post.file_name, 1, 25)
@@ -28,25 +28,25 @@
 		<span class="post_trip"><%= post.trip %></span>
 		<% end %>
 		<span class="post_time"><%= post.timestamp %></span>
-		<span class="post_number"><a href="<%= post.link %>" title="Link to this post">No.</a><a class="link_reply" href="<%= post.reply %>" title="Reply to this post"><%= post.post_id %></a></span>
+		<span class="post_number"><a href="<%= post.link %>" title="<%= i18n('post_link') %>">No.</a><a class="link_reply" href="<%= post.reply %>" title="<%= i18n('post_reply') %>"><%= post.post_id %></a></span>
 		<% if thread.sticky or thread.lock or thread.save or thread.size_override then %>
 		<span class="post_flag">
 			<% if thread.sticky then %>
-			<span title="Thread is stickied">📌</span>
+			<span title="<%= i18n('post_sticky') %>">📌</span>
 			<% end %>
 			<% if thread.lock then %>
-			<span title="Thread is locked">🔒</span>
+			<span title="<%= i18n('post_lock') %>">🔒</span>
 			<% end %>
 			<% if thread.save then %>
-			<span title="Thread will not be auto-pruned">💾</span>
+			<span title="<%= i18n('post_save') %>">💾</span>
 			<% end %>
 			<% if thread.size_override then %>
-			<span title="Thread has no file limit">✔️</span>
+			<span title="<%= i18n('post_override') %>">✔️</span>
 			<% end %>
 		</span>
 		<% end %>
 		<% if is_board then %>
-		<span>[<a href="<%= thread.url %>">Reply</a>]</span>
+		<span>[<a href="<%= thread.url %>"><%= i18n('reply') %></a>]</span>
 		<% end %>
 	</div>
 	<div class="post_comment">
@@ -58,6 +58,14 @@
 </div>
 <% if thread.hidden and thread.hidden.posts > 0 then %>
 <div class="hidden_posts">
-	<%= i18n("post", { count=thread.hidden.posts }) %> <%= i18n("file", { count=thread.hidden.files }) %> <a href="<%= thread.url %>">Click here</a> to view.
+	<%-
+	i18n("post_hidden", {
+		n_post = thread.hidden.posts,
+		p_post = i18n("posts", { count=thread.hidden.posts }),
+		n_file = thread.hidden.files,
+		p_file = i18n("files", { count=thread.hidden.files }),
+		click  = "<a href="..thread.url..">Click here</a>"
+	})
+	%>
 </div>
 <% end %>

@@ -1,9 +1,9 @@
-<h1>Rules</h1>
+<h1><%= i18n("rules") %></h1>
 <table id="rules_table">
 	<thead>
 		<tr>
-			<td>Board</td>
-			<td>Rules</td>
+			<td><%= i18n("board") %></td>
+			<td><%= i18n("rules") %></td>
 		</tr>
 	</thead>
 	<tbody>

@@ -8,8 +8,8 @@
 
 		<div>
 			<label class="title">
-				Name
-				<span title="Give yourself a name and/or tripcode (optional)">(❓)</span>
+				<%= i18n("form_submit_name") %>
+				<span title="<%= i18n("form_submit_name_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
 				<input name="name" type="text" placeholder="<%= board.anon_name or 'Anonymous' %>" value="<%= params.name or session.names[board.short_name] or '' %>" />
@@ -19,8 +19,8 @@
 		<% if not params.thread then %>
 		<div>
 			<label class="title">
-				Subject
-				<span title="Define the topic of discussion (optional)">(❓)</span>
+				<%= i18n("form_submit_subject") %>
+				<span title="<%= i18n("form_submit_subject_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
 				<input name="subject" type="text" value="<%= params.subject or '' %>" />
@@ -30,8 +30,8 @@
 
 		<div>
 			<label class="title">
-				Options
-				<span title="sage: post without bumping thread (more to come soon) (optional)">(❓)</span>
+				<%= i18n("form_submit_options") %>
+				<span title="<%= i18n("form_submit_options_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
 				<input name="options" type="text" value="<%= params.options or '' %>" />
@@ -40,8 +40,9 @@
 
 		<div>
 			<label class="title">
-				<%- comment_flag and '<span class="required">*</span>' or '' %> Comment
-				<span title="Post a comment for the world to see (or not)">(❓)</span>
+				<%- comment_flag and '<span class="required">*</span>' or '' %>
+				<%= i18n("form_submit_comment") %>
+				<span title="<%= i18n("form_submit_comment_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
 				<textarea id="submit_comment" name="comment"><%= params.comment or '' %></textarea>
@@ -51,8 +52,9 @@
 		<% if not board.text_only and (not num_files or num_files < board.thread_file_limit) then %>
 		<div>
 			<label class="title">
-				<%- ((thread and board.post_file) or (not thread and board.thread_file)) and '<span class="required">*</span>' or '' %> File
-				<span title="Upload a file">(❓)</span>
+				<%- ((thread and board.post_file) or (not thread and board.thread_file)) and '<span class="required">*</span>' or '' %>
+				<%= i18n("form_submit_file") %>
+				<span title="<%= i18n("form_submit_file_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
 				<input name="file" id="submit_file" type="file" />
@@ -62,25 +64,25 @@
 		<% if board.draw then %>
 		<div>
 			<label class="title">
-				Draw
-				<span title="Draw or remix an image">(❓)</span>
+				<%= i18n("form_submit_draw") %>
+				<span title="<%= i18n("form_submit_draw_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
 				<input type="hidden" id="draw" name="draw" />
-				Width:
+				<%= i18n("form_width") %>:
 				<input type="text" id="tegaki_width" class="short" value="400" />
-				Height:
+				<%= i18n("form_height") %>:
 				<input type="text" id="tegaki_height" class="short" value="400" />
-				<button type="button" id="tegaki_draw">Draw</button>
-				<button type="button" id="tegaki_clear" disabled>Clear</button>
+				<button type="button" id="tegaki_draw"><%= i18n("form_draw") %></button>
+				<button type="button" id="tegaki_clear" disabled><%= i18n("form_clear") %></button>
 			</span>
 		</div>
 		<% end %>
 
 		<div>
 			<label class="title">
-				Spoiler
-				<span title="Replace thumbnail with a spoiler-safe image">(❓)</span>
+				<%= i18n("form_submit_spoiler") %>
+				<span title="<%= i18n("form_submit_spoiler_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
 				[
@@ -93,31 +95,31 @@
 		<% if not params.thread and (session.admin or session.mod) then %>
 		<div>
 			<label class="title">
-				Moderator
-				<span title="Flag this thread">(❓)</span>
+				<%= i18n("form_submit_mod") %>
+				<span title="<%= i18n("form_submit_mod_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
 				<span>
 					[
-					<span title="Sticky thread">📌</span>
+					<span title="<%= i18n("form_sticky") %>">📌</span>
 					<input name="sticky" type="checkbox" value="t" <%= params.sticky == 't' and 'checked' or '' %>/>
 					]
 				</span>
 				<span>
 					[
-					<span title="Lock thread">🔒</span>
+					<span title="<%= i18n("form_lock") %>">🔒</span>
 					<input name="lock" type="checkbox" value="t" <%= params.lock == 't' and 'checked' or '' %>/>
 					]
 				</span>
 				<span>
 					[
-					<span title="Save thread">💾</span>
+					<span title="<%= i18n("form_save") %>">💾</span>
 					<input name="save" type="checkbox" value="t" <%= params.save == 't' and 'checked' or '' %>/>
 					]
 				</span>
 				<span>
 					[
-					<span title="Unlimited files">✔️</span>
+					<span title="<%= i18n("form_override") %>">✔️</span>
 					<input name="size_override" type="checkbox" value="t" <%= params.size_override == 't' and 'checked' or '' %>/>
 					]
 				</span>
@@ -125,8 +127,18 @@
 		</div>
 		<% end %>
 
-		<button name="submit">Submit Post</button>
+		<button name="submit"><%= i18n("form_submit") %></button>
 	</form>
-	<p><span class="required">*</span> required field</p>
-	<p>Please read the [<a href="<%= index_url %>rules"><strong>Rules</strong></a>] and [<a href="<%= index_url %>faq"><strong>FAQ</strong></a>] before posting.</p>
+	<p>
+		<span class="required">*</span>
+		<%= i18n("form_required") %>
+	</p>
+	<p>
+		<%-
+		i18n("form_readme", {
+			rules = '<a href="'..index_url..'rules"><strong>Rules</strong></a>',
+			faq   = '<a href="'..index_url..'faq"><strong>FAQ</strong></a>'
+		})
+		%>
+	</p>
 </div>

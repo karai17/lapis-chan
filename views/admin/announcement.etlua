@@ -3,10 +3,10 @@
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 
 		<div>
-			<label class="title">Board</label>
+			<label class="title"><%= i18n("board") %></label>
 			<span class="fields">
 				<select name="board_id">
-					<option value="0" <%= announcement.board_id == 0 and 'selected' or '' %>>Global</option>
+					<option value="0" <%= announcement.board_id == 0 and 'selected' or '' %>><%= i18n("global") %></option>
 					<% for _, board in ipairs(boards) do %>
 					<option value="<%= board.id %>" <%= announcement.board_id == board.id and 'selected' or '' %>>/<%= board.short_name %>/ - <%= board.name %></option>
 					<% end %>
@@ -15,16 +15,16 @@
 		</div>
 
 		<div>
-			<label class="title">Announcement</label>
+			<label class="title"><%= i18n("announcement") %></label>
 			<span class="fields">
 				<input type="text" name="text" value="<%= announcement.text or '' %>" />
 			</span>
 		</div>
 
 		<% if params.action == "create" then %>
-		<button name="create_announcement">Create Announcement</button>
+		<button name="create_announcement"><%= i18n("create_ann") %></button>
 		<% elseif params.action == "modify" then %>
-		<button name="modify_announcement">Modify Announcement</button>
+		<button name="modify_announcement"><%= i18n("modify_ann") %></button>
 		<% end %>
 	</form>
 </div>

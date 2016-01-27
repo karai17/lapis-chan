@@ -1,7 +1,6 @@
 local assert_error  = require("lapis.application").assert_error
 local assert_valid  = require("lapis.validate").assert_valid
 local csrf          = require "lapis.csrf"
-local i18n          = require "i18n"
 local Announcements = require "models.announcements"
 local Boards        = require "models.boards"
 local Pages         = require "models.pages"
@@ -11,11 +10,6 @@ local Users         = require "models.users"
 
 return {
 	before = function(self)
-		-- Set localization
-		i18n.setLocale(self.session.locale or "en")
-		i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
-		self.i18n = i18n
-
 		-- Get data
 		self.announcements = Announcements:get_announcements()
 		self.boards        = Boards:get_boards()
@@ -27,7 +21,7 @@ return {
 		self.board = { theme = "yotsuba_b" }
 
 		-- Page title
-		self.page_title = i18n("admin_panel")
+		self.page_title = self.i18n("admin_panel")
 
 		-- Generate CSRF token
 		self.csrf_token = csrf.generate_token(self)
@@ -61,15 +55,9 @@ return {
 		self.admin_du_url = self.admin_url .. "delete/user/"
 	end,
 	on_error = function(self)
-		self.err = i18n(unpack(self.errors))
-
-		if self.err then
-			self.err = "<p>" .. self.err .. "</p>"
-		else
-			self.err = ""
-			for _, e in ipairs(self.errors) do
-				self.err = self.err .. "<p>" .. tostring(e) .. "</p>\n"
-			end
+		local err = self.i18n(unpack(self.errors))
+		if err then
+			self.errors = { err }
 		end
 
 		if not self.session.name then

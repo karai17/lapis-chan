@@ -5,5 +5,5 @@
 	<input name="thread" type="hidden" value="<%= post.thread %>" />
 	<% end %>
 	<input name="post_id" type="hidden" value="<%= post.post_id %>" />
-	<button name="save">💾 Save thread from auto-pruning</button>
+	<button name="save">💾 <%= i18n("form_save") %></button>
 </form>

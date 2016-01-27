@@ -4,30 +4,30 @@
 		<input type="hidden" name="old" value="<%= page.old or page.url or '' %>" />
 
 		<div>
-			<label class="title">URL</label>
-			<span class="fields">
-				<input type="text" name="url" placeholder="faq" value="<%= page.url or '' %>" />
-			</span>
-		</div>
-
-		<div>
-			<label class="title">Name</label>
+			<label class="title"><%= i18n("name") %></label>
 			<span class="fields">
 				<input type="text" name="name" placeholder="Frequently Asked Questions" value="<%= page.name or '' %>" />
 			</span>
 		</div>
 
 		<div>
-			<label class="title">Content (Markdown)</label>
+			<label class="title"><%= i18n("url") %></label>
+			<span class="fields">
+				<input type="text" name="url" placeholder="faq" value="<%= page.url or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title"><%= i18n("content_md") %></label>
 			<span class="fields">
 				<textarea name="content"><%= page.content or '' %></textarea>
 			</span>
 		</div>
 
 		<% if params.action == "create" then %>
-		<button name="create_page">Create Page</button>
+		<button name="create_page"><%= i18n("create_page") %></button>
 		<% elseif params.action == "modify" then %>
-		<button name="modify_page">Modify Page</button>
+		<button name="modify_page"><%= i18n("modify_page") %></button>
 		<% end %>
 	</form>
 </div>

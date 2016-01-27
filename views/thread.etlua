@@ -1,8 +1,8 @@
 <% render("views.board_title") %>
 <%
-	if not thread.lock or session.admin or session.mod then
-		render("views.form_submit")
-	end
+if not thread.lock or session.admin or session.mod then
+	render("views.form_submit")
+end
 %>
 <% if #announcements > 0 then %>
 <hr />
@@ -11,25 +11,25 @@
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= board_url %>">Return</a>]
-[<a href="<%= catalog_url %>">Catalog</a>]
-[<a href="#bottom">Bottom</a>]
-[<a href="<%= thread_url %>">Refresh</a>]
+[<a href="<%= board_url %>"><%= i18n("return") %></a>]
+[<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
+[<a href="#bottom"><%= i18n("bottom") %></a>]
+[<a href="<%= thread_url %>"><%= i18n("refresh") %></a>]
 <hr />
 <div class="thread_container">
 	<%
-		for i, post in ipairs(posts) do
-			if i == 1 then
-				render("views.op_content", { thread=thread, post=post })
-			else
-				render("views.post_content", { thread=thread, post=post, op=posts[1] })
-			end
+	for i, post in ipairs(posts) do
+		if i == 1 then
+			render("views.op_content", { thread=thread, post=post })
+		else
+			render("views.post_content", { thread=thread, post=post, op=posts[1] })
 		end
+	end
 	%>
 </div>
 <hr />
-[<a href="<%= board_url %>">Return</a>]
-[<a href="<%= catalog_url %>">Catalog</a>]
-[<a href="#top">Top</a>]
-[<a href="<%= thread_url %>">Refresh</a>]
+[<a href="<%= board_url %>"><%= i18n("return") %></a>]
+[<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
+[<a href="#top"><%= i18n("top") %></a>]
+[<a href="<%= thread_url %>"><%= i18n("refresh") %></a>]
 <hr />

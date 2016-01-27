@@ -1,17 +1,11 @@
 local assert_error = require("lapis.application").assert_error
 local assert_valid = require("lapis.validate").assert_valid
 local csrf         = require "lapis.csrf"
-local i18n         = require "i18n"
 local Boards       = require "models.boards"
 local Reports      = require "models.reports"
 
 return {
 	before = function(self)
-		-- Set localization
-		i18n.setLocale(self.session.locale or "en")
-		i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
-		self.i18n = i18n
-
 		-- Get data
 		self.boards  = Boards:get_boards()
 		self.reports = Reports:get_reports()
@@ -23,7 +17,7 @@ return {
 		self.csrf_token = csrf.generate_token(self)
 
 		-- Page title
-		self.page_title = i18n("admin_panel")
+		self.page_title = self.i18n("admin_panel")
 
 		-- Verify Authorization
 		if self.session.name then
@@ -41,23 +35,17 @@ return {
 
 			self.page_title = string.format(
 				"%s - %s",
-				i18n("admin_panel"),
-				i18n("success")
+				self.i18n("admin_panel"),
+				self.i18n("success")
 			)
-			self.action = i18n("deleted_report", { report.id })
+			self.action = self.i18n("deleted_report", { report.id })
 			return
 		end
 	end,
 	on_error = function(self)
-		self.err = i18n(unpack(self.errors))
-
-		if self.err then
-			self.err = "<p>" .. self.err .. "</p>"
-		else
-			self.err = ""
-			for _, e in ipairs(self.errors) do
-				self.err = self.err .. "<p>" .. tostring(e) .. "</p>\n"
-			end
+		local err = self.i18n(unpack(self.errors))
+		if err then
+			self.errors = { err }
 		end
 
 		if not self.session.name then
