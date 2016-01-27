@@ -1,7 +1,7 @@
 local config    = require "lapis.config"
 local token     = require "secrets.token"
 local software  = "Lapis-chan"
-local version   = "1.1.0"
+local version   = "1.1.1"
 local lua_path  = ""
 local lua_cpath = ""
 
