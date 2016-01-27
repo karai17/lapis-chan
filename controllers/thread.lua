@@ -77,7 +77,7 @@ return {
 		self.csrf_token = csrf.generate_token(self)
 
 		-- Determine if we allow a user to upload a file
-		self.num_files  = Posts:count_files(self.board.id, self.thread.id)
+		self.num_files  = Posts:count_files(self.thread.id)
 
 		-- Get posts
 		self.posts = Posts:get_posts_by_thread(self.thread.id)

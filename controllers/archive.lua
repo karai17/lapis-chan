@@ -49,8 +49,8 @@ return function(self)
 
 	-- Get stats
 	for _, thread in ipairs(self.threads) do
-		thread.op      = Posts:get_thread_op(self.board.id, thread.id)
-		thread.replies = Posts:count_posts(self.board.id, thread.id) - 1
+		thread.op      = Posts:get_thread_op(thread.id)
+		thread.replies = Posts:count_posts(thread.id) - 1
 		thread.url     = self.thread_url .. thread.op.post_id
 
 		-- Process name

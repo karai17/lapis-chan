@@ -76,8 +76,8 @@ function process.create_thread(params, session, board)
 end
 
 function process.create_post(params, session, board, thread)
-	local posts = Posts:count_posts(board.id, thread.id)
-	local files = Posts:count_files(board.id, thread.id)
+	local posts = Posts:count_posts(thread.id)
+	local files = Posts:count_files(thread.id)
 
 	-- Prepare data for entry
 	local _, err = Posts:prepare_post(

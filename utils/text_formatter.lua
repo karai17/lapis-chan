@@ -35,7 +35,7 @@ function formatter.quote(text, request, board, post)
 			local thread = Threads:get_thread(p.thread_id)
 			if not thread then return false end
 
-			local op = Posts:get_thread_op(board.id, thread.id)
+			local op = Posts:get_thread_op(thread.id)
 			return
 				request.boards_url .. board.short_name .. "/thread/" .. op.post_id,
 				op
