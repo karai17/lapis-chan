@@ -197,18 +197,6 @@ input[type=button] {
 .clearfix {
   zoom: 1; }
 
-#submit_form {
-  width: 340px; }
-  #submit_form textarea {
-    margin: 2px 0 !important;
-    height: 100px !important;
-    width: 100% !important; }
-  #submit_form input[type="submit"] {
-    margin: 2px;
-    width: 100px; }
-  #submit_form label {
-    display: inline; }
-
 .thread_container, .post_container {
   margin: 10px 0 0 0;
   padding: 10px; }
@@ -280,23 +268,14 @@ a {
   text-decoration: none; }
 
 input[type="text"], input[type="password"], textarea {
-  border: 1px solid #aaaaaa;
-  margin: 2px;
   padding: 4px;
   width: 280px; }
 
-textarea {
-  height: 500px; }
+input[type="checkbox"] {
+  margin: 4px 0; }
 
 input[type="file"] {
-  margin: 2px, 0;
-  padding: 4px, 0;
-  width: 170px; }
-
-input[type="checkbox"] {
-  margin: 0;
-  padding: 0;
-  width: 13px; }
+  padding: 4px 0; }
 
 h1 {
   font-size: 240%;
@@ -332,13 +311,6 @@ table {
   table .rules {
     text-align: left; }
 
-label {
-  display: block; }
-  label span {
-    display: inline-block;
-    vertical-align: top;
-    width: 180px; }
-
 ul {
   list-style: disc; }
   ul li {
@@ -349,11 +321,49 @@ ol {
   ol li {
     margin-left: 20px; }
 
-#post_form, .boards, .return, .error, .copyright {
+#error {
+  background-color: #ff0000;
+  color: #ffffff;
+  margin-bottom: 10px;
+  padding: 10px;
   text-align: center; }
+  #error h3 {
+    font-size: 220%;
+    font-weight: bolder; }
+  #error p {
+    font-weight: bold; }
 
-.admin_panel {
-  display: inline-block; }
+#post_form, .admin_form {
+  text-align: center; }
+  #post_form form div, .admin_form form div {
+    display: -webkit-box-flex;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex; }
+    #post_form form div .title, .admin_form form div .title {
+      -webkit-flex: 0;
+      -ms-flex: 0;
+      flex: 0;
+      font-weight: bold;
+      text-align: right;
+      min-width: 120px;
+      margin: 1px;
+      padding: 4px; }
+      #post_form form div .title span, .admin_form form div .title span {
+        cursor: pointer; }
+    #post_form form div .fields, .admin_form form div .fields {
+      margin: 1px; }
+      #post_form form div .fields textarea, .admin_form form div .fields textarea {
+        min-height: 100px !important; }
+  #post_form form button, .admin_form form button {
+    margin: 10px 0 0 0; }
+
+.required {
+  color: #ff0000; }
+
+.boards, .return, .copyright {
+  text-align: center; }
 
 .archive_stats {
   text-align: center;
@@ -363,7 +373,7 @@ ol {
   text-align: center;
   font-weight: bold; }
 
-.error, .banned {
+.banned {
   border: 7px dashed #000000;
   display: table;
   font-size: 180%;
@@ -371,9 +381,9 @@ ol {
   max-width: 600px;
   margin: 20px auto;
   padding: 10px; }
-  .error p, .banned p {
+  .banned p {
     margin: 10px; }
-  .error div, .banned div {
+  .banned div {
     text-align: center; }
 
 .medium {

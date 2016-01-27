@@ -1,6 +1,6 @@
-local Users  = require "models.users"
 local Bans   = require "models.bans"
 local Boards = require "models.boards"
+local Users  = require "models.users"
 
 return function(self)
 	-- Prepare session names
@@ -8,7 +8,7 @@ return function(self)
 
 	-- Verify Authorization
 	if self.session.name then
-		local user = Users.get_user(self.session.name)
+		local user = Users:get_user(self.session.name)
 
 		if user then
 			user.password        = nil
@@ -25,4 +25,7 @@ return function(self)
 		self.session.mod     = nil
 		self.session.janitor = nil
 	end
+
+	-- Get IP from ngx
+	self.params.ip = self.req.headers["X-Real-IP"] or self.req.remote_addr
 end

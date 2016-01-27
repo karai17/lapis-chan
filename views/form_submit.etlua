@@ -1,0 +1,132 @@
+<div id="post_form">
+	<form enctype="multipart/form-data" action="<%= form_url %>" method="post" autocomplete="off">
+		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+		<input name="board" type="hidden" value="<%= params.board %>" />
+		<% if params.thread then %>
+		<input name="thread" type="hidden" value="<%= params.thread %>" />
+		<% end %>
+
+		<div>
+			<label class="title">
+				Name
+				<span title="Give yourself a name and/or tripcode (optional)">(❓)</span>
+			</label>
+			<span class="fields">
+				<input name="name" type="text" placeholder="<%= board.anon_name or 'Anonymous' %>" value="<%= params.name or session.names[board.short_name] or '' %>" />
+			</span>
+		</div>
+
+		<% if not params.thread then %>
+		<div>
+			<label class="title">
+				Subject
+				<span title="Define the topic of discussion (optional)">(❓)</span>
+			</label>
+			<span class="fields">
+				<input name="subject" type="text" value="<%= params.subject or '' %>" />
+			</span>
+		</div>
+		<% end %>
+
+		<div>
+			<label class="title">
+				Options
+				<span title="sage: post without bumping thread (more to come soon) (optional)">(❓)</span>
+			</label>
+			<span class="fields">
+				<input name="options" type="text" value="<%= params.options or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">
+				<%- comment_flag and '<span class="required">*</span>' or '' %> Comment
+				<span title="Post a comment for the world to see (or not)">(❓)</span>
+			</label>
+			<span class="fields">
+				<textarea id="submit_comment" name="comment"><%= params.comment or '' %></textarea>
+			</span>
+		</div>
+
+		<% if not board.text_only and (not num_files or num_files < board.thread_file_limit) then %>
+		<div>
+			<label class="title">
+				<%- ((thread and board.post_file) or (not thread and board.thread_file)) and '<span class="required">*</span>' or '' %> File
+				<span title="Upload a file">(❓)</span>
+			</label>
+			<span class="fields">
+				<input name="file" id="submit_file" type="file" />
+			</span>
+		</div>
+
+		<% if board.draw then %>
+		<div>
+			<label class="title">
+				Draw
+				<span title="Draw or remix an image">(❓)</span>
+			</label>
+			<span class="fields">
+				<input type="hidden" id="draw" name="draw" />
+				Width:
+				<input type="text" id="tegaki_width" class="short" value="400" />
+				Height:
+				<input type="text" id="tegaki_height" class="short" value="400" />
+				<button type="button" id="tegaki_draw">Draw</button>
+				<button type="button" id="tegaki_clear" disabled>Clear</button>
+			</span>
+		</div>
+		<% end %>
+
+		<div>
+			<label class="title">
+				Spoiler
+				<span title="Replace thumbnail with a spoiler-safe image">(❓)</span>
+			</label>
+			<span class="fields">
+				[
+				<input name="file_spoiler" type="checkbox" value="spoiler" <%= params.file_spoiler == 'spoiler' and 'checked' or '' %>/>
+				]
+			</span>
+		</div>
+		<% end %>
+
+		<% if not params.thread and (session.admin or session.mod) then %>
+		<div>
+			<label class="title">
+				Moderator
+				<span title="Flag this thread">(❓)</span>
+			</label>
+			<span class="fields">
+				<span>
+					[
+					<span title="Sticky thread">📌</span>
+					<input name="sticky" type="checkbox" value="t" <%= params.sticky == 't' and 'checked' or '' %>/>
+					]
+				</span>
+				<span>
+					[
+					<span title="Lock thread">🔒</span>
+					<input name="lock" type="checkbox" value="t" <%= params.lock == 't' and 'checked' or '' %>/>
+					]
+				</span>
+				<span>
+					[
+					<span title="Save thread">💾</span>
+					<input name="save" type="checkbox" value="t" <%= params.save == 't' and 'checked' or '' %>/>
+					]
+				</span>
+				<span>
+					[
+					<span title="Unlimited files">✔️</span>
+					<input name="size_override" type="checkbox" value="t" <%= params.size_override == 't' and 'checked' or '' %>/>
+					]
+				</span>
+			</span>
+		</div>
+		<% end %>
+
+		<button name="submit">Submit Post</button>
+	</form>
+	<p><span class="required">*</span> required field</p>
+	<p>Please read the [<a href="<%= index_url %>rules"><strong>Rules</strong></a>] and [<a href="<%= index_url %>faq"><strong>FAQ</strong></a>] before posting.</p>
+</div>

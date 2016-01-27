@@ -1,64 +1,85 @@
-local Users         = require "models.users"
-local Boards        = require "models.boards"
-local Posts         = require "models.posts"
-local Announcements = require "models.announcements"
-local Pages         = require "models.pages"
-local Reports       = require "models.reports"
-local prep_error    = require "utils.prep_error"
+local assert_error  = require("lapis.application").assert_error
+local assert_valid  = require("lapis.validate").assert_valid
 local csrf          = require "lapis.csrf"
+local i18n          = require "i18n"
+local Announcements = require "models.announcements"
+local Boards        = require "models.boards"
+local Pages         = require "models.pages"
+local Posts         = require "models.posts"
+local Reports       = require "models.reports"
+local Users         = require "models.users"
 
 return {
 	before = function(self)
-		-- Get all user data
-		self.users = Users.get_users()
+		-- Set localization
+		i18n.setLocale(self.session.locale or "en")
+		i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
+		self.i18n = i18n
 
-		-- Get all board data
-		self.boards = Boards.get_boards()
-
-		-- Get all annoucement data
-		self.announcements = Announcements.get_announcements()
-
-		-- Get all page data
-		self.pages = Pages.get_pages()
-
-		-- Get all report data
-		self.reports = Reports.get_reports()
+		-- Get data
+		self.announcements = Announcements:get_announcements()
+		self.boards        = Boards:get_boards()
+		self.pages         = Pages:get_pages()
+		self.reports       = Reports:get_reports()
+		self.users         = Users:get_users()
 
 		-- Display a theme
 		self.board = { theme = "yotsuba_b" }
 
 		-- Page title
-		self.page_title = "Admin Panel"
+		self.page_title = i18n("admin_panel")
 
-		-- Create urls
-		self.admin_cu_url = self.admin_url .. "create/user"
-		self.admin_cb_url = self.admin_url .. "create/board"
-		self.admin_ca_url = self.admin_url .. "create/announcement"
-		self.admin_cp_url = self.admin_url .. "create/page"
-
-		-- Modify urls
-		self.admin_mu_url = self.admin_url .. "modify/user/"
-		self.admin_mb_url = self.admin_url .. "modify/board/"
-		self.admin_ma_url = self.admin_url .. "modify/announcement/"
-		self.admin_mp_url = self.admin_url .. "modify/page/"
-
-		-- Delete urls
-		self.admin_du_url = self.admin_url .. "delete/user/"
-		self.admin_db_url = self.admin_url .. "delete/board/"
-		self.admin_da_url = self.admin_url .. "delete/announcement/"
-		self.admin_dp_url = self.admin_url .. "delete/page/"
-		self.admin_dr_url = self.admin_url .. "delete/report/"
-	end,
-	GET = function(self)
 		-- Generate CSRF token
 		self.csrf_token = csrf.generate_token(self)
 
 		-- Verify Authorization
 		if self.session.name then
 			if not self.session.admin then
-				return prep_error(self, "You are not an admin.")
+				assert_error(false, "err_not_admin")
 			end
 		else
+			return
+		end
+
+		-- Create urls
+		self.admin_ca_url = self.admin_url .. "create/announcement/"
+		self.admin_cb_url = self.admin_url .. "create/board/"
+		self.admin_cp_url = self.admin_url .. "create/page/"
+		self.admin_cu_url = self.admin_url .. "create/user/"
+
+		-- Modify urls
+		self.admin_ma_url = self.admin_url .. "modify/announcement/"
+		self.admin_mb_url = self.admin_url .. "modify/board/"
+		self.admin_mp_url = self.admin_url .. "modify/page/"
+		self.admin_mu_url = self.admin_url .. "modify/user/"
+
+		-- Delete urls
+		self.admin_da_url = self.admin_url .. "delete/announcement/"
+		self.admin_db_url = self.admin_url .. "delete/board/"
+		self.admin_dp_url = self.admin_url .. "delete/page/"
+		self.admin_dr_url = self.admin_url .. "delete/report/"
+		self.admin_du_url = self.admin_url .. "delete/user/"
+	end,
+	on_error = function(self)
+		self.err = i18n(unpack(self.errors))
+
+		if self.err then
+			self.err = "<p>" .. self.err .. "</p>"
+		else
+			self.err = ""
+			for _, e in ipairs(self.errors) do
+				self.err = self.err .. "<p>" .. tostring(e) .. "</p>\n"
+			end
+		end
+
+		if not self.session.name then
+			return { render = "admin.login" }
+		end
+
+		return { render = "admin.admin" }
+	end,
+	GET = function(self)
+		if not self.session.name then
 			return { render = "admin.login" }
 		end
 
@@ -66,14 +87,12 @@ return {
 	end,
 	POST = function(self)
 		-- Validate CSRF token
-		local _, err = csrf.validate_token(self)
-		if err then return prep_error(self, err) end
+		csrf.assert_token(self)
 
 		-- Verify user credentials
 		if self.params.login then
 			-- Verify user
-			local user, err = Users.verify_user(self.params)
-			if err then return prep_error(self, err) end
+			local user = assert_error(Users:verify_user(self.params))
 
 			-- Set username
 			self.session.name = user.username
@@ -125,10 +144,10 @@ return {
 
 			-- Redirect to reported post
 			if self.params.view_report then
-				local report = Reports.get_report_by_id(self.params.report)
-				local board  = Boards.get_board(report.board_id)
-				local post   = Posts.get_post(board.id, report.post_id)
-				local op     = Posts.get_thread_op(board.id, report.thread_id)
+				local report = Reports:get_report_by_id(self.params.report)
+				local board  = Boards:get_board(report.board_id)
+				local post   = Posts:get_post(board.id, report.post_id)
+				local op     = Posts:get_thread_op(report.thread_id)
 
 				local board_url  = self.boards_url .. board.short_name .. "/"
 				local thread_url = board_url  .. "thread/"
@@ -144,7 +163,7 @@ return {
 
 			-- Regenerate thumbnails
 			if self.params.regen_thumbs then
-				Boards.regen_thumbs()
+				Boards:regen_thumbs()
 			end
 
 			return { render = "admin.admin" }

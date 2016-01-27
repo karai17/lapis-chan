@@ -1,24 +1,5 @@
 $spacing: 10px;
 
-#submit_form {
-	width: 340px;
-
-	textarea {
-		margin: 2px 0 !important;
-		height: 100px !important;
-		width: 100% !important;
-	}
-
-	input[type="submit"] {
-		margin: 2px;
-		width: 100px;
-	}
-
-	label {
-		display: inline;
-	}
-}
-
 .thread_container, .post_container {
 	margin: $spacing 0 0 0;
 	padding: $spacing;
@@ -125,6 +106,4 @@ $spacing: 10px;
 			}
 		}
 	}
-
-
 }

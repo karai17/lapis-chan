@@ -58,6 +58,6 @@
 </div>
 <% if thread.hidden and thread.hidden.posts > 0 then %>
 <div class="hidden_posts">
-	<%= thread.hidden.posts %> <%= thread.plural.posts %> and <%= thread.hidden.files %> <%= thread.plural.files %> omitted. <a href="<%= thread.url %>">Click here</a> to view.
+	<%= i18n("post", { count=thread.hidden.posts }) %> <%= i18n("file", { count=thread.hidden.files }) %> <a href="<%= thread.url %>">Click here</a> to view.
 </div>
 <% end %>

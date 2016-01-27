@@ -1,0 +1,33 @@
+<div class="admin_form">
+	<form action="" method="post">
+		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+		<input type="hidden" name="old" value="<%= page.old or page.url or '' %>" />
+
+		<div>
+			<label class="title">URL</label>
+			<span class="fields">
+				<input type="text" name="url" placeholder="faq" value="<%= page.url or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Name</label>
+			<span class="fields">
+				<input type="text" name="name" placeholder="Frequently Asked Questions" value="<%= page.name or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Content (Markdown)</label>
+			<span class="fields">
+				<textarea name="content"><%= page.content or '' %></textarea>
+			</span>
+		</div>
+
+		<% if params.action == "create" then %>
+		<button name="create_page">Create Page</button>
+		<% elseif params.action == "modify" then %>
+		<button name="modify_page">Modify Page</button>
+		<% end %>
+	</form>
+</div>

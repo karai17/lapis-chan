@@ -1,15 +1,3 @@
-#submit_form {
-  width: 340px; }
-  #submit_form textarea {
-    margin: 2px 0 !important;
-    height: 100px !important;
-    width: 100% !important; }
-  #submit_form input[type="submit"] {
-    margin: 2px;
-    width: 100px; }
-  #submit_form label {
-    display: inline; }
-
 .thread_container, .post_container {
   margin: 10px 0 0 0;
   padding: 10px; }

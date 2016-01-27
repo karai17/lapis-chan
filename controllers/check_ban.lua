@@ -1,5 +1,6 @@
 local Bans   = require "models.bans"
 local Boards = require "models.boards"
+local i18n   = require "i18n"
 
 return function(self)
 	-- MODS = FAGS
@@ -10,14 +11,19 @@ return function(self)
 		return
 	end
 
+	-- Set localization
+	i18n.setLocale(self.session.locale or "en")
+	i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
+	self.i18n = i18n
+
 	-- Get list of bans by ip
 	local ip = self.req.headers["X-Real-IP"] or self.req.remote_addr
-	local bans = Bans.get_ip_bans(ip)
+	local bans = Bans:get_bans_by_ip(ip)
 
 	-- Get current board
 	local board
 	if self.params.board then
-		board = Boards.get_board(self.params.board)
+		board = Boards:get_board(self.params.board)
 	end
 	board = board or {}
 
@@ -28,14 +34,14 @@ return function(self)
 
 			-- Ban data
 			self.ip     = ban.ip
-			self.reason = ban.reason or "None given."
+			self.reason = ban.reason or i18n("err_ban_reason")
 			self.expire = os.date("%Y-%m-%d (%a) %H:%M:%S", ban.time + ban.duration)
 
 			-- Get all board data
-			self.boards = Boards.get_boards()
+			self.boards = Boards:get_boards()
 
 			-- Page title
-			self.page_title = "Banned!"
+			self.page_title = i18n("banned")
 
 			-- Display a theme
 			self.board = { theme = "yotsuba_b" }

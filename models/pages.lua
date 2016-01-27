@@ -1,15 +1,18 @@
+local trim  = require("lapis.util").trim_filter
 local Model = require("lapis.db.model").Model
 local Pages = Model:extend("pages")
-
-local trim  = require("lapis.util").trim_filter
-local model = {}
 
 --- Create a new page
 -- @tparam table page Page data
 -- @treturn boolean success
 -- @treturn string error
-function model.create_page(page)
-	local page, err = Pages:create {
+function Pages:create_page(page)
+	-- Trim white space
+	trim(page, {
+		"name", "url", "content"
+	}, nil)
+
+	local page = self:create {
 		name    = page.name,
 		url     = page.url,
 		content = page.content
@@ -18,7 +21,7 @@ function model.create_page(page)
 	if page then
 		return page
 	else
-		return false, err
+		return false, "err_create_page", { page.url, page.name }
 	end
 end
 
@@ -26,7 +29,7 @@ end
 -- @tparam table page Page data
 -- @treturn boolean success
 -- @treturn string error
-function model.modify_page(page)
+function Pages:modify_page(page)
 	local columns = {}
 	for col in pairs(page) do
 		table.insert(columns, col)
@@ -39,21 +42,21 @@ end
 -- @tparam table page Page data
 -- @treturn boolean success
 -- @treturn string error
-function model.delete_page(page)
+function Pages:delete_page(page)
 	return page:delete()
 end
 
 --- Get all pages
 -- @treturn table pages List of pages
-function model.get_pages()
-	return Pages:select("order by url asc")
+function Pages:get_pages()
+	return self:select("order by url asc")
 end
 
 --- Get page
 -- @tparam string url Page URL
 -- @treturn table page
-function model.get_page(url)
-	return unpack(Pages:select("where url=? limit 1", url))
+function Pages:get_page(url)
+	return unpack(self:select("where url=? limit 1", url))
 end
 
-return model
+return Pages

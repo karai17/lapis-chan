@@ -17,9 +17,9 @@ a:hover, .quote_link, .quote_link:visited, .broken_link:hover {
 .announcement {
   color: #af0a0f; }
 
-#post_form form, .post_container {
-  background-color: #d6daf0;
-  border: 1px solid #b7c5d9; }
+#post_form form .title, .admin_form form .title {
+  background-color: #d6bad0;
+  border: 1px solid #ba9dbf; }
 
 table thead td {
   background-color: #d6daf0;
@@ -30,11 +30,13 @@ table tr:nth-of-type(even) {
   background-color: #f7f9ff; }
 
 .post_container {
-  border-top: none !important;
-  border-left: none !important; }
+  background-color: #d6daf0;
+  border-right: 1px solid #b7c5d9;
+  border-bottom: 1px solid #b7c5d9; }
   .post_container:target {
     background-color: #d6bad0;
-    border: 1px solid #ba9dbf; }
+    border-right: 1px solid #ba9dbf;
+    border-bottom: 1px solid #ba9dbf; }
 
 .post_subject {
   color: #0f0c5d; }

@@ -29,13 +29,13 @@ end
 function formatter.quote(text, request, board, post)
 	local function get_url(board, post_id)
 		if tonumber(post_id) then
-			local p = Posts.get_post(board.id, post_id)
+			local p = Posts:get_post(board.id, post_id)
 			if not p then return false end
 
-			local thread = Threads.get_thread(p.thread_id)
+			local thread = Threads:get_thread(p.thread_id)
 			if not thread then return false end
 
-			local op = Posts.get_thread_op(board.id, thread.id)
+			local op = Posts:get_thread_op(board.id, thread.id)
 			return
 				request.boards_url .. board.short_name .. "/thread/" .. op.post_id,
 				op
@@ -85,7 +85,7 @@ function formatter.quote(text, request, board, post)
 	-- Get all the matches and store them in an ordered list
 	local posts = {}
 	for b, post_id in text:gmatch(match_pattern) do
-		b = Boards.get_board(b) or b
+		b = Boards:get_board(b) or b
 		table.insert(posts, { board=b, id=post_id })
 	end
 

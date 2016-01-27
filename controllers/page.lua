@@ -4,10 +4,10 @@ local markdown = require "markdown"
 
 return function(self)
 	-- Get all board data
-	self.boards = Boards.get_boards()
+	self.boards = Boards:get_boards()
 
 	-- Get page
-	self.page = Pages.get_page(self.params.page)
+	self.page = Pages:get_page(self.params.page)
 
 	if not self.page then
 		self:write({ redirect_to = self.c404_url })

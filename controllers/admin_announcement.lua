@@ -1,113 +1,167 @@
-local Boards        = require "models.boards"
-local Announcements = require "models.announcements"
-local prep_error    = require "utils.prep_error"
+local assert_error  = require("lapis.application").assert_error
+local assert_valid  = require("lapis.validate").assert_valid
 local csrf          = require "lapis.csrf"
+local i18n          = require "i18n"
+local Announcements = require "models.announcements"
+local Boards        = require "models.boards"
 
 return {
 	before = function(self)
+		-- Set localization
+		i18n.setLocale(self.session.locale or "en")
+		i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
+		self.i18n = i18n
+
 		-- Get all announcement data
-		self.announcements = Announcements.get_announcements()
+		self.announcements = Announcements:get_announcements()
 
 		-- Get all board data
-		self.boards = Boards.get_boards()
-	end,
-	GET = function(self)
+		self.boards = Boards:get_boards()
+
+		-- Display a theme
+		self.board = { theme = "yotsuba_b" }
+
 		-- Generate CSRF token
 		self.csrf_token = csrf.generate_token(self)
 
 		-- Page title
-		self.page_title = "Admin Panel"
+		self.page_title = i18n("admin_panel")
 
 		-- Verify Authorization
 		if self.session.name then
 			if not self.session.admin then
-				return prep_error(self, "You are not an admin.")
+				assert_error(false, "err_not_admin")
 			end
 		else
-			return { render = "admin.login" }
+			return
 		end
 
 		-- Display creation form
 		if self.params.action == "create" then
-			self.page_title = "Admin Panel - Create Announcement"
-			return { render = "admin.create_announcement" }
+			self.page_title = string.format(
+				"%s - %s",
+				i18n("admin_panel"),
+				i18n("create_ann")
+			)
+			self.announcement = self.params
+			return
 		end
 
 		-- Display modification form
 		if self.params.action == "modify" then
-			self.page_title = "Admin Panel - Modify Announcement"
-			self.announcement = Announcements.get_announcement(self.params.ann)
-			return { render = "admin.modify_announcement" }
+			self.page_title = string.format(
+				"%s - %s",
+				i18n("admin_panel"),
+				i18n("modify_ann")
+			)
+			self.announcement = Announcements:get_announcement(self.params.ann)
+			return
 		end
 
 		-- Delete announcement
 		if self.params.action == "delete" then
-			local ann = Announcements.get_announcement(self.params.ann)
+			local ann = Announcements:get_announcement(self.params.ann)
+			assert_error(Announcements:delete_announcement(ann))
 
-			-- Delete announcement
-			local _, err = Announcements.delete_announcement(ann)
-			if err then return prep_error(self, err) end
+			self.page_title = string.format(
+				"%s - %s",
+				i18n("admin_panel"),
+				i18n("success")
+			)
+			self.action = i18n("deleted_ann", { ann.text })
+			return
+		end
+	end,
+	on_error = function(self)
+		self.err = i18n(unpack(self.errors))
 
-			self.action = string.format("deleted announcement: %s", ann.text)
-			self.page_title = "Admin Panel - Success"
+		if self.err then
+			self.err = "<p>" .. self.err .. "</p>"
+		else
+			self.err = ""
+			for _, e in ipairs(self.errors) do
+				self.err = self.err .. "<p>" .. tostring(e) .. "</p>\n"
+			end
+		end
+
+		if not self.session.name then
+			return { render = "admin.login" }
+		elseif self.params.action == "create" then
+			return { render = "admin.announcement" }
+		elseif self.params.action == "modify" then
+			return { render = "admin.announcement" }
+		elseif self.params.action == "delete" then
+			return { render = "admin.admin" }
+		end
+	end,
+	GET = function(self)
+		if not self.session.name then
+			return { render = "admin.login" }
+		elseif self.params.action == "create" then
+			return { render = "admin.announcement" }
+		elseif self.params.action == "modify" then
+			return { render = "admin.announcement" }
+		elseif self.params.action == "delete" then
+			return { render = "admin.success" }
+		end
+	end,
+	POST = function(self)
+		-- Validate CSRF token
+		csrf.assert_token(self)
+
+		-- Validate user input
+		assert_valid(self.params, {
+			{ "text", max_length=255, exists=true }
+		})
+
+		-- Create announcement
+		if self.params.create_announcement then
+			local ann = assert_error(Announcements:create_announcement(self.params))
+
+			self.page_title = string.format(
+				"%s - %s",
+				i18n("admin_panel"),
+				i18n("success")
+			)
+			self.action = i18n("created_ann", { ann.text })
 
 			return { render = "admin.success" }
 		end
 
-		-- Invalid action, gtfo
-		return { redirect_to = self.admin_url }
-	end,
-	POST = function(self)
-		-- Page title
-		self.page_title = "Admin Panel"
+		-- Modify announcement
+		if self.params.modify_announcement then
+			local discard = {
+				"ann",
+				"modify_announcement",
+				"ip",
+				"action",
+				"csrf_token"
+			}
 
-		-- Validate CSRF token
-		local _, err = csrf.validate_token(self)
+			local ann = Announcements:get_announcement(self.params.ann)
 
-		-- Invalid token
-		if err then return prep_error(self, err) end
-
-		-- Must be logged in as an admin!
-		if self.session.admin then
-			-- Create new announcement
-			if self.params.create_announcement then
-				-- Create announcement
-				local ann, err = Announcements.create_announcement(self.params)
-				if err then return prep_error(self, err) end
-
-				self.action = string.format(
-					"created announcement: %s",
-					ann.text
-				)
-
-				return { render = "admin.success" }
+			-- Fill in board with new data
+			for k, param in pairs(self.params) do
+				ann[k] = param
 			end
 
-			-- Modify announcement
-			if self.params.modify_announcement then
-				local ann = Announcements.get_announcement(self.params.ann)
-
-				for k, param in pairs(self.params) do
-					if ann[k] then
-						ann[k] = param
-					end
-				end
-
-				-- Modify user
-				local _, err = Announcements.modify_announcement(ann)
-				if err then return prep_error(self, err) end
-
-				self.action = string.format(
-					"modified user: %s",
-					ann.text
-				)
-
-				return { render = "admin.success" }
+			-- Get rid of form trash
+			for _, param in ipairs(discard) do
+				ann[param] = nil
 			end
 
-			return { redirect_to = self.admin_url }
+			assert_error(Announcements:modify_announcement(ann))
+
+			self.page_title = string.format(
+				"%s - %s",
+				i18n("admin_panel"),
+				i18n("success")
+			)
+			self.action = i18n("modified_ann", { ann.text })
+
+			return { render = "admin.success" }
 		end
 
-		return { render = "admin.login" }
+		return { redirect_to = self.admin_url }
 	end
 }

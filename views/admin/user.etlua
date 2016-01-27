@@ -1,0 +1,71 @@
+<div class="admin_form">
+	<form action="" method="post">
+		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+
+		<div>
+			<label class="title">Username</label>
+			<span class="fields">
+				<input type="text" name="username" placeholder="moot" value="<%= user.username or '' %>" />
+			</span>
+		</div>
+
+		<% if params.action == "modify" then %>
+		<div>
+			<label class="title">Old Password</label>
+			<span class="fields">
+				<input type="password" name="old_password" />
+			</span>
+		</div>
+		<% end %>
+
+		<div>
+			<label class="title"><%= params.action == "modify" and "New" or "" %> Password</label>
+			<span class="fields">
+				<input type="password" name="new_password" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Retype Password</label>
+			<span class="fields">
+				<input type="password" name="retype_password" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Administrator</label>
+			<span class="fields">
+				<select name="admin">
+					<option value="t" <%= user.admin == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= user.admin == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Moderator</label>
+			<span class="fields">
+				<select name="mod">
+					<option value="t" <%= user.mod == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= user.mod == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Janitor</label>
+			<span class="fields">
+				<select name="janitor">
+					<option value="t" <%= user.janitor == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= user.janitor == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<% if params.action == "create" then %>
+		<button name="create_user">Create User</button>
+		<% elseif params.action == "modify" then %>
+		<button name="modify_user">Modify User</button>
+		<% end %>
+	</form>
+</div>

@@ -1,6 +1,33 @@
 @import "reset";
 @import "posts";
 
+@mixin display-flex {
+	display: -webkit-box-flex;
+	display: -webkit-flexbox;
+	display: -ms-flexbox;
+	display: -webkit-box;
+	display: flex;
+}
+
+@mixin flex($args) {
+	-webkit-flex: $args;
+	-ms-flex: $args;
+	flex: $args;
+}
+
+@mixin flex-direction($dir) {
+	$alt: vertical !default;
+	@if $dir == column {
+		$alt: vertical;
+	} @else {
+		$alt: horizontal;
+	}
+	-webkit-flex-direction: column;
+	-webkit-box-orient: $alt;
+	-ms-flex-direction: column;
+	flex-direction: column;
+}
+
 $spacing: 10px;
 
 body {
@@ -14,26 +41,16 @@ a {
 }
 
 input[type="text"], input[type="password"], textarea {
-	border: 1px solid #aaaaaa;
-	margin: 2px;
 	padding: 4px;
 	width: 280px;
 }
 
-textarea {
-	height: 500px;
+input[type="checkbox"] {
+	margin: 4px 0;
 }
 
 input[type="file"] {
-	margin: 2px, 0;
-	padding: 4px, 0;
-	width: 170px;
-}
-
-input[type="checkbox"] {
-	margin: 0;
-	padding: 0;
-	width: 13px;
+	padding: 4px 0;
 }
 
 h1 {
@@ -83,16 +100,6 @@ table {
 	}
 }
 
-label {
-	display: block;
-
-	span {
-		display: inline-block;
-		vertical-align: top;
-		width: 180px;
-	}
-}
-
 ul {
 	list-style: disc;
 
@@ -109,12 +116,65 @@ ol {
 	}
 }
 
-#post_form, .boards, .return, .error, .copyright {
+#error {
+	background-color: #ff0000;
+	color: #ffffff;
+	margin-bottom: $spacing;
+	padding: $spacing;
 	text-align: center;
+
+	h3 {
+		font-size: 220%;
+		font-weight: bolder;
+
+	}
+
+	p {
+		font-weight: bold;
+	}
 }
 
-.admin_panel {
-	display: inline-block;
+#post_form, .admin_form {
+	text-align: center;
+
+	form {
+		div {
+			@include display-flex;
+
+			.title {
+				@include flex(0);
+				font-weight: bold;
+				text-align: right;
+				min-width: 120px;
+				margin: 1px;
+				padding: 4px;
+
+				span {
+					cursor: pointer;
+				}
+			}
+
+			.fields {
+				margin: 1px;
+
+				textarea {
+					min-height: 100px !important;
+				}
+			}
+		}
+
+		button {
+			margin: $spacing 0 0 0;
+		}
+	}
+}
+
+.required {
+	color: #ff0000;
+}
+
+.boards, .return, .copyright {
+	text-align: center;
 }
 
 .archive_stats {
@@ -127,7 +187,7 @@ ol {
 	font-weight: bold;
 }
 
-.error, .banned {
+.banned {
 	border: 7px dashed #000000;
 	display: table;
 	font-size: 180%;

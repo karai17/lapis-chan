@@ -15,6 +15,9 @@
 		<title><%= page_title %></title>
 	</head>
 	<body>
+		<% if errors then %>
+		<% render("views.error") %>
+		<% end %>
 		<% render("views.list_boards") %>
 		<% if session.name then %>
 		<span class="logout">[<a href="<%= logout_url %>">Logout</a>]</span>

@@ -1,22 +1,19 @@
+local trim  = require("lapis.util").trim_filter
 local Model = require("lapis.db.model").Model
 local Bans  = Model:extend("bans")
-
-local db    = require "lapis.db"
-local trim  = require("lapis.util").trim_filter
-local model = {}
 
 --- Create a new ban
 -- @tparam table ban Ban data
 -- @treturn boolean success
 -- @treturn string err
-function model.create_ban(ban)
+function Bans:create_ban(ban)
 	-- Trim white space
 	trim(ban, {
 		"board", "thread", "post_id", "banned",
 		"ip", "board_id", "reason", "duration",
 	}, nil)
 
-	local ban, err = Bans:create {
+	local ban = self:create {
 		ip       = ban.ip,
 		board_id = ban.board_id,
 		reason   = ban.reason,
@@ -27,7 +24,7 @@ function model.create_ban(ban)
 	if ban then
 		return ban
 	else
-		return false, err
+		return false, "err_create_ban", { ban.ip }
 	end
 end
 
@@ -35,19 +32,19 @@ end
 -- @tparam table ban Ban data
 -- @treturn boolean success
 -- @treturn string err
-function model.delete_ban(ban)
+function Bans:delete_ban(ban)
 	return ban:delete()
 end
 
 --- Validate ban
 -- @tparam table ban Ban data
 -- @treturn boolean valid
-function model.validate_ban(ban)
+function Bans:validate_ban(ban)
 	local time   = os.time()
 	local finish = ban.time + ban.duration
 
 	if time >= finish then
-		model.delete_ban(ban)
+		self:delete_ban(ban)
 		return false
 	end
 
@@ -56,13 +53,13 @@ end
 
 --- Get all bans
 -- @treturn table users List of bans
-function model.get_bans()
+function Bans:get_bans()
 	local sql  = "order by board_id asc, time + duration desc, ip asc"
-	local bans = Bans:select(sql)
+	local bans = self:select(sql)
 
 	for i=#bans, 1, -1 do
 		local ban   = bans[i]
-		local valid = model.validate_ban(ban)
+		local valid = self:validate_ban(ban)
 
 		if not valid then
 			table.remove(bans, i)
@@ -75,12 +72,12 @@ end
 --- Get ban
 -- @tparam string ip IP address
 -- @treturn table ban
-function model.get_ip_bans(ip)
-	local bans = Bans:select("where ip=?", ip)
+function Bans:get_bans_by_ip(ip)
+	local bans = self:select("where ip=?", ip)
 
 	for i=#bans, 1, -1 do
 		local ban   = bans[i]
-		local valid = model.validate_ban(ban)
+		local valid = self:validate_ban(ban)
 
 		if not valid then
 			table.remove(bans, i)
@@ -90,4 +87,4 @@ function model.get_ip_bans(ip)
 	return bans
 end
 
-return model
+return Bans

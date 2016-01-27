@@ -10,7 +10,7 @@
 [<a href="<%= catalog_url %>">Catalog</a>]
 [<a href="#bottom">Bottom</a>]
 <hr />
-<p class="archive_stats"><strong>Displaying <%= #threads %> expired <%= plural.threads %> from the past <%= days %> <%= plural.days %></strong></p>
+<p class="archive_stats"><strong><%= i18n("thread", { count=#threads }) %> <%= i18n("day", { count=days }) %></strong></p>
 <table id="archive_table">
 	<thead>
 		<tr>

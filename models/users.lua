@@ -1,21 +1,26 @@
-local Model = require("lapis.db.model").Model
-local Users = Model:extend("users")
-
 local bcrypt   = require "bcrypt"
-local trim     = require("lapis.util").trim_filter
 local token    = require "secrets.token"
 local generate = require "utils.generate"
-local model    = {}
+local trim     = require("lapis.util").trim_filter
+local Model    = require("lapis.db.model").Model
+local Users    = Model:extend("users")
 
 --- Create a new user
 -- @tparam table user User data
 -- @treturn boolean success
 -- @treturn string error
-function model.create_user(user)
+function Users:create_user(user)
+	-- Trim white space
+	trim(user, {
+		"username", "password",
+		"admin", "mod", "janitor"
+	}, nil)
+
+	-- Generate hash and remove raw password from memory
 	local hash = generate.hash(user.username .. user.password .. token)
 	user.password = nil
 
-	local user, error = Users:create {
+	local user = self:create {
 		username = user.username,
 		password = hash,
 		admin    = user.admin,
@@ -26,7 +31,7 @@ function model.create_user(user)
 	if user then
 		return user
 	else
-		return false, error
+		return false, "err_create_user", { user.username }
 	end
 end
 
@@ -34,10 +39,15 @@ end
 -- @tparam table user User data
 -- @treturn boolean success
 -- @treturn string error
-function model.modify_user(user)
+function Users:modify_user(user)
 	local columns = {}
 	for col in pairs(user) do
 		table.insert(columns, col)
+	end
+
+	-- Generate hash
+	if user.password then
+		user.password = generate.hash(user.username .. user.password .. token)
 	end
 
 	return user:update(unpack(columns))
@@ -47,7 +57,7 @@ end
 -- @tparam table user User data
 -- @treturn boolean success
 -- @treturn string error
-function model.delete_user(user)
+function Users:delete_user(user)
 	return user:delete()
 end
 
@@ -55,12 +65,12 @@ end
 -- @tparam table params User data
 -- @treturn boolean success
 -- @treturn string error
-function model.verify_user(params)
-	local user = model.get_user(params.username)
+function Users:verify_user(params)
+	local user = self:get_user(params.username)
 
 	-- No user found with that username
 	if not user then
-		return false, "Invalid username or password"
+		return false, "err_invalid_user"
 	end
 
 	-- Prepare password and remove raw password from memory
@@ -74,29 +84,29 @@ function model.verify_user(params)
 	if verified then
 		return user
 	else
-		return false, "Invalid username or password"
+		return false, "err_invalid_user"
 	end
 end
 
 --- Get all users
 -- @treturn table users List of users
-function model.get_users()
-	return Users:select("order by username asc")
+function Users:get_users()
+	return self:select("order by username asc")
 end
 
 --- Get user
 -- @tparam string username Username
 -- @treturn table user
-function model.get_user(username)
+function Users:get_user(username)
 	local username = string.lower(username)
-	return unpack(Users:select("where lower(username)=? limit 1", username))
+	return unpack(self:select("where lower(username)=? limit 1", username))
 end
 
 --- Get user by ID
 -- @tparam number id User ID
 -- @treturn table user
-function model.get_user_by_id(id)
-	return unpack(Users:select("where id=? limit 1", id))
+function Users:get_user_by_id(id)
+	return unpack(self:select("where id=? limit 1", id))
 end
 
-return model
+return Users

@@ -1,5 +1,5 @@
 <% render("views.board_title") %>
-<% render("views.submit_form") %>
+<% render("views.form_submit") %>
 <% if #announcements > 0 then %>
 <hr />
 <% end %>

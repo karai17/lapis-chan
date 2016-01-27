@@ -13,7 +13,7 @@ if _ then
 	app:match("/", respond_to(install))
 	return app
 else
-	print(install)
+	--print(install)
 end
 
 -- Before
@@ -30,16 +30,15 @@ local admin_p = require "controllers.admin_page"
 local admin_r = require "controllers.admin_report"
 
 -- Public
-local index       = require "controllers.index"
-local rules       = require "controllers.rules"
-local logout      = require "controllers.logout"
-local code_404    = require "controllers.code_404"
-local board       = require "controllers.board"
-local catalog     = require "controllers.catalog"
-local archive     = require "controllers.archive"
-local thread      = require "controllers.thread"
-local page        = require "controllers.page"
-local process     = require "controllers.process_requests"
+local index    = require "controllers.index"
+local rules    = require "controllers.rules"
+local logout   = require "controllers.logout"
+local code_404 = require "controllers.code_404"
+local board    = require "controllers.board"
+local catalog  = require "controllers.catalog"
+local archive  = require "controllers.archive"
+local thread   = require "controllers.thread"
+local page     = require "controllers.page"
 
 -- Handle
 app.handle_404 = code_404
@@ -67,10 +66,9 @@ app:match("/",                             index)
 app:match("/404/",                         code_404)
 app:match("/rules/",                       rules)
 app:match("/logout/",                      logout)
-app:match("/process/",                     respond_to(process))
 app:match("/board/:board/",                respond_to(board))
 app:match("/board/:board/catalog/",        respond_to(catalog))
-app:match("/board/:board/archive/",        respond_to(archive))
+app:match("/board/:board/archive/",        archive)
 app:match("/board/:board/:page/",          respond_to(board))
 app:match("/board/:board/thread/:thread/", respond_to(thread))
 app:match("/:page/",                       page)

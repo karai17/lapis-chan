@@ -41,9 +41,13 @@ a:hover, .quote_link:hover, .broken_link:hover {
 	color: $header;
 }
 
-#post_form form, .post_container {
-	background-color: $post;
-	border: 1px solid $border;
+#post_form, .admin_form {
+	form {
+		.title {
+			background-color: $active;
+			border: 1px solid $active_border;
+		}
+	}
 }
 
 table {
@@ -64,12 +68,14 @@ table {
 }
 
 .post_container {
-	border-top: none !important;
-	border-left: none !important;
+	background-color: $post;
+	border-right: 1px solid $border;
+	border-bottom: 1px solid $border;
 
 	&:target {
 		background-color: $active;
-		border: 1px solid $active_border;
+		border-right: 1px solid $active_border;
+		border-bottom: 1px solid $active_border;
 	}
 }
 

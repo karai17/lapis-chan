@@ -1,0 +1,169 @@
+<div class="admin_form">
+	<form action="" method="post">
+		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
+
+		<div>
+			<label class="title">Board Name</label>
+			<span class="fields">
+				<input type="text" name="name" placeholder="Random" value="<%= board.name or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Short Name</label>
+			<span class="fields">
+				<input type="text" name="short_name" placeholder="b" value="<%= board.short_name or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Subtitle</label>
+			<span class="fields">
+				<input type="text" name="subtext" placeholder="Post at your own peril." value="<%= board.subtext or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Rules</label>
+			<span class="fields">
+				<textarea name="rules"><%= board.rules or '' %></textarea>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Default Name</label>
+			<span class="fields">
+				<input type="text" name="anon_name" placeholder="Anonymous" value="<%= board.anon_name or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Theme</label>
+			<span class="fields">
+				<select name="theme">
+					<% for _, theme in ipairs(themes) do %>
+					<option value="<%= theme %>" <%= board.theme == theme and 'selected' or '' %>><%= theme %></option>
+					<% end %>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Number of Active Pages</label>
+			<span class="fields">
+				<input type="text" name="pages" placeholder="10" value="<%= board.pages or '10' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Threads Per Page</label>
+			<span class="fields">
+				<input type="text" name="threads_per_page" placeholder="10" value="<%= board.threads_per_page or '10' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Text-only Board</label>
+			<span class="fields">
+				<select name="text_only">
+					<option value="t" <%= board.text_only == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= board.text_only == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Draw Board</label>
+			<span class="fields">
+				<select name="draw">
+					<option value="t" <%= board.draw == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= board.draw == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Thread File Required</label>
+			<span class="fields">
+				<select name="thread_file">
+					<option value="t" <%= board.thread_file == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= board.thread_file == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Thread Comment Required</label>
+			<span class="fields">
+				<select name="thread_comment">
+					<option value="t" <%= board.thread_comment == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= board.thread_comment == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Limit of Files in Thread</label>
+			<span class="fields">
+				<input type="text" name="thread_file_limit" placeholder="100" value="<%= board.thread_file_limit or '100' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Post File Required</label>
+			<span class="fields">
+				<select name="post_file">
+					<option value="t" <%= board.post_file == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= board.post_file == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Post Comment Required</label>
+			<span class="fields">
+				<select name="post_comment">
+					<option value="t" <%= board.post_comment == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= board.post_comment == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Bump Limit</label>
+			<span class="fields">
+				<input type="text" name="post_limit" placeholder="250" value="<%= board.post_limit or '250' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Archive Pruned Threads</label>
+			<span class="fields">
+				<select name="archive">
+					<option value="t" <%= board.archive == true  and 'selected' or '' %>>Yes</option>
+					<option value="f" <%= board.archive == false and 'selected' or '' %>>No</option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Time to Archive (in days)</label>
+			<span class="fields">
+				<input type="text" name="archive_time" placeholder="30" value="<%= board.archive_time or '30' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Board Group</label>
+			<span class="fields">
+				<input type="text" name="group" placeholder="1" value="<%= board.group or '1' %>" />
+			</span>
+		</div>
+
+		<% if params.action == "create" then %>
+		<button name="create_board">Create Board</button>
+		<% elseif params.action == "modify" then %>
+		<button name="modify_board">Modify Board</button>
+		<% end %>
+	</form>
+</div>

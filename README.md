@@ -24,10 +24,12 @@ To view a complete list of features, check out the [Feature Set](https://docs.go
 
 * bcrypt
 * giflib
+* i18n
 * Lapis 1.4+
 * luafilesystem
 * luaposix
 * magick
+* markdown
 * md5
 
 # Install
@@ -65,12 +67,14 @@ $ sudo apt-get install postgresql
 $ sudo apt-get install mysql-server
 
 $ luarocks install bcrypt
+$ luarocks install giflib --server=http://luarocks.org/dev
+$ luarocks install i18n
 $ luarocks install lapis
 $ luarocks install luafilesystem
 $ luarocks install luaposix
 $ luarocks install magick
+$ luarocks install markdown
 $ luarocks install md5
-$ luarocks install --server=http://luarocks.org/dev giflib
 ```
 
 # Installing

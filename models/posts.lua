@@ -1,21 +1,25 @@
-local Model = require("lapis.db.model").Model
-local Posts = Model:extend("posts")
-
-local db        = require "lapis.db"
-local trim      = require("lapis.util").trim_filter
 local encoding  = require "lapis.util.encoding"
-local lfs       = require "lfs"
+local trim      = require("lapis.util").trim_filter
+local Model     = require("lapis.db.model").Model
 local giflib    = require "giflib"
+local lfs       = require "lfs"
 local magick    = require "magick"
 local md5       = require "md5"
 local filetypes = require "utils.file_whitelist"
 local generate  = require "utils.generate"
+local Posts     = Model:extend("posts")
 local sf        = string.format
 local ss        = string.sub
-local model     = {}
 
-
-function model.prepare_post(params, session, board, thread, posts, files)
+--- Prepare post for insertion
+-- @tparam table params Input from the user
+-- @tparam table session User session
+-- @tparam table board Board data
+-- @tparam table thread Thread data
+-- @tparam number files Number of files in thread
+-- @treturn boolean success
+-- @treturn string error
+function Posts:prepare_post(params, session, board, thread, files)
 	local time = os.time()
 
 	-- Prepare session stuff
@@ -27,10 +31,10 @@ function model.prepare_post(params, session, board, thread, posts, files)
 		"ip", "name",
 		"subject", "options", "comment",
 		"file", "file_spoiler", "draw"
-	}, db.NULL)
+	}, nil)
 
 	-- Save names on individual boards
-	if params.name ~= db.NULL then
+	if params.name then
 		session.names[board.short_name] = params.name
 	end
 
@@ -42,7 +46,7 @@ function model.prepare_post(params, session, board, thread, posts, files)
 		content  = ""
 	}
 
-	if #params.file.content == 0 and params.draw and params.draw ~= db.NULL then
+	if #params.file.content == 0 and params.draw then
 		local pattern        = ".-,(.+)"
 		params.draw          = params.draw:match(pattern)
 		params.file.filename = "tegaki.png"
@@ -52,28 +56,28 @@ function model.prepare_post(params, session, board, thread, posts, files)
 	-- Check board flags
 	if thread then
 		if thread.lock and not session.admin and not session.mod then
-			return false, sf("Thread No.%s is locked.", thread.post_id)
+			return false, "err_locked_thread", { thread.post_id }
 		end
 
-		if board.post_comment and params.comment == db.NULL then
-			return false, "Comments are required to post on this board."
+		if board.post_comment and not params.comment then
+			return false, "err_comment_post"
 		end
 
 		if board.post_file and #params.file.content == 0 then
-			return false, "Files are required to post on this board."
+			return false, "err_file_post"
 		end
 	else
-		if board.thread_comment and params.comment == db.NULL then
-			return false, "Comments are required to post a thread on this board."
+		if board.thread_comment and not params.comment then
+			return false, "err_comment_thread"
 		end
 
 		if board.thread_file and #params.file.content == 0 then
-			return false, "Files are required to post a thread on this board."
+			return false, "err_file_thread"
 		end
 	end
 
 	-- Parse name
-	if params.name ~= db.NULL then
+	if params.name then
 		params.name, params.trip = generate.tripcode(params.name)
 	end
 
@@ -82,15 +86,13 @@ function model.prepare_post(params, session, board, thread, posts, files)
 
 		-- Reject files in text-only boards
 		if board.text_only then
-			return false, "Files are not accepted on this board."
+			return false, "err_no_files"
 		end
 
 		-- Thread limit is already met.
 		if thread then
 			if files >= board.thread_file_limit and not thread.size_override then
-				return false, sf("Thread No.%s is at its file limit.",
-					thread.post_id
-				)
+				return false, "err_file_limit", { thread.post_id }
 			end
 		end
 
@@ -100,14 +102,14 @@ function model.prepare_post(params, session, board, thread, posts, files)
 
 		-- Valid filetype
 		if not filetypes[ext] then
-			return false, sf("Invalid filetype: %s", ext)
+			return false, "err_invalid_ext", { ext }
 		end
 
 		-- Check if valid image
 		local image = magick.load_image_from_blob(params.file.content)
 
 		if not image then
-			return false, "Invalid image format."
+			return false, "err_invalid_image"
 		end
 
 		params.file_name   = params.file.filename
@@ -119,23 +121,23 @@ function model.prepare_post(params, session, board, thread, posts, files)
 
 
 		if params.file_spoiler then
-			params.file_spoiler = db.TRUE
+			params.file_spoiler = true
 		else
-			params.file_spoiler = db.FALSE
+			params.file_spoiler = false
 		end
 
 		-- Check if file already exists
-		local _, error = model.find_file(board.id, params.file_md5)
-		if error then
-			return false, error
+		local file = self:find_file(board.id, params.file_md5)
+		if file then
+			return false, "err_file_exists"
 		end
 	else
-		params.file_spoiler = db.FALSE
+		params.file_spoiler = false
 	end
 
 	-- Check contributions
-	if params.comment == db.NULL and not params.file_name then
-		return false, "You must post either a comment or a file."
+	if not params.comment and not params.file_name then
+		return false, "err_contribute"
 	end
 
 	return true
@@ -148,13 +150,11 @@ end
 -- @tparam table thread Thread data
 -- @treturn boolean success
 -- @treturn string error
-function model.create_post(params, session, board, thread, op)
-	-- Update board
+function Posts:create_post(params, session, board, thread, op)
 	board.posts = board.posts + 1
-	board:update("posts")
 
 	-- Create post
-	local post = Posts:create {
+	local post = self:create {
 		post_id      = board.posts,
 		thread_id    = thread.id,
 		board_id     = board.id,
@@ -175,6 +175,9 @@ function model.create_post(params, session, board, thread, op)
 	}
 
 	if post then
+		-- Update board
+		board:update("posts")
+
 		if post.file_path then
 			local ext  = post.file_path:match("^.+(%..+)$") or ""
 			local dir  = sf("./static/%s/", board.short_name)
@@ -217,7 +220,7 @@ function model.create_post(params, session, board, thread, op)
 
 		return post
 	else
-		return false, "Unable to submit post."
+		return false, "err_create_post"
 	end
 end
 
@@ -227,7 +230,7 @@ end
 -- @tparam table post Post data
 -- @treturn boolean success
 -- @treturn string error
-function model.delete_post(session, board, post)
+function Posts:delete_post(session, board, post)
 	local function rm_post(short_name)
 		if post.file_path then
 			local dir = sf("./static/%s/", short_name)
@@ -260,59 +263,42 @@ function model.delete_post(session, board, post)
 	if success then
 		return success
 	else
-		return false, sf("Unable to delete post No.%s", post.post_id)
+		return false, "err_delete_post", { post.post_id }
 	end
 end
 
 --- Get all posts from board
 -- @tparam number board_id Board ID
 -- @treturn table posts
-function model.get_posts(board_id)
-	return Posts:select("where board_id=?", board_id)
+function Posts:get_posts(board_id)
+	return self:select("where board_id=?", board_id)
 end
 
 --- Get posts from thread
--- @tparam number board_id Board ID
 -- @tparam number thread_id Thread ID
 -- @treturn table posts
-function model.get_thread_posts(board_id, thread_id)
-	local sql = "where board_id=? and thread_id=? order by post_id asc"
-	return Posts:select(sql, board_id, thread_id)
+function Posts:get_posts_by_thread(thread_id)
+	local sql = "where thread_id=? order by post_id asc"
+	return self:select(sql, thread_id)
 end
 
 --- Get op from thread
--- @tparam number board_id Board ID
 -- @tparam number thread_id Thread ID
 -- @treturn table post
-function model.get_thread_op(board_id, thread_id)
-	local sql = [[
-		where
-			board_id = ? and
-			thread_id = ?
-		order by
-			post_id asc
-		limit 1
-	]]
-	return unpack(Posts:select(sql, board_id, thread_id))
+function Posts:get_thread_op(thread_id)
+	local sql = "where thread_id=? order by post_id asc limit 1"
+	return unpack(self:select(sql, thread_id))
 end
 
 --- Get op and last 5 posts of a thread to display on board index
--- @tparam number board_id Board ID
 -- @tparam number thread_id Thread ID
 -- @treturn table posts
-function model.get_index_posts(board_id, thread_id)
-	local sql = [[
-		where
-			board_id = ? and
-			thread_id = ?
-		order by
-			post_id desc
-		limit 5
-	]]
-	local posts = Posts:select(sql, board_id, thread_id)
+function Posts:get_index_posts(thread_id)
+	local sql = "where thread_id=? order by post_id desc limit 5"
+	local posts = self:select(sql, thread_id)
 
-	if model.count_posts(board_id, thread_id) > 5 then
-		table.insert(posts, model.get_thread_op(board_id, thread_id))
+	if self:count_posts(thread_id) > 5 then
+		table.insert(posts, self:get_thread_op(thread_id))
 	end
 
 	return posts
@@ -320,17 +306,17 @@ end
 
 --- Get post data
 -- @tparam number board_id Board ID
--- @tparam number id Post ID
+-- @tparam number post_id Local Post ID
 -- @treturn table post
-function model.get_post(board_id, id)
-	return unpack(Posts:select("where board_id=? and post_id=?",board_id, id))
+function Posts:get_post(board_id, post_id)
+	return unpack(self:select("where board_id=? and post_id=?", board_id, post_id))
 end
 
 --- Get post data
 -- @tparam number id Post ID
 -- @treturn table post
-function model.get_post_by_id(id)
-	return unpack(Posts:select("where id=?", id))
+function Posts:get_post_by_id(id)
+	return unpack(self:select("where id=?", id))
 end
 
 --- Find file in active posts
@@ -338,26 +324,19 @@ end
 -- @tparam string file_md5 Unique hash of file
 -- @treturn boolean success
 -- @treturn string error
-function model.find_file(board_id, file_md5)
+function Posts:find_file(board_id, file_md5)
 	local sql  = "where board_id=? and file_md5=? limit 1"
-	local post = unpack(Posts:select(sql, board_id, file_md5))
-
-	if not post then
-		return false
-	else
-		return true, "File already active on this board."
-	end
+	return unpack(self:select(sql, board_id, file_md5))
 end
 
 
 --- Count hidden posts in a thread
--- @tparam number board_id Board ID
 -- @tparam number thread_id Thread ID
 -- @treturn table hidden
-function model.count_hidden_posts(board_id, thread_id)
-	local posts     = model.get_index_posts(board_id, thread_id)
-	local num_posts = model.count_posts(board_id, thread_id)
-	local num_files = model.count_files(board_id, thread_id)
+function Posts:count_hidden_posts(thread_id)
+	local posts     = self:get_index_posts(thread_id)
+	local num_posts = self:count_posts(thread_id)
+	local num_files = self:count_files(thread_id)
 
 	for _, post in ipairs(posts) do
 		-- Reduce number of posts hidden
@@ -373,21 +352,19 @@ function model.count_hidden_posts(board_id, thread_id)
 end
 
 --- Count posts in a thread
--- @tparam number board_id Board ID
 -- @tparam number thread_id Thread ID
 -- @treturn number posts
-function model.count_posts(board_id, thread_id)
-	local sql = "board_id=? and thread_id=?"
-	return Posts:count(sql, board_id, thread_id)
+function Posts:count_posts(thread_id)
+	local sql = "thread_id=?"
+	return self:count(sql, thread_id)
 end
 
 --- Count posts with images in a thread
--- @tparam number board_id Board ID
 -- @tparam number thread_id Thread ID
 -- @treturn number files
-function model.count_files(board_id, thread_id)
-	local sql = "board_id=? and thread_id=? and file_name is not null"
-	return Posts:count(sql, board_id, thread_id)
+function Posts:count_files(thread_id)
+	local sql = "thread_id=? and file_name is not null"
+	return self:count(sql, thread_id)
 end
 
-return model
+return Posts

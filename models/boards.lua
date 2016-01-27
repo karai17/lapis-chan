@@ -1,19 +1,16 @@
-local Model  = require("lapis.db.model").Model
-local Boards = Model:extend("boards")
-
 local db     = require "lapis.db"
 local trim   = require("lapis.util").trim_filter
-local lfs    = require "lfs"
 local giflib = require "giflib"
+local lfs    = require "lfs"
 local magick = require "magick"
-local sf     = string.format
-local model  = {}
+local Model  = require("lapis.db.model").Model
+local Boards = Model:extend("boards")
 
 --- Create a board
 -- @tparam table board Board data
 -- @treturn boolean success
 -- @treturn string error
-function model.create_board(board)
+function Boards:create_board(board)
 	-- Trim white space
 	trim(board, {
 		"short_name", "name", "subtext", "rules",
@@ -24,7 +21,7 @@ function model.create_board(board)
 		"archive", "archive_time", "group"
 	}, nil)
 
-	local board = Boards:create {
+	local board = self:create {
 		short_name        = board.short_name,
 		name              = board.name,
 		subtext           = board.subtext,
@@ -48,26 +45,26 @@ function model.create_board(board)
 	}
 
 	if board then
-		lfs.mkdir(sf("./static/%s/", board.short_name))
+		lfs.mkdir(string.format("./static/%s/", board.short_name))
 		return board
 	end
 
-	return false, sf("Could not create board: %s", board.short_name)
+	return false, "err_create_board", { board.short_name, board.name }
 end
 
 --- Modify a board.
 -- @tparam table board Board data
 -- @treturn boolean success
 -- @treturn string error
-function model.modify_board(board, old_short_name)
+function Boards:modify_board(board, old_short_name)
 	local columns = {}
 	for col in pairs(board) do
 		table.insert(columns, col)
 	end
 
 	if board.short_name ~= old_short_name then
-		local old = sf("./static/%s/", old_short_name)
-		local new = sf("./static/%s/", board.short_name)
+		local old = string.format("./static/%s/", old_short_name)
+		local new = string.format("./static/%s/", board.short_name)
 		os.rename(old, new)
 	end
 
@@ -80,8 +77,8 @@ end
 -- @tparam table posts List of posts
 -- @treturn boolean success
 -- @treturn string error
-function model.delete_board(board, threads, posts)
-	local dir = sf("./static/%s/", board.short_name)
+function Boards:delete_board(board, threads, posts)
+	local dir = string.format("./static/%s/", board.short_name)
 
 	-- Clear posts
 	for _, post in ipairs(posts) do
@@ -90,7 +87,7 @@ function model.delete_board(board, threads, posts)
 
 	-- Clear threads
 	for _, thread in ipairs(threads) do
-		 thread:delete()
+		thread:delete()
 	end
 
 	-- Clear board
@@ -107,29 +104,29 @@ function model.delete_board(board, threads, posts)
 		return lfs.rmdir(dir)
 	end
 
-	return false, sf("Cound not delete board: %s", board.short_name)
+	return false, "err_delete_board", { board.short_name, board.name }
 end
 
 --- Get all boards
 -- @treturn table boards
-function model.get_boards()
-	return Boards:select("order by boards.group asc, short_name asc")
+function Boards:get_boards()
+	return self:select("order by boards.group asc, short_name asc")
 end
 
 --- Get board data
 -- @tparam number id Board ID or Board short name
 -- @treturn table board
-function model.get_board(id)
+function Boards:get_board(id)
 	if type(id) == "number" then
-		return Boards:find(id)
+		return self:find(id)
 	else
-		return Boards:find { short_name = id }
+		return self:find { short_name = id }
 	end
 end
 
 --- Regenerate thumbnails for all posts
 -- @treturn none
-function model.regen_thumbs()
+function Boards:regen_thumbs()
 	local sql = [[
 		select
 			boards.short_name as board,
@@ -160,7 +157,7 @@ function model.regen_thumbs()
 		if result.board ~= board then
 			board  = result.board
 			thread = 0
-			dir    = sf("./static/%s/", board)
+			dir    = string.format("./static/%s/", board)
 		end
 
 		-- Filesystem paths
@@ -184,15 +181,15 @@ function model.regen_thumbs()
 			local gif, err = giflib.load_gif(full_path)
 
 			if err then
-				magick.thumb(full_path, sf("%sx%s", w, h), thumb_path)
+				magick.thumb(full_path, string.format("%sx%s", w, h), thumb_path)
 			else
 				gif:write_first_frame(thumb_path)
-				magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
+				magick.thumb(thumb_path, string.format("%sx%s", w, h), thumb_path)
 			end
 		else
-			magick.thumb(full_path, sf("%sx%s", w, h), thumb_path)
+			magick.thumb(full_path, string.format("%sx%s", w, h), thumb_path)
 		end
 	end
 end
 
-return model
+return Boards

@@ -2,19 +2,19 @@
 	<span>▶</span>
 	<div class="menu">
 		<% if board.draw then %>
-		<div><% render("views.remix_form", { post=post }) %></div>
+		<div><% render("views.form_remix", { post=post }) %></div>
 		<% end %>
-		<div><% render("views.report_form", { post=post }) %></div>
-		<div><% render("views.delete_form", { post=post }) %></div>
+		<div><% render("views.form_report", { post=post }) %></div>
+		<div><% render("views.form_delete", { post=post }) %></div>
 		<% if session.admin or session.mod then %>
 			<% if not post.banned then %>
-			<div><% render("views.ban_form", { post=post }) %></div>
+			<div><% render("views.form_ban", { post=post }) %></div>
 			<% end %>
 			<% if op then %>
-			<div><% render("views.sticky_form", { post=post }) %></div>
-			<div><% render("views.lock_form", { post=post }) %></div>
-			<div><% render("views.save_form", { post=post }) %></div>
-			<div><% render("views.override_form", { post=post }) %></div>
+			<div><% render("views.form_sticky", { post=post }) %></div>
+			<div><% render("views.form_lock", { post=post }) %></div>
+			<div><% render("views.form_save", { post=post }) %></div>
+			<div><% render("views.form_override", { post=post }) %></div>
 			<% end %>
 		<% end %>
 	</div>

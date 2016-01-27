@@ -1,7 +1,7 @@
 <% render("views.board_title") %>
 <%
 	if not thread.lock or session.admin or session.mod then
-		render("views.submit_form")
+		render("views.form_submit")
 	end
 %>
 <% if #announcements > 0 then %>

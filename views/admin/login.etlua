@@ -1,14 +1,21 @@
-<div class="admin_panel">
+<div class="admin_form">
 	<form action="<%= admin_url %>" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-		<label>
-			<span>Username</span>
-			<input type="text" name="username" />
-		</label>
-		<label>
-			<span>Password</span>
-			<input type="password" name="password" />
-		</label>
-		<input type="submit" name="login" value="Login" />
+
+		<div>
+			<label class="title">Username</label>
+			<span class="fields">
+				<input type="text" name="username" value="<%= params.username or '' %>" />
+			</span>
+		</div>
+
+		<div>
+			<label class="title">Password</label>
+			<span class="fields">
+				<input type="password" name="password" />
+			</span>
+		</div>
+
+		<button name="login">Login</button>
 	</form>
 </div>

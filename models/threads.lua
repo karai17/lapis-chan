@@ -1,19 +1,20 @@
+local trim    = require("lapis.util").trim_filter
 local Model   = require("lapis.db.model").Model
 local Threads = Model:extend("threads")
 
-local db     = require "lapis.db"
-local trim   = require("lapis.util").trim_filter
-local sf     = string.format
-local model  = {}
-
-function model.create_thread(board_id, flags)
+--- Create thread
+-- @tparam number board_id Board ID
+-- @tparam table flags List of thread flags
+-- @treturn boolean success
+-- @treturn string error
+function Threads:create_thread(board_id, flags)
 	-- Trim white space
 	trim(flags, {
 		"sticky", "lock",
 		"size_override", "save"
-	}, db.FALSE)
+	}, false)
 
-	local thread = Threads:create {
+	local thread = self:create {
 		board_id      = board_id,
 		last_active   = os.time(),
 		sticky        = flags.sticky,
@@ -25,7 +26,7 @@ function model.create_thread(board_id, flags)
 	if thread then
 		return thread
 	else
-		return false, "Unable to create new thread."
+		return false, "err_create_thread"
 	end
 end
 
@@ -35,7 +36,7 @@ end
 -- @tparam table op Post data of op
 -- @treturn boolean success
 -- @treturn string error
-function model.delete_thread(session, thread, op)
+function Threads:delete_thread(session, thread, op)
 	local success = false
 
 	-- MODS = FAGS
@@ -58,14 +59,14 @@ function model.delete_thread(session, thread, op)
 	if success then
 		return success
 	else
-		return false, sf("Unable to delete post No.%s", op.post_id)
+		return false, "err_delete_post", { op.post_id }
 	end
 end
 
 --- Get all threads from board
 -- @tparam number board_id Board ID
 -- @treturn table threads
-function model.get_threads(board_id)
+function Threads:get_threads(board_id)
 	local sql = [[
 		where
 			board_id = ? and
@@ -74,14 +75,14 @@ function model.get_threads(board_id)
 			sticky desc,
 			last_active desc
 	]]
-	return Threads:select(sql, board_id)
+	return self:select(sql, board_id)
 end
 
 --- Get thread data
 -- @tparam number id Thread ID
 -- @treturn table thread
-function model.get_thread(id)
-	return unpack(Threads:select("where id=?", id))
+function Threads:get_thread(id)
+	return unpack(self:select("where id=?", id))
 end
 
 --- Get page of threads
@@ -90,7 +91,7 @@ end
 -- @tparam number page Page to pull from
 -- @treturn table threads
 -- @treturn number pages
-function model.get_page_threads(board_id, tpp, page)
+function Threads:get_page_threads(board_id, tpp, page)
 	local sql = [[
 		where
 			board_id = ? and
@@ -99,7 +100,7 @@ function model.get_page_threads(board_id, tpp, page)
 			sticky desc,
 			last_active desc
 	]]
-	local pages = Threads:paginated(sql, board_id,{ per_page = tpp })
+	local pages = self:paginated(sql, board_id,{ per_page = tpp })
 
 	return pages:get_page(page), pages:num_pages()
 end
@@ -107,17 +108,17 @@ end
 --- Get archived threads
 -- @tparam number board_id Board ID
 -- @treturn table threads
-function model.get_archived_threads(board_id)
+function Threads:get_archived_threads(board_id)
 	local sql = "where board_id=? and archive=true order by last_active desc"
-	return Threads:select(sql, board_id)
+	return self:select(sql, board_id)
 end
 
 --- Sticky a thread
 -- @tparam table thread Thread data
 -- @treturn boolean success
 -- @treturn string error
-function model.sticky_thread(thread)
-	thread.sticky = db.TRUE
+function Threads:sticky_thread(thread)
+	thread.sticky = true
 	return thread:update("sticky")
 end
 
@@ -125,8 +126,8 @@ end
 -- @tparam table thread Thread data
 -- @treturn boolean success
 -- @treturn string error
-function model.unsticky_thread(thread)
-	thread.sticky = db.FALSE
+function Threads:unsticky_thread(thread)
+	thread.sticky = false
 	return thread:update("sticky")
 end
 
@@ -134,8 +135,8 @@ end
 -- @tparam table thread Thread data
 -- @treturn boolean success
 -- @treturn string error
-function model.lock_thread(thread)
-	thread.lock = db.TRUE
+function Threads:lock_thread(thread)
+	thread.lock = true
 	return thread:update("lock")
 end
 
@@ -143,8 +144,8 @@ end
 -- @tparam table thread Thread data
 -- @treturn boolean success
 -- @treturn string error
-function model.unlock_thread(thread)
-	thread.lock = db.FALSE
+function Threads:unlock_thread(thread)
+	thread.lock = false
 	return thread:update("lock")
 end
 
@@ -153,15 +154,15 @@ end
 -- @tparam number max_threads Maximum number of threads on this board
 -- @treturn boolean success
 -- @treturn string error
-function model.archive_threads(board_id, max_threads)
-	local threads = model.get_threads(board_id)
+function Threads:archive_threads(board_id, max_threads)
+	local threads = self:get_threads(board_id)
 
 	if #threads > max_threads then
 		for i=max_threads+1, #threads do
-			local _, error = model.archive_thread(threads[i])
+			local _, err = self:archive_thread(threads[i])
 
-			if error then
-				return false, error
+			if err then
+				return false, err
 			end
 		end
 	end
@@ -171,19 +172,19 @@ end
 -- @tparam table thread Thread data
 -- @treturn boolean success
 -- @treturn string error
-function model.archive_thread(thread)
-	thread.sticky      = db.FALSE
-	thread.lock        = db.TRUE
-	thread.archive     = db.TRUE
+function Threads:archive_thread(thread)
+	thread.sticky      = false
+	thread.lock        = true
+	thread.archive     = true
 	thread.last_active = os.time()
 	return thread:update("sticky", "lock", "archive", "last_active")
 end
 
 --- Find threads with no posts
 -- @treturn table threads
-function model.find_orphans()
+function Threads:find_orphans()
 	local sql = "where id not in (select distinct thread_id from posts)"
-	return Threads:select(sql)
+	return self:select(sql)
 end
 
-return model
+return Threads
