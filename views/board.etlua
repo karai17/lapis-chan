@@ -7,7 +7,6 @@
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= index_url %>"><%= i18n("index") %></a>]
 [<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
 [<a href="<%= archive_url %>"><%= i18n("archive") %></a>]
 [<a href="<%= board_url %>"><%= i18n("refresh") %></a>]
@@ -30,7 +29,6 @@
 <hr />
 <% end %>
 <div class="pages">
-	[<a href="<%= index_url %>"><%= i18n("index") %></a>]
 	<% for i=1, pages do %>
 		<% if i == params.page then %>
 		[<a href="<%= board_url .. i %>"><strong><%= i %></strong></a>]

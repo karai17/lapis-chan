@@ -19,9 +19,12 @@
 		<% render("views.error") %>
 		<% end %>
 		<% render("views.list_boards") %>
-		<% if session.name then %>
-		<span class="logout">[<a href="<%= logout_url %>"><%= i18n("logout") %></a>]</span>
-		<% end %>
+		<div id="right">
+			<% render("views.form_locale") %>
+			<% if session.name then %>
+			<span id="logout">[<a href="<%= logout_url %>"><%= i18n("logout") %></a>]</span>
+			<% end %>
+		</div>
 		<% content_for("inner") %>
 		<% render("views.list_boards") %>
 		<% render("views.copyright") %>

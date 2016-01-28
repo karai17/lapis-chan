@@ -1,5 +1,6 @@
 <% if boards then %>
 <div class="boards">
+	[ <a href="<%= index_url %>"><%= i18n("index") %></a> ]
 	<% local group = 1 %>
 	<% for i, board in ipairs(boards) do %>
 		<% local sub = sub_page or "" %>

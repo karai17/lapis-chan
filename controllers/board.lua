@@ -226,7 +226,10 @@ return {
 
 		-- Admin commands
 		if self.session.admin or self.session.mod then
-			local op = Posts:get_thread_op(self.thread.id)
+			local op
+			if self.thread then
+				op = Posts:get_thread_op(self.thread.id)
+			end
 
 			-- Sticky thread
 			if self.params.sticky then
@@ -267,8 +270,6 @@ return {
 					redirect_to = self.thread_url .. op.post_id
 				}
 			end
-
-			return { redirect_to = self.board_url }
 		end
 
 		return { redirect_to = self.board_url }
