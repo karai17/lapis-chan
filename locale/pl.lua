@@ -4,7 +4,7 @@ return { pl = {
 
   archive       = "Archiwum",
   bottom        = "Przewiń na dół",
-  catalog       = "Catalog",
+  catalog       = "Katalog",
   index         = "Spis treści",
   refresh       = "Odśwież",
   ["return"]    = "Powróć",
@@ -208,7 +208,7 @@ return { pl = {
 
   post_link     = "Link do tego posta",
   post_lock     = "Wątek jest zablokowany",
-  post_hidden   = "%{n_post} %{p_post} i %{n_file} %{p_file} zostały pominięte. %{click} aby wyświetliść.",
+  post_hidden   = "%{n_post} %{p_post} i %{n_file} %{p_file} zostały pominięte. %{click} aby wyświetlić.",
   post_override = "Wątek akceptuje nielimitowaną ilość plików",
   post_reply    = "Odpowiedz na ten post",
   post_sticky   = "Fred jest przyklejony",
