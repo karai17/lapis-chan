@@ -7,9 +7,10 @@ return function(self)
 	i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
 	self.i18n = i18n
 
-	self.software  = config.software
-	self.version   = config.version
+	self.software  = "Lapis-chan"
+	self.version   = "1.1.1"
 	self.site_name = config.site_name
+	self.text_size = text_size
 
 	if config.subdomains then
 		local host        = ngx.var.host

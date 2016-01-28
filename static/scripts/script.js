@@ -1,3 +1,6 @@
+var body_size = 15;
+var text_size = 10000;
+
 // https://stackoverflow.com/questions/4998908/convert-data-uri-to-file-then-append-to-formdata
 function dataURItoBlob(dataURI) {
     // convert base64/URLEncoded data component to raw binary data held in a string
@@ -42,13 +45,13 @@ function quote_thread() {
 	}
 }
 
-// Restrict the size of the comment block to 1024 characters
+// Restrict the size of the comment block
 // @return none
 function restrict_comment_size() {
 	var comment = document.getElementById("submit_comment");
 
-	if (comment.value.length >= 4096) {
-		comment.value = comment.value.slice(0, 4096);
+	if (comment.value.length >= text_size) {
+		comment.value = comment.value.slice(0, text_size);
 	}
 }
 
@@ -60,8 +63,8 @@ function validate_input() {
 	if (window.FileReader && file_input.files && file_input.files[0]) {
 		file = file_input.files[0];
 
-		if (file.size / 1024 / 1024 > 15.0) {
-			alert("File size cannot exceed 15 MB.");
+		if (file.size / 1024 / 1024 > body_size) {
+			alert("File size cannot exceed " + body_size + " MB.");
 			return false;
 		}
 	}

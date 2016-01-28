@@ -111,7 +111,7 @@ return {
 				{ "name",    max_length=255 },
 				{ "subject", max_length=255 },
 				{ "options", max_length=255 },
-				{ "comment", max_length=4096 }
+				{ "comment", max_length=self.text_size }
 			})
 
 			-- Validate post
