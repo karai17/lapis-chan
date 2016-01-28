@@ -40,7 +40,11 @@ a {
 	text-decoration: none;
 }
 
-input[type="text"], input[type="password"], textarea {
+input[type="text"],
+input[type="password"],
+textarea,
+select,
+.admin_main {
 	padding: 4px;
 	width: 280px;
 }
@@ -165,6 +169,17 @@ ol {
 
 		button {
 			margin: $spacing 0 0 0;
+		}
+	}
+}
+
+.admin_form {
+	form {
+		margin: 0;
+		padding: 0;
+
+		button {
+			margin: 0;
 		}
 	}
 }

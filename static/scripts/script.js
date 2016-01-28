@@ -23,11 +23,11 @@ function dataURItoBlob(dataURI) {
 }
 
 // Send quote text to submission form
-// @param click A ClickEvent object
+// @param event A ClickEvent object
 // @return none
-function quote_post(click) {
+function quote_post(event) {
 	var comment = document.getElementById("submit_comment");
-	comment.value += ">>" + click.target.text + "\n";
+	comment.value += ">>" + event.target.text + "\n";
 	comment.focus();
 }
 
@@ -70,6 +70,18 @@ function validate_input() {
 	}
 }
 
+// Toggle post menu visibility
+// @return none
+function toggle_menu() {
+	var child = this.parentNode.children[1];
+
+	if (child.style.display === "block") {
+		child.style.display = "none";
+	} else {
+		child.style.display = "block";
+	}
+}
+
 // Add click events to all reply links
 // @return none
 function add_anchor_listeners() {
@@ -80,15 +92,27 @@ function add_anchor_listeners() {
 	}
 }
 
-// Toggle post menu visibility
+// Add change events to various form elements
 // @return none
-function toggle_menu() {
-	var child = this.parentNode.children[1];
+function add_change_listeners() {
+	var elements = document.getElementsByClassName("change_submit");
 
-	if (child.style.display === "block") {
-		child.style.display = "none";
-	} else {
-		child.style.display = "block";
+	for (i=0; i < elements.length; i++) {
+		var element = elements[i];
+		element.onchange = function(event) {
+			event.target.form.submit();
+		};
+	}
+
+	var elements = document.getElementsByClassName("change_delete");
+
+	for (i=0; i < elements.length; i++) {
+		var element = elements[i];
+		element.onchange = function(event) {
+			if (window.confirm("Are you sure you want to do this?")) {
+				event.target.form.submit();
+			}
+		};
 	}
 }
 
@@ -120,9 +144,9 @@ function add_input_constraints() {
 }
 
 // Open a Tegaki canvas and add an image to it
-// @param click Click event
+// @param event A ClickEvent object
 // @param path Path to image (optional)
-function remix(click, path) {
+function remix(event, path) {
 	var file  = document.getElementById("draw");
 	var clear = document.getElementById("tegaki_clear");
 
@@ -205,18 +229,20 @@ function prepare_tegaki() {
 // Check if document has loaded yet
 // @return none
 function ready() {
-	if (document.readyState != "loading"){
+	if (document.readyState != "loading") {
 		quote_thread();
 		add_anchor_listeners();
+		add_change_listeners()
 		add_menu_listeners();
-		prepare_tegaki();
 		add_input_constraints();
+		prepare_tegaki();
 	} else {
 		document.addEventListener("DOMContentLoaded", quote_thread);
 		document.addEventListener("DOMContentLoaded", add_anchor_listeners);
+		document.addEventListener("DOMContentLoaded", add_change_listeners);
 		document.addEventListener("DOMContentLoaded", add_menu_listeners);
-		document.addEventListener("DOMContentLoaded", prepare_tegaki);
 		document.addEventListener("DOMContentLoaded", add_input_constraints);
+		document.addEventListener("DOMContentLoaded", prepare_tegaki);
 	}
 }
 

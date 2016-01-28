@@ -6,235 +6,242 @@
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="view_report" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("view_report") %></label>
 			<span class="fields">
-				<select name="report">
+				<select name="report" class="change_submit">
+					<option></option>
 					<% for _, report in ipairs(reports) do %>
 					<option value="<%= report.id %>"><%= report.id %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="view_report"><%= i18n("view_report") %></button>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="delete_report" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("delete_report") %></label>
 			<span class="fields">
-				<select name="report">
+				<select name="report" class="change_delete">
+					<option></option>
 					<% for _, report in ipairs(reports) do %>
 					<option value="<%= report.id %>"><%= report.id %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="delete_report"><%= i18n("delete_report") %></button>
 	</form>
 </div>
-
-<hr />
 
 <!-- User Junk -->
 <div class="admin_form">
 	<form action="<%= admin_cu_url %>" method="get">
-		<button><%= i18n("create_user") %></button>
+		<div>
+			<label class="title"><%= i18n("create_user") %></label>
+			<span class="fields">
+				<button class="admin_main"><%= i18n("create_user") %></button>
+			</span>
+		</div>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="modify_user" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("modify_user") %></label>
 			<span class="fields">
-				<select name="user">
+				<select name="user" class="change_submit">
+					<option></option>
 					<% for _, user in ipairs(users) do %>
 					<option value="<%= user.id %>"><%= user.username %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="modify_user"><%= i18n("modify_user") %></button>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="delete_user" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("delete_user") %></label>
 			<span class="fields">
-				<select name="user">
+				<select name="user" class="change_delete">
+					<option></option>
 					<% for _, user in ipairs(users) do %>
 					<option value="<%= user.id %>"><%= user.username %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="delete_user"><%= i18n("delete_user") %></button>
 	</form>
 </div>
-
-<hr />
 
 <!-- Board Junk -->
 <div class="admin_form">
 	<form action="<%= admin_cb_url %>" method="get">
-		<button><%= i18n("create_board") %></button>
+		<div>
+			<label class="title"><%= i18n("create_board") %></label>
+			<span class="fields">
+				<button class="admin_main"><%= i18n("create_board") %></button>
+			</span>
+		</div>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="modify_board" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("modify_board") %></label>
 			<span class="fields">
-				<select name="board">
+				<select name="board" class="change_submit">
+					<option></option>
 					<% for _, board in ipairs(boards) do %>
 					<option value="<%= board.short_name %>"><%= string.format("/%s/ - %s", board.short_name, board.name) %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="modify_board"><%= i18n("modify_board") %></button>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="delete_board" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("delete_board") %></label>
 			<span class="fields">
-				<select name="board">
+				<select name="board" class="change_delete">
+					<option></option>
 					<% for _, board in ipairs(boards) do %>
 					<option value="<%= board.short_name %>"><%= string.format("/%s/ - %s", board.short_name, board.name) %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="delete_board"><%= i18n("delete_board") %></button>
 	</form>
 </div>
-
-<hr />
 
 <!-- Announcement Junk -->
 <div class="admin_form">
 	<form action="<%= admin_ca_url %>" method="get">
-		<button><%= i18n("create_ann") %></button>
+		<div>
+			<label class="title"><%= i18n("create_ann") %></label>
+			<span class="fields">
+				<button class="admin_main"><%= i18n("create_ann") %></button>
+			</span>
+		</div>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="modify_announcement" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("modify_ann") %></label>
 			<span class="fields">
-				<select name="ann">
+				<select name="ann" class="change_submit">
+					<option></option>
 					<% for _, ann in ipairs(announcements) do %>
 					<option value="<%= ann.id %>"><%= ann.text %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="modify_announcement"><%= i18n("modify_ann") %></button>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="delete_announcement" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("delete_ann") %></label>
 			<span class="fields">
-				<select name="ann">
+				<select name="ann" class="change_delete">
+					<option></option>
 					<% for _, ann in ipairs(announcements) do %>
 					<option value="<%= ann.id %>"><%= ann.text %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="delete_announcement"><%= i18n("delete_ann") %></button>
 	</form>
 </div>
-
-<hr />
 
 <!-- Page Junk -->
 <div class="admin_form">
 	<form action="<%= admin_cp_url %>" method="get">
-		<button><%= i18n("create_page") %></button>
+		<div>
+			<label class="title"><%= i18n("create_page") %></label>
+			<span class="fields">
+				<button class="admin_main"><%= i18n("create_page") %></button>
+			</span>
+		</div>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="modify_page" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("modify_page") %></label>
 			<span class="fields">
-				<select name="page">
+				<select name="page" class="change_submit">
+					<option></option>
 					<% for _, page in ipairs(pages) do %>
 					<option value="<%= page.url %>"><%= page.url %> - <%= page.name %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="modify_page"><%= i18n("modify_page") %></button>
 	</form>
 </div>
 
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-
+		<input name="delete_page" type="hidden" />
 		<div>
 			<label class="title"><%= i18n("delete_page") %></label>
 			<span class="fields">
-				<select name="page">
+				<select name="page" class="change_delete">
+					<option></option>
 					<% for _, page in ipairs(pages) do %>
 					<option value="<%= page.url %>"><%= page.url %> - <%= page.name %></option>
 					<% end %>
 				</select>
 			</span>
 		</div>
-
-		<button name="delete_page"><%= i18n("delete_page") %></button>
 	</form>
 </div>
-
-<hr />
 
 <!-- Regen Thumbs -->
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-		<button name="regen_thumbs"><%= i18n("regen_thumb") %></button>
+		<div>
+			<label class="title"><%= i18n("regen_thumb") %></label>
+			<span class="fields">
+				<button class="admin_main" name="regen_thumbs"><%= i18n("regen_thumb") %></button>
+			</span>
+		</div>
 	</form>
 </div>
+
+<hr />
