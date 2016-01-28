@@ -119,7 +119,6 @@ function Posts:prepare_post(params, session, board, thread, files)
 		params.file_width  = image:get_width()
 		params.file_height = image:get_height()
 
-
 		if params.file_spoiler then
 			params.file_spoiler = true
 		else
@@ -211,6 +210,12 @@ function Posts:create_post(params, session, board, thread, op)
 					else
 						gif:write_first_frame(thumb_path)
 						magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
+
+						-- gifs need to get dimension from the first frame
+						local width, height = gif:dimensions()
+						post.file_width     = width
+						post.file_height    = height
+						post:update("file_width", "file_height")
 					end
 				else
 					magick.thumb(full_path, sf("%sx%s", w, h), thumb_path)
