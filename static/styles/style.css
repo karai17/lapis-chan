@@ -337,6 +337,20 @@ ol {
   #error p {
     font-weight: bold; }
 
+#right {
+  top: 10px;
+  right: 10px;
+  position: absolute;
+  text-align: right; }
+  #right #locale form {
+    display: inline;
+    margin: 0;
+    padding: 0; }
+    #right #locale form select {
+      margin: 0;
+      padding: 0;
+      width: 75px; }
+
 #post_form, .admin_form {
   text-align: center; }
   #post_form form div, .admin_form form div {
@@ -414,11 +428,6 @@ ol {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
     max-width: 125px;
     max-height: 125px; }
-
-.logout {
-  top: 10px;
-  right: 10px;
-  position: absolute; }
 
 .copyright {
   margin-top: 10px; }
