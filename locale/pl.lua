@@ -101,8 +101,8 @@ return { pl = {
   thread_file_required    = "Wymagany plik do freda",
   url                     = "URL",
   username                = "Nazwa użytkownika",
-  yes                     = "Nie",
-  no                      = "Tak",
+  yes                     = "Tak",
+  no                      = "Nie",
 
   -- Announcements
   create_ann   = "Utwórz ogłoszenie",
@@ -218,21 +218,24 @@ return { pl = {
 
   days = {
     one   = "dzień",
-    other = "days"
+    other = "dni"
   },
   files = {
     one   = "plik",
     few   = "pliki",
-    many  = "plików"
+    many  = "plików",
+	 other = "pliki"
   },
   posts = {
     one   = "post",
     few   = "posty",
-    many  = "postów"
+    many  = "postów",
+	 other = "posty"
   },
   threads = {
     one   = "wątek",
     few   = "wątki",
-    many  = "wątków"
+    many  = "wątków",
+	 other = "wątki"
   },
 }}
