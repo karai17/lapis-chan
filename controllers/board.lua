@@ -115,6 +115,7 @@ return {
 					comment = format.sanitize(comment)
 					comment = format.quote(comment, self, self.board, post)
 					comment = format.green_text(comment)
+					comment = format.blue_text(comment)
 					comment = format.spoiler(comment)
 					comment = format.new_lines(comment)
 					post.comment = comment

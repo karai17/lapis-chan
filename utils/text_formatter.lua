@@ -126,7 +126,27 @@ function formatter.green_text(text)
 
 		-- >implying
 		if first == "&gt;" then
-			line = sf("%s%s%s", "<span class='quote'>", line, "</span>")
+			line = sf("%s%s%s", "<span class='quote_green'>", line, "</span>")
+		end
+
+		formatted = sf("%s%s%s", formatted, line, "\n")
+	end
+
+	return formatted
+end
+
+--- Format lines that begin with '<'
+-- @tparam string text Raw text
+-- @treturn string formatted
+function formatter.blue_text(text)
+	local formatted = ""
+
+	for line in text:gmatch("[^\n]+") do
+		local first  = line:sub(1, 4)
+
+		-- <implying
+		if first == "&lt;" then
+			line = sf("%s%s%s", "<span class='quote_blue'>", line, "</span>")
 		end
 
 		formatted = sf("%s%s%s", formatted, line, "\n")

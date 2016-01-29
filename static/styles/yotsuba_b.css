@@ -11,8 +11,11 @@ a, a:visited, .broken_link {
 a:hover, .quote_link, .quote_link:visited, .broken_link:hover {
   color: #dd0000; }
 
-.quote {
+.quote_green {
   color: #789922; }
+
+.quote_blue {
+  color: #292299; }
 
 .announcement {
   color: #af0a0f; }

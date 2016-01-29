@@ -9,6 +9,7 @@ $post:          #d6daf0;
 $name:          #117743;
 $black:         #000000;
 $green:         #789922;
+$blue:          #292299;
 $active:        #d6bad0;
 $active_border: #ba9dbf;
 
@@ -29,8 +30,12 @@ a:hover, .quote_link, .quote_link:visited, .broken_link:hover {
 	color: $hover;
 }
 
-.quote {
+.quote_green {
 	color: $green;
+}
+
+.quote_blue {
+	color: $blue;
 }
 
 .announcement {
