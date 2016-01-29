@@ -24,7 +24,10 @@ return function(self)
 	end
 
 	i18n.setLocale(self.session.locale or "en")
-	i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
+	i18n.loadFile("locale/en.lua")
+	if i18n.getLocale() ~= "en" then
+		i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
+	end
 	self.i18n = i18n
 
 	-- Set base URLs
