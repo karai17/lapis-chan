@@ -1,4 +1,4 @@
-return { en = {
+return { Fr = {
 
 	--==[[ Navigation ]]==--
 
