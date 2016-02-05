@@ -1,0 +1,60 @@
+body {
+  background-color: yellow; }
+
+body, h1, h2 {
+  color: #ffffff; }
+
+a, a:visited, .broken_link {
+  color: #0000ee; }
+
+a:hover, .quote_link:hover, .broken_link:hover {
+  color: #ff0000; }
+
+.quote_link {
+  color: #000080; }
+
+.quote {
+  color: #789922; }
+
+.announcement {
+  color: #ffffff; }
+
+#post_form form .title, .admin_form form .title {
+  background-color: #ff0000;
+  border: 1px solid lightgray; }
+
+table thead td {
+  background-color: #ff0000;
+  border: 1px solid #ff0000; }
+table tr:nth-of-type(odd) {
+  background-color: yellow; }
+table tr:nth-of-type(even) {
+  background-color: yellow; }
+
+.post_container {
+  background-color: #ff0000;
+  border-right: 1px solid #ff0000;
+  border-bottom: 1px solid #ff0000; }
+  .post_container:target {
+    background-color: #ff0000;
+    border-right: 1px solid lightgray;
+    border-bottom: 1px solid lightgray; }
+
+.post_subject {
+  color: #ff0000; }
+
+.post_name, .post_trip {
+  color: #117743; }
+
+.post_menu .menu {
+  background-color: #ff0000;
+  border: 1px solid #ff0000; }
+  .post_menu .menu div {
+    border-right: 1px solid #ff0000;
+    border-bottom: 1px solid #ff0000; }
+    .post_menu .menu div form button {
+      color: #ffffff; }
+      .post_menu .menu div form button:hover {
+        color: #ff0000; }
+
+/*# sourceMappingURL=hotdog_stand.css.map */
