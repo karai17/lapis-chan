@@ -92,6 +92,12 @@ $ psql
 
 ## Configure config.lua
 
+In this file, you need to set the `lua_path` and `lua_cpath` to find both LuaRocks and OpenResty. LuaRocks has a simple command, OpenResty does not so you need to know where you installed it to.
+
+```
+$ luarocks path
+```
+
 Make sure the following options within the config file are set correctly:
 
 1. subdomains - Probably best to leave this as false unless know what you are doing with ngx configurations
@@ -102,14 +108,6 @@ Make sure the following options within the config file are set correctly:
 1. user - The database username
 1. password - The database password
 1. database - The database name (we just created it!)
-
-## Configure nginx.conf
-
-In this file, you need to set the `lua_package_path` and `lua_package_cpath` to find both LuaRocks and OpenResty. LuaRocks has a simple command, OpenResty does not so you need to know where you installed it to.
-
-```
-$ luarocks path
-```
 
 ## Migrate the Database
 

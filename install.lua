@@ -210,9 +210,9 @@ return {
 		self.board      = { theme = "yotsuba_b" }
 
 		-- Do we already have data?
-		local users  = Users.get_users()
-		local boards = Boards.get_boards()
-		local pages  = Pages.get_pages()
+		local users  = Users:get_users()
+		local boards = Boards:get_boards()
+		local pages  = Pages:get_pages()
 
 		-- We did it!
 		if #users > 0 and #boards > 0 and #pages > 0 then
@@ -239,9 +239,9 @@ return {
 		self.board      = { theme = "yotsuba_b" }
 
 		-- Do we already have data?
-		local users  = Users.get_users()
-		local boards = Boards.get_boards()
-		local pages  = Pages.get_pages()
+		local users  = Users:get_users()
+		local boards = Boards:get_boards()
+		local pages  = Pages:get_pages()
 
 		-- We did it!
 		if #users > 0 and #boards > 0 and #pages > 0 then
@@ -293,7 +293,7 @@ return {
 		end
 
 		-- Add new user
-		local user = Users.create_user {
+		local user = Users:create_user {
 			username = self.params.user_username,
 			password = self.params.user_password,
 			admin    = true,
@@ -302,7 +302,7 @@ return {
 		}
 
 		-- Add new board
-		local board = Boards.create_board {
+		local board = Boards:create_board {
 			short_name        = self.params.short_name,
 			name              = self.params.name,
 			subtext           = self.params.subtext,
@@ -326,7 +326,7 @@ return {
 		}
 
 		-- Add FAQ page
-		local page = Pages.create_page {
+		local page = Pages:create_page {
 			name    = "Frequently Asked Questions",
 			url     = "faq",
 			content = faq
