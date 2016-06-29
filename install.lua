@@ -210,9 +210,9 @@ return {
 		self.board      = { theme = "yotsuba_b" }
 
 		-- Do we already have data?
-		local users  = Users.get_users()
-		local boards = Boards.get_boards()
-		local pages  = Pages.get_pages()
+		local users  = Users:get_users()
+		local boards = Boards:get_boards()
+		local pages  = Pages:get_pages()
 
 		-- We did it!
 		if #users > 0 and #boards > 0 and #pages > 0 then
