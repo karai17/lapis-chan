@@ -109,10 +109,6 @@ Make sure the following options within the config file are set correctly:
 1. password - The database password
 1. database - The database name (we just created it!)
 
-## Configure nginx.conf
-
-
-
 ## Migrate the Database
 
 Now that we have Lapis configured, you must execute the migration to fill the database with empty tables. It is recommended to perform this step every time you upgrade Lapis-chan as it will automagically update your database without damaging any data.
