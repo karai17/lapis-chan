@@ -110,13 +110,10 @@ return {
 			})
 
 			-- Validate post
-			local post = assert_error(process.create_thread(
-				self.params, self.session, self.board
-			))
-
-			return { redirect_to = self:format_url(self.post_url, self.board,  post.post_id,  post.post_id) }
+			local post = assert_error(process.create_thread(self.params, self.session, self.board))
+			return { redirect_to = self:format_url(self.post_url, self.board.short_name, post.post_id, post.post_id) }
 		end
 
-		return { redirect_to = self:format_url(self.catalog_url, self.board) }
+		return { redirect_to = self:format_url(self.catalog_url, self.board.short_name) }
 	end
 }

@@ -1,5 +1,5 @@
 <% if thread then %>
-<form action="#" method="get">
+<form action="" method="get">
 	<button type="button" data-path="<%= post.file_path %>" id="r<%= post.post_id %>" class="remix">📼 <%= i18n("form_remix") %></button>
 </form>
 <% else %>

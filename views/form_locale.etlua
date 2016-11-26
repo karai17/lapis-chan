@@ -1,5 +1,5 @@
 <div id="locale">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<select name="locale" class="change_submit">
 			<% for _, locale in ipairs(locales) do %>

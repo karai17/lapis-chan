@@ -1,7 +1,7 @@
 local Users    = require "models.users"
 local Boards   = require "models.boards"
 local Pages    = require "models.pages"
-local lsf      = require "lfs"
+local lfs      = require "lfs"
 local validate = require("lapis.validate").validate
 local faq      = [[
 <div class="table_of_contents">
@@ -281,7 +281,7 @@ return {
 				out = out .. "<h2>" .. err .. "</h2>\n"
 			end
 			out = out .. [[
-				<form action="#" method="get">
+				<form action="" method="get">
 					<button>Return</button>
 				</form>
 			</div>

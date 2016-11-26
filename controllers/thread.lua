@@ -131,6 +131,9 @@ return {
 		-- Validate CSRF token
 		csrf.assert_token(self)
 
+		local board_url  = self:format_url(self.board_url,  self.board.short_name)
+		local thread_url = self:format_url(self.thread_url, self.board.short_name, self.posts[1].post_id)
+
 		-- Submit new post
 		if self.params.submit and self.thread then
 			-- Validate user input
@@ -143,11 +146,8 @@ return {
 			})
 
 			-- Validate post
-			local post = assert_error(process.create_post(
-				self.params, self.session, self.board, self.thread
-			))
-
-			return { redirect_to = self:format_url(self.post_url, self.board, self.thread, post.post_id) }
+			local post = assert_error(process.create_post(self.params, self.session, self.board, self.thread))
+			return { redirect_to = self:format_url(self.post_url, self.board.short_name, self.posts[1].post_id, post.post_id) }
 		end
 
 		-- Delete thread
@@ -158,11 +158,8 @@ return {
 			})
 
 			-- Validate deletion
-			assert_error(process.delete_thread(
-				self.params, self.session, self.board
-			))
-
-			return { redirect_to = self:format_url(self.board_url, self.board) }
+			assert_error(process.delete_thread(self.params, self.session, self.board))
+			return { redirect_to = board_url }
 		end
 
 		-- Delete post
@@ -173,11 +170,8 @@ return {
 			})
 
 			-- Validate deletion
-			assert_error(process.delete_post(
-				self.params, self.session, self.board
-			))
-
-			return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+			assert_error(process.delete_post(self.params, self.session, self.board))
+			return { redirect_to = thread_url }
 		end
 
 		-- Report post
@@ -189,11 +183,8 @@ return {
 			})
 
 			-- Validate report
-			local post = assert_error(process.report_post(
-				self.params, self.board
-			))
-
-			return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+			assert_error(process.report_post(self.params, self.board))
+			return { redirect_to = thread_url }
 		end
 
 		-- Admin commands
@@ -201,36 +192,36 @@ return {
 			-- Sticky thread
 			if self.params.sticky then
 				assert_error(process.sticky_thread(self.params, self.board))
-				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+				return { redirect_to = thread_url }
 			end
 
 			-- Lock thread
 			if self.params.lock then
 				assert_error(process.lock_thread(self.params, self.board))
-				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+				return { redirect_to = thread_url }
 			end
 
 			-- Save thread
 			if self.params.save then
 				assert_error(process.save_thread(self.params, self.board))
-				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+				return { redirect_to = thread_url }
 			end
 
 			-- Override thread
 			if self.params.override then
 				assert_error(process.override_thread(self.params, self.board))
-				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+				return { redirect_to = thread_url }
 			end
 
 			-- Ban user
 			if self.params.ban then
 				assert_error(process.ban_user(self.params, self.board))
-				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+				return { redirect_to = thread_url }
 			end
 
-			return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+			return { redirect_to = thread_url }
 		end
 
-		return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
+		return { redirect_to = thread_url }
 	end
 }

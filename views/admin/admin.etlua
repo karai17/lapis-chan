@@ -4,7 +4,7 @@
 
 <!-- Report Junk -->
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="view_report" type="hidden" />
 		<div>
@@ -22,7 +22,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_report" type="hidden" />
 		<div>
@@ -52,7 +52,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="modify_user" type="hidden" />
 		<div>
@@ -70,7 +70,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_user" type="hidden" />
 		<div>
@@ -100,7 +100,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="modify_board" type="hidden" />
 		<div>
@@ -118,7 +118,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_board" type="hidden" />
 		<div>
@@ -148,7 +148,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="modify_announcement" type="hidden" />
 		<div>
@@ -166,7 +166,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_announcement" type="hidden" />
 		<div>
@@ -196,7 +196,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="modify_page" type="hidden" />
 		<div>
@@ -214,7 +214,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_page" type="hidden" />
 		<div>
@@ -233,7 +233,7 @@
 
 <!-- Regen Thumbs -->
 <div class="admin_form">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<div>
 			<label class="title"><%= i18n("regen_thumb") %></label>

@@ -3,7 +3,7 @@
 <h2>Welcome to Lapis-chan v1.0.0!</h2>
 
 <div class="install">
-	<form action="#" method="post">
+	<form action="" method="post">
 		<h2>Administrator Account Information</h2>
 
 		<label>Username</label>
