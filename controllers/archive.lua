@@ -18,7 +18,7 @@ return function(self)
 
 	-- Board not found
 	if not self.board then
-		self:write({ redirect_to = self.index_url })
+		self:write({ redirect_to = self:build_url() })
 		return
 	end
 
@@ -31,12 +31,6 @@ return function(self)
 		self.board.short_name,
 		self.board.name
 	)
-
-	-- Page URLs
-	self.staticb_url = self.static_url .. self.board.short_name .. "/"
-	self.board_url   = self.boards_url .. self.board.short_name .. "/"
-	self.thread_url  = self.board_url  .. "thread/"
-	self.catalog_url = self.board_url  .. "catalog/"
 
 	-- Nav links link to sub page if available
 	self.sub_page = "archive"
@@ -51,7 +45,7 @@ return function(self)
 	for _, thread in ipairs(self.threads) do
 		thread.op      = Posts:get_thread_op(thread.id)
 		thread.replies = Posts:count_posts(thread.id) - 1
-		thread.url     = self.thread_url .. thread.op.post_id
+		thread.url     = self:format_url(self.thread_url, self.board.short_name, thread.op.post_id)
 
 		-- Process name
 		thread.op.name = thread.op.name or self.board.anon_name

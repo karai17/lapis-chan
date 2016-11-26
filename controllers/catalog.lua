@@ -1,3 +1,6 @@
+local assert_error  = require("lapis.application").assert_error
+local assert_valid  = require("lapis.validate").assert_valid
+local process       = require "utils.request_processor"
 local csrf          = require "lapis.csrf"
 local format        = require "utils.text_formatter"
 local Announcements = require "models.announcements"
@@ -20,7 +23,7 @@ return {
 
 		-- Board not found
 		if not self.board then
-			self:write({ redirect_to = self.index_url })
+			self:write({ redirect_to = self:build_url() })
 			return
 		end
 
@@ -33,14 +36,6 @@ return {
 		self.board.short_name,
 		self.board.name
 		)
-
-		-- Page URLs
-		self.staticb_url = self.static_url .. self.board.short_name .. "/"
-		self.board_url   = self.boards_url .. self.board.short_name .. "/"
-		self.thread_url  = self.board_url  .. "thread/"
-		self.archive_url = self.board_url  .. "archive/"
-		self.catalog_url = self.board_url  .. "catalog/"
-		self.form_url    = self.board_url
 
 		-- Nav links link to sub page if available
 		self.sub_page = "catalog"
@@ -59,17 +54,17 @@ return {
 			thread.op      = Posts:get_thread_op(thread.id)
 			thread.replies = Posts:count_posts(thread.id) - 1
 			thread.files   = Posts:count_files(thread.id)
-			thread.url     = self.thread_url .. thread.op.post_id
+			thread.url     = self:format_url(self.thread_url, self.board.short_name, thread.op.post_id)
 
 			-- Get thumbnail URL
 			if thread.op.file_path then
 				if thread.op.file_spoiler then
-					thread.op.thumb = self.static_url .. "post_spoiler.png"
+					thread.op.thumb = self:format_url(self.static_url, "post_spoiler.png")
 				else
-					thread.op.thumb = self.staticb_url .. 's' .. thread.op.file_path
+					thread.op.thumb = self:format_url(self.images_url, self.board.short_name, 's' .. thread.op.file_path)
 				end
 
-				thread.op.file_path = self.staticb_url .. thread.op.file_path
+				thread.op.file_path = self:format_url(self.images_url, self.board.short_name, thread.op.file_path)
 			end
 
 			-- Process comment
@@ -119,11 +114,9 @@ return {
 				self.params, self.session, self.board
 			))
 
-			return {
-				redirect_to = self.thread_url .. post.post_id .. "#p" .. post.post_id
-			}
+			return { redirect_to = self:format_url(self.post_url, self.board,  post.post_id,  post.post_id) }
 		end
 
-		return { redirect_to = self.catalog_url }
+		return { redirect_to = self:format_url(self.catalog_url, self.board) }
 	end
 }

@@ -62,6 +62,6 @@ return {
 		end
 	end,
 	POST = function(self)
-		return { redirect_to = self.admin_url }
+		return { redirect_to = self:format_url(self.admin_url) }
 	end
 }

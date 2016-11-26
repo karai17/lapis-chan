@@ -31,9 +31,10 @@ return {
 
 		-- Get list of themes
 		self.themes = {}
-		for file in lfs.dir("."..self.styles_url) do
+		for file in lfs.dir(self.styles_dir) do
 			local name, ext = string.match(file, "^(.+)(%..+)$")
-			if name ~= "reset"  and
+			if
+			name ~= "reset"  and
 			name ~= "posts"  and
 			name ~= "style"  and
 			name ~= "tegaki" and
@@ -204,6 +205,6 @@ return {
 			return { render = "admin.success" }
 		end
 
-		return { redirect_to = self.admin_url }
+		return { redirect_to = self:format_url(self.admin_url) }
 	end
 }

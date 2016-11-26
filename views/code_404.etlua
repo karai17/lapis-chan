@@ -1,2 +1,2 @@
 <h1><%= page_title %></h1>
-<p><a href="<%= index_url %>"><%= i18n("return_index") %></a></p>
+<p><a href="<%= build_url() %>"><%= i18n("return_index") %></a></p>

@@ -24,7 +24,7 @@ return {
 		-- Board not found
 		if not self.board or
 			self.params.page and not tonumber(self.params.page) then
-			self:write({ redirect_to = self.index_url })
+			self:write({ redirect_to = self:build_url() })
 			return
 		end
 
@@ -37,15 +37,6 @@ return {
 			self.board.short_name,
 			self.board.name
 		)
-
-		-- Page URLs
-		self.staticb_url = self.static_url .. self.board.short_name .. "/"
-		self.board_url   = self.boards_url .. self.board.short_name .. "/"
-		self.thread_url  = self.board_url  .. "thread/"
-		self.thread_url  = self.board_url  .. "thread/"
-		self.archive_url = self.board_url  .. "archive/"
-		self.catalog_url = self.board_url  .. "catalog/"
-		self.form_url    = self.board_url
 
 		-- Flag comments as required or not
 		self.comment_flag = self.board.thread_comment
@@ -77,7 +68,7 @@ return {
 				assert_error(false, { "err_orphaned", thread.id })
 			end
 
-			thread.url = self.board_url .. "thread/" .. op.post_id
+			thread.url = self:format_url(self.thread_url, self.board.short_name, op.post_id)
 
 			-- Format comments
 			for _, post in ipairs(thread.posts) do
@@ -87,9 +78,9 @@ return {
 				end
 
 				post.name  = post.name or self.board.anon_name
-				post.reply = self.thread_url .. op.post_id .. "#q" .. post.post_id
-				post.link  = self.thread_url .. op.post_id .. "#p" .. post.post_id
-				post.remix = self.thread_url .. op.post_id .. "#r" .. post.post_id
+				post.reply = self:format_url(self.reply_url, self.board.short_name, op.post_id, post.post_id)
+				post.link  = self:format_url(self.post_url,  self.board.short_name, op.post_id, post.post_id)
+				post.remix = self:format_url(self.remix_url, self.board.short_name, op.post_id, post.post_id)
 
 				post.file_size = math.floor(post.file_size / 1024)
 				post.timestamp = os.date("%Y-%m-%d (%a) %H:%M:%S", post.timestamp)
@@ -98,15 +89,15 @@ return {
 				if post.file_path then
 					if post.file_spoiler then
 						if post == thread.posts[#thread.posts] then
-							post.thumb = self.static_url .. "op_spoiler.png"
+							post.thumb = self:format_url(self.static_url, "op_spoiler.png")
 						else
-							post.thumb = self.static_url .. "post_spoiler.png"
+							post.thumb = self:format_url(self.static_url, "post_spoiler.png")
 						end
 					else
-						post.thumb = self.staticb_url .. 's' .. post.file_path
+						post.thumb = self:format_url(self.images_url, self.board.short_name, 's' .. post.file_path)
 					end
 
-					post.file_path = self.staticb_url .. post.file_path
+					post.file_path = self:format_url(self.images_url, self.board.short_name, post.file_path)
 				end
 
 				-- Process comment
@@ -155,9 +146,7 @@ return {
 				self.params, self.session, self.board
 			))
 
-			return {
-				redirect_to = self.thread_url .. post.post_id .. "#p" .. post.post_id
-			}
+			return { redirect_to = self:format_url(self.post_url, self.board, post.post_id, post.post_id) }
 		end
 
 		-- Delete thread
@@ -172,9 +161,7 @@ return {
 				self.params, self.session, self.board
 			))
 
-			return {
-				redirect_to = self.board_url
-			}
+			return { redirect_to = self:format_url(self.board_url, self.board) }
 		end
 
 		-- Delete post
@@ -190,13 +177,9 @@ return {
 			))
 
 			if self.params.thread then
-				return {
-					redirect_to = self.thread_url .. self.params.thread_id
-				}
+				return { redirect_to = self:format_url(self.thread_url, self.board, self.params.thread_id) }
 			else
-				return {
-					redirect_to = self.board_url
-				}
+				return { redirect_to = self:format_url(self.board_url, self.board) }
 			end
 		end
 
@@ -209,70 +192,59 @@ return {
 			})
 
 			-- Validate report
-			local post = assert_error(process.report_post(
+			assert_error(process.report_post(
 				self.params, self.board
 			))
 
 			if self.thread then
 				local op = Posts:get_thread_op(self.thread.id)
-				return {
-					redirect_to = self.thread_url .. op.post_id
-				}
+				return { redirect_to = self:format_url(self.thread_url, self.board, op.post_id) }
 			else
-				return {
-					redirect_to = self.board_url
-				}
+				return { redirect_to = self:format_url(self.board_url, self.board) }
 			end
 		end
 
 		-- Admin commands
 		if self.session.admin or self.session.mod then
 			local op
+			local thread_url = self:format_url(self.board_url, self.board)
+
 			if self.thread then
-				op = Posts:get_thread_op(self.thread.id)
+				op         = Posts:get_thread_op(self.thread.id)
+				thread_url = self:format_url(self.thread_url, self.board, op.post_id)
 			end
 
 			-- Sticky thread
 			if self.params.sticky then
 				assert_error(process.sticky_thread(self.params, self.board))
-				return {
-					redirect_to = self.thread_url .. op.post_id
-				}
+				return { redirect_to = thread_url }
 			end
 
 			-- Lock thread
 			if self.params.lock then
 				assert_error(process.lock_thread(self.params, self.board))
-				return {
-					redirect_to = self.thread_url .. op.post_id
-				}
+				return { redirect_to = thread_url }
 			end
 
 			-- Save thread
 			if self.params.save then
 				assert_error(process.save_thread(self.params, self.board))
-				return {
-					redirect_to = self.thread_url .. op.post_id
-				}
+				return { redirect_to = thread_url }
 			end
 
 			-- Override thread
 			if self.params.override then
 				assert_error(process.override_thread(self.params, self.board))
-				return {
-					redirect_to = self.thread_url .. op.post_id
-				}
+				return { redirect_to = thread_url }
 			end
 
 			-- Ban user
 			if self.params.ban then
 				assert_error(process.ban_user(self.params, self.board))
-				return {
-					redirect_to = self.thread_url .. op.post_id
-				}
+				return { redirect_to = thread_url }
 			end
 		end
 
-		return { redirect_to = self.board_url }
+		return { redirect_to = self:format_url(self.board_url, self.board) }
 	end
 }

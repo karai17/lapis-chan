@@ -6,8 +6,8 @@
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= board_url %>"><%= i18n("return") %></a>]
-[<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
+[<a href="<%= format_url(board_url, board.short_name) %>"><%= i18n("return") %></a>]
+[<a href="<%= format_url(catalog_url, board.short_name) %>"><%= i18n("catalog") %></a>]
 [<a href="#bottom"><%= i18n("bottom") %></a>]
 <hr />
 <p class="archive_stats">
@@ -50,7 +50,7 @@
 	</tbody>
 </table>
 <hr />
-[<a href="<%= board_url %>"><%= i18n("return") %></a>]
-[<a href="<%= catalog_url %>"><%= i18n("catalog") %></a>]
+[<a href="<%= format_url(board_url, board.short_name) %>"><%= i18n("return") %></a>]
+[<a href="<%= format_url(catalog_url, board.short_name) %>"><%= i18n("catalog") %></a>]
 [<a href="#top"><%= i18n("top") %></a>]
 <hr />

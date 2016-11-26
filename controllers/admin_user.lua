@@ -187,6 +187,6 @@ return {
 			return { render = "admin.success" }
 		end
 
-		return { redirect_to = self.admin_url }
+		return { redirect_to = self:format_url(self.admin_url) }
 	end
 }

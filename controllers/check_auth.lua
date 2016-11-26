@@ -1,5 +1,3 @@
-local Bans   = require "models.bans"
-local Boards = require "models.boards"
 local Users  = require "models.users"
 
 return function(self)

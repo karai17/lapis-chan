@@ -7,10 +7,10 @@
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= board_url %>"><%= i18n("return") %></a>]
-[<a href="<%= archive_url %>"><%= i18n("archive") %></a>]
+[<a href="<%= format_url(board_url, board.short_name) %>"><%= i18n("return") %></a>]
+[<a href="<%= format_url(archive_url, board.short_name) %>"><%= i18n("archive") %></a>]
 [<a href="#bottom"><%= i18n("bottom") %></a>]
-[<a href="<%= catalog_url %>"><%= i18n("refresh") %></a>]
+[<a href="<%= format_url(catalog_url, board.short_name) %>"><%= i18n("refresh") %></a>]
 <hr />
 <% for t, thread in ipairs(threads) do %>
 <div class="catalog_container">
@@ -34,8 +34,8 @@
 </div>
 <% end %>
 <hr />
-[<a href="<%= board_url %>"><%= i18n("return") %></a>]
-[<a href="<%= archive_url %>"><%= i18n("archive") %></a>]
+[<a href="<%= format_url(board_url, board.short_name) %>"><%= i18n("return") %></a>]
+[<a href="<%= format_url(archive_url, board.short_name) %>"><%= i18n("archive") %></a>]
 [<a href="#top"><%= i18n("top") %></a>]
-[<a href="<%= catalog_url %>"><%= i18n("refresh") %></a>]
+[<a href="<%= format_url(catalog_url, board.short_name) %>"><%= i18n("refresh") %></a>]
 <hr />

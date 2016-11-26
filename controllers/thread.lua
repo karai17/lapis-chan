@@ -23,32 +23,23 @@ return {
 
 		-- Board not found
 		if not self.board then
-			self:write({ redirect_to = self.index_url })
+			self:write({ redirect_to = self:build_url() })
 			return
 		end
-
-		-- Page URLs
-		self.staticb_url = self.static_url .. self.board.short_name .. "/"
-		self.board_url   = self.boards_url .. self.board.short_name .. "/"
-		self.thread_url  = self.board_url  .. "thread/"
-		self.archive_url = self.board_url  .. "archive/"
-		self.catalog_url = self.board_url  .. "catalog/"
 
 		-- Get current thread data
 		local post  = Posts:get_post(self.board.id, self.params.thread)
 
 		-- Post not found
 		if not post then
-			self:write({ redirect_to = self.board_url })
+			self:write({ redirect_to = self:format_url(self.board_url, self.board.short_name) })
 			return
 		end
 
 		local op = Posts:get_thread_op(post.thread_id)
 
 		if post.post_id ~= op.post_id then
-			self:write({
-				redirect_to = self.thread_url .. op.post_id .. "#p" .. post.post_id
-			})
+			self:write({ redirect_to = self:format_url(self.post_url, self.board.short_name, op.post_id, post.post_id) })
 			return
 		end
 
@@ -56,7 +47,7 @@ return {
 
 		-- Thread not found
 		if not self.thread then
-			self:write({ redirect_to = self.board_url })
+			self:write({ redirect_to = self:format_url(self.board_url, self.board.short_name) })
 			return
 		end
 
@@ -82,10 +73,6 @@ return {
 		-- Get posts
 		self.posts = Posts:get_posts_by_thread(self.thread.id)
 
-		-- Thread URL
-		self.thread_url = self.thread_url .. self.posts[1].post_id .. "/"
-		self.form_url   = self.thread_url
-
 		-- Format comments
 		for i, post in ipairs(self.posts) do
 			-- OP gets a thread tag
@@ -94,8 +81,8 @@ return {
 			end
 
 			post.name      = post.name or self.board.anon_name
-			post.reply     = "#q" .. post.post_id
-			post.link      = "#p" .. post.post_id
+			post.reply     = self:format_url(self.reply_url, self.board.short_name, self.posts[1].post_id, post.post_id)
+			post.link      = self:format_url(self.post_url,  self.board.short_name, self.posts[1].post_id, post.post_id)
 			post.timestamp = os.date("%Y-%m-%d (%a) %H:%M:%S", post.timestamp)
 			post.file_size = math.floor(post.file_size / 1024)
 
@@ -103,15 +90,15 @@ return {
 			if post.file_path then
 				if post.file_spoiler then
 					if post == self.posts[1] then
-						post.thumb = self.static_url .. "op_spoiler.png"
+						post.thumb = self:format_url(self.static_url, "op_spoiler.png")
 					else
-						post.thumb = self.static_url .. "post_spoiler.png"
+						post.thumb = self:format_url(self.static_url, "post_spoiler.png")
 					end
 				else
-					post.thumb = self.staticb_url .. 's' .. post.file_path
+					post.thumb = self:format_url(self.images_url, self.board.short_name, 's' .. post.file_path)
 				end
 
-				post.file_path = self.staticb_url .. post.file_path
+				post.file_path = self:format_url(self.images_url, self.board.short_name, post.file_path)
 			end
 
 			-- Process comment
@@ -160,9 +147,7 @@ return {
 				self.params, self.session, self.board, self.thread
 			))
 
-			return {
-				redirect_to = self.thread_url .. "#p" .. post.post_id
-			}
+			return { redirect_to = self:format_url(self.post_url, self.board, self.thread, post.post_id) }
 		end
 
 		-- Delete thread
@@ -177,9 +162,7 @@ return {
 				self.params, self.session, self.board
 			))
 
-			return {
-				redirect_to = self.board_url
-			}
+			return { redirect_to = self:format_url(self.board_url, self.board) }
 		end
 
 		-- Delete post
@@ -194,9 +177,7 @@ return {
 				self.params, self.session, self.board
 			))
 
-			return {
-				redirect_to = self.thread_url
-			}
+			return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 		end
 
 		-- Report post
@@ -212,9 +193,7 @@ return {
 				self.params, self.board
 			))
 
-			return {
-				redirect_to = self.thread_url
-			}
+			return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 		end
 
 		-- Admin commands
@@ -222,46 +201,36 @@ return {
 			-- Sticky thread
 			if self.params.sticky then
 				assert_error(process.sticky_thread(self.params, self.board))
-				return {
-					redirect_to = self.thread_url
-				}
+				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 			end
 
 			-- Lock thread
 			if self.params.lock then
 				assert_error(process.lock_thread(self.params, self.board))
-				return {
-					redirect_to = self.thread_url
-				}
+				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 			end
 
 			-- Save thread
 			if self.params.save then
 				assert_error(process.save_thread(self.params, self.board))
-				return {
-					redirect_to = self.thread_url
-				}
+				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 			end
 
 			-- Override thread
 			if self.params.override then
 				assert_error(process.override_thread(self.params, self.board))
-				return {
-					redirect_to = self.thread_url
-				}
+				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 			end
 
 			-- Ban user
 			if self.params.ban then
 				assert_error(process.ban_user(self.params, self.board))
-				return {
-					redirect_to = self.thread_url
-				}
+				return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 			end
 
-			return { redirect_to = self.thread_url }
+			return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 		end
 
-		return { redirect_to = self.thread_url }
+		return { redirect_to = self:format_url(self.thread_url, self.board, self.thread) }
 	end
 }

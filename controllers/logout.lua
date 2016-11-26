@@ -5,5 +5,5 @@ return function(self)
 	self.session.mod     = nil
 	self.session.janitor = nil
 
-	return { redirect_to = self.index_url }
+	return { redirect_to = self:build_url() }
 end

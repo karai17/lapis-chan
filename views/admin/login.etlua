@@ -1,5 +1,5 @@
 <div class="admin_form">
-	<form action="<%= admin_url %>" method="post">
+	<form action="<%= build_url(admin_url) %>" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 
 		<div>

@@ -1,0 +1,5 @@
+logs
+static/a
+static/b
+*_temp
+*.compiled

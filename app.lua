@@ -1,5 +1,4 @@
 local lapis      = require "lapis"
-local config     = require ("lapis.config").get()
 local respond_to = require ("lapis.application").respond_to
 local app        = lapis.Application()
 app:enable("etlua")
@@ -12,8 +11,6 @@ if _ then
 	app:before_filter(config_site)
 	app:match("/", respond_to(install))
 	return app
-else
-	--print(install)
 end
 
 -- Before
@@ -49,28 +46,28 @@ app:before_filter(check_auth)
 app:before_filter(check_ban)
 
 -- Private
-app:match("/admin/",                           respond_to(admin))
-app:match("/admin/:action/user/",              respond_to(admin_u))
-app:match("/admin/:action/user/:user/",        respond_to(admin_u))
-app:match("/admin/:action/board/",             respond_to(admin_b))
-app:match("/admin/:action/board/:board/",      respond_to(admin_b))
-app:match("/admin/:action/announcement/",      respond_to(admin_a))
-app:match("/admin/:action/announcement/:ann/", respond_to(admin_a))
-app:match("/admin/:action/page/",              respond_to(admin_p))
-app:match("/admin/:action/page/:page/",        respond_to(admin_p))
-app:match("/admin/:action/report/",            respond_to(admin_r))
-app:match("/admin/:action/report/:report/",    respond_to(admin_r))
+app:match("/admin",                           respond_to(admin))
+app:match("/admin/:action/user",              respond_to(admin_u))
+app:match("/admin/:action/user/:user",        respond_to(admin_u))
+app:match("/admin/:action/board",             respond_to(admin_b))
+app:match("/admin/:action/board/:board",      respond_to(admin_b))
+app:match("/admin/:action/announcement",      respond_to(admin_a))
+app:match("/admin/:action/announcement/:ann", respond_to(admin_a))
+app:match("/admin/:action/page",              respond_to(admin_p))
+app:match("/admin/:action/page/:page",        respond_to(admin_p))
+app:match("/admin/:action/report",            respond_to(admin_r))
+app:match("/admin/:action/report/:report",    respond_to(admin_r))
 
 -- Public
-app:match("/",                             index)
-app:match("/404/",                         code_404)
-app:match("/rules/",                       rules)
-app:match("/logout/",                      logout)
-app:match("/board/:board/",                respond_to(board))
-app:match("/board/:board/catalog/",        respond_to(catalog))
-app:match("/board/:board/archive/",        archive)
-app:match("/board/:board/:page/",          respond_to(board))
-app:match("/board/:board/thread/:thread/", respond_to(thread))
-app:match("/:page/",                       page)
+app:match("/",                            index)
+app:match("/404",                         code_404)
+app:match("/rules",                       rules)
+app:match("/logout",                      logout)
+app:match("/board/:board",                respond_to(board))
+app:match("/board/:board/catalog",        respond_to(catalog))
+app:match("/board/:board/archive",        archive)
+app:match("/board/:board/:page",          respond_to(board))
+app:match("/board/:board/thread/:thread", respond_to(thread))
+app:match("/:page",                       page)
 
 return app

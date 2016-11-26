@@ -1,5 +1,5 @@
 <div id="post_form">
-	<form id="submit_form" enctype="multipart/form-data" action="<%= form_url %>" method="post" autocomplete="off">
+	<form id="submit_form" enctype="multipart/form-data" action="#" method="post" autocomplete="off">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="board" type="hidden" value="<%= params.board %>" />
 		<% if params.thread then %>
@@ -65,7 +65,7 @@
 		<div>
 			<label class="title">
 				<%= i18n("form_submit_draw") %>
-				<span title="<%= i18n("form_submit_draw_help") %>">(❓)</span>
+				<span title="<%= i18n('form_submit_draw_help') %>">(❓)</span>
 			</label>
 			<span class="fields">
 				<input type="hidden" id="draw" name="draw" />
@@ -136,8 +136,8 @@
 	<p>
 		<%-
 		i18n("form_readme", {
-			rules = '<a href="'..index_url..'rules"><strong>Rules</strong></a>',
-			faq   = '<a href="'..index_url..'faq"><strong>FAQ</strong></a>'
+			rules = '<a href="'..build_url(rules_url)..'"><strong>Rules</strong></a>',
+			faq   = '<a href="'..build_url(faq_url)..'"><strong>FAQ</strong></a>'
 		})
 		%>
 	</p>

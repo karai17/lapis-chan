@@ -7,7 +7,7 @@ return function(self)
 	self.software  = "Lapis-chan"
 	self.version   = "1.1.2"
 	self.site_name = config.site_name
-	self.text_size = text_size
+	self.text_size = _G.text_size
 
 	-- Get localization files
 	self.locales = {}
@@ -30,30 +30,43 @@ return function(self)
 	end
 	self.i18n = i18n
 
-	-- Set base URLs
-	if config.subdomains then
-		local host        = ngx.var.host
-		local pattern     = "(%w-%.)(%w+%.%w+)"
-		local sub, domain = host:match(pattern)
+	-- Static
+	self.static_url  = "/static/%s"
+	self.images_url  = "/static/%s/%s"
+	self.styles_url  = "/static/styles/%s.css"
+	self.scripts_url = "/static/scripts/%s.js"
+	self.styles_dir  = "./static/styles"
 
-		if sub then
-			self.index_url = domain .. "/"
-		else
-			self.index_url = host .. "/"
-		end
+	-- Private
+	self.admin_url               = "/admin"
+	self.admin_users_url         = "/admin/%s/user"
+	self.admin_user_url          = "/admin/%s/user/%s"
+	self.admin_boards_url        = "/admin/%s/board"
+	self.admin_board_url         = "/admin/%s/board/%s"
+	self.admin_announcements_url = "/admin/%s/announcement"
+	self.admin_announcement_url  = "/admin/%s/announcement/%s"
+	self.admin_pages_url         = "/admin/%s/page"
+	self.admin_page_url          = "/admin/%s/page/%s"
+	self.admin_reports_url       = "/admin/%s/report"
+	self.admin_report_url        = "/admin/%s/report/%s"
 
-		self.boards_url = "//boards." .. self.index_url
-		self.static_url = "//static." .. self.index_url
-	else
-		self.index_url  = "/"
-		self.boards_url = self.index_url  .. "board/"
-		self.static_url = self.index_url  .. "static/"
+	-- Public
+	self.c404_url       = "/404"
+	self.rules_url      = "/rules"
+	self.faq_url        = "/faq"
+	self.login_url      = "/login"
+	self.logout_url     = "/logout"
+	self.board_url      = "/board/%s"
+	self.catalog_url    = "/board/%s/catalog"
+	self.archive_url    = "/board/%s/archive"
+	self.board_page_url = "/board/%s/%d"
+	self.thread_url     = "/board/%s/thread/%d"
+	self.post_url       = "/board/%s/thread/%d#p%d"
+	self.reply_url      = "/board/%s/thread/%d#q%d"
+	self.remix_url      = "/board/%s/thread/%d#r%d"
+	self.page_url       = "/%s"
+
+	function self:format_url(pattern, ...)
+		return self:build_url(string.format(pattern, ...))
 	end
-
-	self.c404_url    = self.index_url  .. "404/"
-	self.admin_url   = self.index_url  .. "admin/"
-	self.login_url   = self.index_url  .. "login/"
-	self.logout_url  = self.index_url  .. "logout/"
-	self.styles_url  = self.static_url .. "styles/"
-	self.scripts_url = self.static_url .. "scripts/"
 end

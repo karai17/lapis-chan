@@ -4,7 +4,7 @@
 
 <!-- Report Junk -->
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="view_report" type="hidden" />
 		<div>
@@ -22,7 +22,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_report" type="hidden" />
 		<div>
@@ -41,7 +41,7 @@
 
 <!-- User Junk -->
 <div class="admin_form">
-	<form action="<%= admin_cu_url %>" method="get">
+	<form action="<%= format_url(admin_users_url, 'create') %>" method="get">
 		<div>
 			<label class="title"><%= i18n("create_user") %></label>
 			<span class="fields">
@@ -52,7 +52,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="modify_user" type="hidden" />
 		<div>
@@ -70,7 +70,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_user" type="hidden" />
 		<div>
@@ -89,7 +89,7 @@
 
 <!-- Board Junk -->
 <div class="admin_form">
-	<form action="<%= admin_cb_url %>" method="get">
+	<form action="<%= format_url(admin_boards_url, 'create') %>" method="get">
 		<div>
 			<label class="title"><%= i18n("create_board") %></label>
 			<span class="fields">
@@ -100,7 +100,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="modify_board" type="hidden" />
 		<div>
@@ -118,7 +118,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_board" type="hidden" />
 		<div>
@@ -137,7 +137,7 @@
 
 <!-- Announcement Junk -->
 <div class="admin_form">
-	<form action="<%= admin_ca_url %>" method="get">
+	<form action="<%= format_url(admin_announcements_url, 'create') %>" method="get">
 		<div>
 			<label class="title"><%= i18n("create_ann") %></label>
 			<span class="fields">
@@ -148,7 +148,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="modify_announcement" type="hidden" />
 		<div>
@@ -166,7 +166,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_announcement" type="hidden" />
 		<div>
@@ -185,7 +185,7 @@
 
 <!-- Page Junk -->
 <div class="admin_form">
-	<form action="<%= admin_cp_url %>" method="get">
+	<form action="<%= format_url(admin_pages_url, 'create') %>" method="get">
 		<div>
 			<label class="title"><%= i18n("create_page") %></label>
 			<span class="fields">
@@ -196,7 +196,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="modify_page" type="hidden" />
 		<div>
@@ -214,7 +214,7 @@
 </div>
 
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<input name="delete_page" type="hidden" />
 		<div>
@@ -233,7 +233,7 @@
 
 <!-- Regen Thumbs -->
 <div class="admin_form">
-	<form action="" method="post">
+	<form action="#" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 		<div>
 			<label class="title"><%= i18n("regen_thumb") %></label>

@@ -12,8 +12,15 @@ local body_size  = "15m"
 local text_size  = 10000
 
 -- Path to your lua libraries (LuaRocks and OpenResty)
-local lua_path   = ""
-local lua_cpath  = ""
+local luarocks_path  = ""
+local luarocks_cpath = ""
+local resty_path     = ""
+local resty_cpath    = ""
+local custom_path    = ""
+local custom_cpath   = ""
+
+local lua_path   = luarocks_path  .. resty_path  .. custom_path
+local lua_cpath  = luarocks_cpath .. resty_cpath .. custom_cpath
 
 config("development", {
 	site_name  = "Lapis-chan Dev",
@@ -35,7 +42,7 @@ config("development", {
 
 config("production", {
 	code_cache = "on",
-	site_name  = "Lapis-chan Dev",
+	site_name  = "Lapis-chan",
 	port       = 80,
 	secret     = token,
 	subdomains = subdomains,
@@ -69,4 +76,3 @@ config("test", {
 		database = "db_schema"
 	},
 })
-

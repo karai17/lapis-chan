@@ -1,3 +1,3 @@
 <h1>Success</h1>
 <p><%= action %></p>
-[<a href="<%= admin_url %>"><%= i18n("return") %></a>]
+[<a href="<%= build_url(admin_url) %>"><%= i18n("return") %></a>]

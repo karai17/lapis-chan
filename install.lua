@@ -281,7 +281,7 @@ return {
 				out = out .. "<h2>" .. err .. "</h2>\n"
 			end
 			out = out .. [[
-				<form action="" method="get">
+				<form action="#" method="get">
 					<button>Return</button>
 				</form>
 			</div>

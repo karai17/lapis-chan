@@ -25,8 +25,7 @@ To view a complete list of features, check out the [Feature Set](https://docs.go
 * bcrypt
 * giflib
 * i18n
-* Lapis 1.4+
-* luafilesystem
+* Lapis 1.5+
 * luaposix
 * magick
 * markdown
@@ -59,13 +58,29 @@ $ sudo make install
 
 ## Other Stuff
 
+### Debian Family
+
 ```
 $ sudo apt-get install libmagickwand-dev
 $ sudo apt-get install luajit
 $ sudo apt-get install luarocks
 $ sudo apt-get install postgresql
 $ sudo apt-get install mysql-server
+```
 
+### RHEL Family
+
+```
+$ sudo dnf install ImageMagick-devel
+$ sudo dnf install luajit
+$ sudo dnf install luarocks
+$ sudo dnf install postgresql
+$ sudo dnf install mysql-server
+```
+
+### LuaRocks
+
+```
 $ luarocks install bcrypt
 $ luarocks install giflib --server=http://luarocks.org/dev
 $ luarocks install i18n
@@ -76,6 +91,10 @@ $ luarocks install magick
 $ luarocks install markdown
 $ luarocks install md5
 ```
+
+NOTE: Setting up [pg_hba.conf](https://github.com/leafo/pgmoon/issues/19) might be required!
+
+NOTE: [This](https://fedoraproject.org/wiki/PostgreSQL#User_Creation_and_Database_Creation) may be helpful too!
 
 # Installing
 
