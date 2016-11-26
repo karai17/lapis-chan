@@ -303,7 +303,7 @@ function process.ban_user(params, board)
 	end
 
 	-- Ban user
-	local ban, err = Bans:create_ban(self.params)
+	local ban, err = Bans:create_ban(params)
 	if err then
 		return false, err
 	end

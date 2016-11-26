@@ -5,7 +5,7 @@ local lfs    = require "lfs"
 return function(self)
 	-- Set basic information
 	self.software  = "Lapis-chan"
-	self.version   = "1.1.3"
+	self.version   = "1.1.4"
 	self.site_name = config.site_name
 	self.text_size = _G.text_size
 
