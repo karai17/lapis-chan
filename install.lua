@@ -199,11 +199,6 @@ local success = [[
 <h2>Thank you for installing Lapis-chan! &lt;3</h2>
 ]]
 
-local function replace(text, from, to)
-	from = string.format("${{%s}}", from)
-	return text:gsub(from, to)
-end
-
 return {
 	GET = function(self)
 		self.page_title = "Install Lapis-chan"
@@ -267,12 +262,13 @@ return {
 			{ "post_file", exists=true },
 			{ "post_comment", exists=true },
 			{ "text_only", exists=true },
+			{ "filetype_image", exists=true },
+			{ "filetype_audio", exists=true },
 			{ "draw", exists=true },
 			{ "archive", exists=true },
 			{ "archive_time", exists=true },
 			{ "group", exists=true }
 		})
-
 
 		local out
 		if errs then
@@ -293,7 +289,7 @@ return {
 		end
 
 		-- Add new user
-		local user = Users:create_user {
+		Users:create_user {
 			username = self.params.user_username,
 			password = self.params.user_password,
 			admin    = true,
@@ -302,7 +298,7 @@ return {
 		}
 
 		-- Add new board
-		local board = Boards:create_board {
+		Boards:create_board {
 			short_name        = self.params.short_name,
 			name              = self.params.name,
 			subtext           = self.params.subtext,
@@ -313,6 +309,8 @@ return {
 			pages             = self.params.pages,
 			threads_per_page  = self.params.threads_per_page,
 			text_only         = self.params.text_only,
+			filetype_image    = self.params.filetype_image,
+			filetype_audio    = self.params.filetype_audio,
 			draw              = self.params.draw,
 			thread_file       = self.params.thread_file,
 			thread_comment    = self.params.thread_comment,
@@ -326,7 +324,7 @@ return {
 		}
 
 		-- Add FAQ page
-		local page = Pages:create_page {
+		Pages:create_page {
 			name    = "Frequently Asked Questions",
 			url     = "faq",
 			content = faq

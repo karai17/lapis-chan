@@ -97,6 +97,18 @@
 			<option value="false" selected>False</option>
 		</select>
 
+		<label>Allow Image Files</label>
+		<select name="filetype_image">
+			<option value="true" selected>True</option>
+			<option value="false">False</option>
+		</select>
+
+		<label>Allow Audio Files</label>
+		<select name="filetype_audio">
+			<option value="true">True</option>
+			<option value="false" selected>False</option>
+		</select>
+
 		<label>Draw/Remix Board</label>
 		<select name="draw">
 			<option value="true">True</option>

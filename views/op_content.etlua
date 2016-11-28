@@ -12,7 +12,7 @@
 		<% else %>
 		<a href="<%= post.file_path %>" target="_blank"><%= post.file_name %></a>
 		<% end%>
-		(<%= post.file_size %> KB, <%= post.file_width %>x<%= post.file_height %>)
+		(<%= post.file_size %> KB<%= post.file_dimensions %><%= post.file_duration %>)
 	</div>
 	<div class="post_image">
 		<a href="<%= post.file_path %>" target="_blank"><img src="<%= post.thumb %>" alt="" /></a>

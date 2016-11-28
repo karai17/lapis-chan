@@ -15,6 +15,7 @@ To view a complete list of features, check out the [Feature Set](https://docs.go
 
 ## Install From Package Manager
 
+* ffmpeg
 * libmagicwand-dev
 * Lua 5.1+ or LuaJIT 2.0+
 * Luarocks
@@ -61,6 +62,7 @@ $ sudo make install
 ### Debian Family
 
 ```
+$ sudo apt-get install ffmpeg
 $ sudo apt-get install libmagickwand-dev
 $ sudo apt-get install luajit
 $ sudo apt-get install luarocks
@@ -71,6 +73,7 @@ $ sudo apt-get install mysql-server
 ### RHEL Family
 
 ```
+$ sudo dnf install ffmpeg
 $ sudo dnf install ImageMagick-devel
 $ sudo dnf install luajit
 $ sudo dnf install luarocks

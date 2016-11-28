@@ -15,7 +15,7 @@ function Boards:create_board(board)
 	trim(board, {
 		"short_name", "name", "subtext", "rules",
 		"anon_name", "theme",
-		"posts", "pages", "threads_per_page", "text_only", "draw",
+		"posts", "pages", "threads_per_page", "text_only", "filetype_image", "filetype_audio", "draw",
 		"thread_file", "thread_comment", "thread_file_limit",
 		"post_file", "post_comment", "post_limit",
 		"archive", "archive_time", "group"
@@ -32,6 +32,8 @@ function Boards:create_board(board)
 		pages             = board.pages,
 		threads_per_page  = board.threads_per_page,
 		text_only         = board.text_only,
+		filetype_image    = board.filetype_image,
+		filetype_audio    = board.filetype_audio,
 		draw              = board.draw,
 		thread_file       = board.thread_file,
 		thread_comment    = board.thread_comment,
@@ -133,7 +135,8 @@ function Boards:regen_thumbs()
 			posts.thread_id,
 			posts.file_path,
 			posts.file_width,
-			posts.file_height
+			posts.file_height,
+			posts.file_type
 		from posts
 		left join boards on
 			board_id = boards.id
@@ -141,6 +144,7 @@ function Boards:regen_thumbs()
 			file_path   is not null and
 			file_width  is not null and
 			file_height is not null and
+			file_type    = 'image'  and
 			file_spoiler = false
 		order by
 			board_id  asc,
@@ -161,8 +165,16 @@ function Boards:regen_thumbs()
 		end
 
 		-- Filesystem paths
+		local ext        = result.file_path:match("^.+(%..+)$")
 		local full_path  = dir .. result.file_path
 		local thumb_path = dir .. "s" .. result.file_path
+
+		-- Generate a thumbnail
+		if ext == ".webm" then
+			-- Create screenshot of first frame
+			thumb_path = thumb_path:sub(1, -6) .. ".png"
+			os.execute(string.format("ffmpeg -i %s -ss 00:00:01 -vframes 1 %s -y", full_path, thumb_path))
+		end
 
 		-- Save thumbnail
 		local w, h
@@ -175,8 +187,12 @@ function Boards:regen_thumbs()
 			h = result.file_height < 125 and result.file_height or 125
 		end
 
+		-- Grab first frame from video
+		if ext == ".webm" then
+			magick.thumb(thumb_path, string.format("%sx%s", w, h), thumb_path)
+		end
+
 		-- Grab first frame of a gif instead of the last
-		local ext = result.file_path:match("^.+(%..+)$")
 		if ext == ".gif" then
 			local gif, err = giflib.load_gif(full_path)
 
@@ -186,7 +202,7 @@ function Boards:regen_thumbs()
 				gif:write_first_frame(thumb_path)
 				magick.thumb(thumb_path, string.format("%sx%s", w, h), thumb_path)
 			end
-		else
+		elseif ext ~= ".webm" then
 			magick.thumb(full_path, string.format("%sx%s", w, h), thumb_path)
 		end
 	end

@@ -39,7 +39,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 	end
 
 	-- Files take presidence over drawings, but if there is no file, fill in
-	-- the file fields with draw data. This shodl avoid ugly code branching
+	-- the file fields with draw data. This should avoid ugly code branching
 	-- later on in the file.
 	params.file = params.file or {
 		filename = "",
@@ -97,27 +97,33 @@ function Posts:prepare_post(params, session, board, thread, files)
 		end
 
 		local name = sf("%s%s", time, ss(generate.random(time, params), -3))
-		local dir  = sf("./static/%s/", board.short_name)
 		local ext  = params.file.filename:match("^.+(%..+)$") or ""
 
-		-- Valid filetype
-		if not filetypes[ext] then
+		-- Figure out how to deal with the file
+		if filetypes.image[ext] and board.filetype_image then
+			params.file_type = "image"
+
+			if ext ~= ".webm" then
+				-- Check if valid image
+				local image = magick.load_image_from_blob(params.file.content)
+
+				if not image then
+					return false, "err_invalid_image"
+				end
+
+				params.file_width  = image:get_width()
+				params.file_height = image:get_height()
+			end
+		elseif filetypes.audio[ext] and board.filetype_audio then
+			params.file_type = "audio"
+		else
 			return false, "err_invalid_ext", { ext }
-		end
-
-		-- Check if valid image
-		local image = magick.load_image_from_blob(params.file.content)
-
-		if not image then
-			return false, "err_invalid_image"
 		end
 
 		params.file_name   = params.file.filename
 		params.file_path   = name .. ext
 		params.file_md5    = md5.sumhexa(params.file.content)
 		params.file_size   = #params.file.content
-		params.file_width  = image:get_width()
-		params.file_height = image:get_height()
 
 		if params.file_spoiler then
 			params.file_spoiler = true
@@ -154,26 +160,44 @@ function Posts:create_post(params, session, board, thread, op)
 
 	-- Create post
 	local post = self:create {
-		post_id      = board.posts,
-		thread_id    = thread.id,
-		board_id     = board.id,
-		timestamp    = os.time(),
-		ip           = params.ip,
-		comment      = params.comment,
-		name         = params.name,
-		trip         = params.trip,
-		subject      = params.subject,
-		password     = session.password,
-		file_name    = params.file_name,
-		file_path    = params.file_path,
-		file_md5     = params.file_md5,
-		file_size    = params.file_size,
-		file_width   = params.file_width,
-		file_height  = params.file_height,
-		file_spoiler = params.file_spoiler
+		post_id       = board.posts,
+		thread_id     = thread.id,
+		board_id      = board.id,
+		timestamp     = os.time(),
+		ip            = params.ip,
+		comment       = params.comment,
+		name          = params.name,
+		trip          = params.trip,
+		subject       = params.subject,
+		password      = session.password,
+		file_name     = params.file_name,
+		file_path     = params.file_path,
+		file_type     = params.file_type,
+		file_md5      = params.file_md5,
+		file_size     = params.file_size,
+		file_width    = params.file_width,
+		file_height   = params.file_height,
+		file_duration = params.file_duration,
+		file_spoiler  = params.file_spoiler
 	}
 
 	if post then
+		local function get_duration(path)
+			local cmd = sf("ffprobe -i %s -show_entries format=duration -v quiet -of csv=\"p=0\" -sexagesimal", path)
+			local f = io.popen(cmd, "r")
+			local s = f:read("*a")
+			f:close()
+
+			local hr, mn, sc = string.match(s, "(%d+):(%d+):(%d+).%d+")
+			local d = mn..":"..sc
+
+			if hr ~= "0" then
+				d = hr..":"..d
+			end
+
+			return d
+		end
+
 		-- Update board
 		board:update("posts")
 
@@ -190,7 +214,29 @@ function Posts:create_post(params, session, board, thread, op)
 			file:write(params.file.content)
 			file:close()
 
-			if not post.file_spoiler then
+			-- Audio file
+			if post.file_type == "audio" then
+				post.file_duration = get_duration(full_path)
+				post:update("file_duration")
+				return post
+			end
+
+			-- Image file
+			if post.file_type == "image" and not post.file_spoiler then
+				-- Generate a thumbnail
+				if ext == ".webm" then
+					thumb_path = ss(thumb_path, 1, -6) .. ".png"
+
+					-- Create screenshot of first frame
+					os.execute(sf("ffmpeg -i %s -ss 00:00:01 -vframes 1 %s", full_path, thumb_path))
+
+					local image        = magick.load_image(thumb_path)
+					post.file_width    = image:get_width()
+					post.file_height   = image:get_height()
+					post.file_duration = get_duration(full_path)
+					post:update("file_width", "file_height", "file_duration")
+				end
+
 				-- Save thumbnail
 				local w, h
 				if op then
@@ -199,6 +245,12 @@ function Posts:create_post(params, session, board, thread, op)
 				else
 					w = post.file_width  < 125 and post.file_width  or 125
 					h = post.file_height < 125 and post.file_height or 125
+				end
+
+				-- Grab first frame from video
+				if ext == ".webm" then
+					magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
+					return post
 				end
 
 				-- Grab first frame of a gif instead of the last
@@ -220,6 +272,8 @@ function Posts:create_post(params, session, board, thread, op)
 				else
 					magick.thumb(full_path, sf("%sx%s", w, h), thumb_path)
 				end
+
+				return post
 			end
 		end
 
@@ -240,6 +294,12 @@ function Posts:delete_post(session, board, post)
 		if post.file_path then
 			local dir = sf("./static/%s/", short_name)
 			os.remove(dir .. post.file_path)
+
+			-- Change path from webm to png
+			if ss(post.file_path, -5) == ".webm" then
+				post.file_path = ss(post.file_path, 1, -6) .. ".png"
+			end
+
 			os.remove(dir .. "s" .. post.file_path)
 		end
 

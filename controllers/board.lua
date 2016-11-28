@@ -77,27 +77,49 @@ return {
 					post.thread = post.post_id
 				end
 
-				post.name  = post.name or self.board.anon_name
-				post.reply = self:format_url(self.reply_url, self.board.short_name, op.post_id, post.post_id)
-				post.link  = self:format_url(self.post_url,  self.board.short_name, op.post_id, post.post_id)
-				post.remix = self:format_url(self.remix_url, self.board.short_name, op.post_id, post.post_id)
+				post.name            = post.name or self.board.anon_name
+				post.reply           = self: format_url(self.reply_url, self.board.short_name, op.post_id, post.post_id)
+				post.link            = self: format_url(self.post_url,  self.board.short_name, op.post_id, post.post_id)
+				post.remix           = self: format_url(self.remix_url, self.board.short_name, op.post_id, post.post_id)
+				post.timestamp       = os.date("%Y-%m-%d (%a) %H:%M:%S", post.timestamp)
+				post.file_size       = math.floor(post.file_size / 1024)
+				post.file_dimensions = ""
 
-				post.file_size = math.floor(post.file_size / 1024)
-				post.timestamp = os.date("%Y-%m-%d (%a) %H:%M:%S", post.timestamp)
+				if post.file_width > 0 and post.file_height > 0 then
+					post.file_dimensions = string.format(", %dx%d", post.file_width, post.file_height)
+				end
 
-				-- Get thumbnail URL
+				if post.file_duration == "0" then
+					post.file_duration = ""
+				else
+					post.file_duration = string.format(", %s", post.file_duration)
+				end
+
 				if post.file_path then
-					if post.file_spoiler then
+					-- Get thumbnail URL
+					if post.file_type == "audio" then
 						if post == thread.posts[#thread.posts] then
-							post.thumb = self:format_url(self.static_url, "op_spoiler.png")
+							post.thumb = self:format_url(self.static_url, "op_audio.png")
 						else
-							post.thumb = self:format_url(self.static_url, "post_spoiler.png")
+							post.thumb = self:format_url(self.static_url, "post_audio.png")
 						end
-					else
-						post.thumb = self:format_url(self.images_url, self.board.short_name, 's' .. post.file_path)
+					elseif post.file_type == "image" then
+						if post.file_spoiler then
+							if post == thread.posts[#thread.posts] then
+								post.thumb = self:format_url(self.static_url, "op_spoiler.png")
+							else
+								post.thumb = self:format_url(self.static_url, "post_spoiler.png")
+							end
+						else
+							if post.file_path:sub(-5) == ".webm" then
+								post.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. post.file_path:sub(1, -6) .. '.png')
+							else
+								post.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. post.file_path)
+							end
+						end
 					end
 
-					post.file_path = self:format_url(self.images_url, self.board.short_name, post.file_path)
+					post.file_path = self:format_url(self.files_url, self.board.short_name, post.file_path)
 				end
 
 				-- Process comment
@@ -117,6 +139,11 @@ return {
 		end
 	end,
 	on_error = function(self)
+		print("WWWWWWWWWWWWWWWW::")
+		for k,v in pairs(self.errors) do
+			print(k..":"..v.."::")
+		end
+
 		local err = self.i18n(unpack(self.errors))
 		if err then
 			self.errors = { err }

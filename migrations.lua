@@ -101,5 +101,11 @@ return {
 			{ "name",    types.varchar },
 			{ "content", types.text }
 		})
+	end,
+	[120] = function()
+		schema.add_column("boards", "filetype_image", types.boolean { default=true })
+		schema.add_column("boards", "filetype_audio", types.boolean { default=false })
+		schema.add_column("posts",  "file_type",      types.varchar { default="image" })
+		schema.add_column("posts",  "file_duration",  types.varchar { null=true })
 	end
 }

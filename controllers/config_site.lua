@@ -5,7 +5,7 @@ local lfs    = require "lfs"
 return function(self)
 	-- Set basic information
 	self.software  = "Lapis-chan"
-	self.version   = "1.1.4"
+	self.version   = "1.2.0"
 	self.site_name = config.site_name
 	self.text_size = _G.text_size
 
@@ -32,7 +32,7 @@ return function(self)
 
 	-- Static
 	self.static_url  = "/static/%s"
-	self.images_url  = "/static/%s/%s"
+	self.files_url   = "/static/%s/%s"
 	self.styles_url  = "/static/styles/%s.css"
 	self.scripts_url = "/static/scripts/%s.js"
 	self.styles_dir  = "./static/styles"

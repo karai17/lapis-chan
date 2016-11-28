@@ -73,6 +73,26 @@
 		</div>
 
 		<div>
+			<label class="title"><%= i18n("filetype_image") %></label>
+			<span class="fields">
+				<select name="filetype_image">
+					<option value="t" <%= board.filetype_image == true  and 'selected' or '' %>><%= i18n("yes") %></option>
+					<option value="f" <%= board.filetype_image == false and 'selected' or '' %>><%= i18n("no") %></option>
+				</select>
+			</span>
+		</div>
+
+		<div>
+			<label class="title"><%= i18n("filetype_audio") %></label>
+			<span class="fields">
+				<select name="filetype_audio">
+					<option value="t" <%= board.filetype_audio == true  and 'selected' or '' %>><%= i18n("yes") %></option>
+					<option value="f" <%= board.filetype_audio == false and 'selected' or '' %>><%= i18n("no") %></option>
+				</select>
+			</span>
+		</div>
+
+		<div>
 			<label class="title"><%= i18n("draw_board") %></label>
 			<span class="fields">
 				<select name="draw">

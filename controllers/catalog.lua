@@ -56,15 +56,23 @@ return {
 			thread.files   = Posts:count_files(thread.id)
 			thread.url     = self:format_url(self.thread_url, self.board.short_name, thread.op.post_id)
 
-			-- Get thumbnail URL
 			if thread.op.file_path then
-				if thread.op.file_spoiler then
-					thread.op.thumb = self:format_url(self.static_url, "post_spoiler.png")
-				else
-					thread.op.thumb = self:format_url(self.images_url, self.board.short_name, 's' .. thread.op.file_path)
+				-- Get thumbnail URL
+				if thread.op.file_type == "audio" then
+					thread.op.thumb = self:format_url(self.static_url, "post_audio.png")
+				elseif thread.op.file_type == "image" then
+					if thread.op.file_spoiler then
+						thread.op.thumb = self:format_url(self.static_url, "post_spoiler.png")
+					else
+						if thread.op.file_path:sub(-5) == ".webm" then
+							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path:sub(1, -6) .. '.png')
+						else
+							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path)
+						end
+					end
 				end
 
-				thread.op.file_path = self:format_url(self.images_url, self.board.short_name, thread.op.file_path)
+				thread.op.file_path = self:format_url(self.files_url, self.board.short_name, thread.op.file_path)
 			end
 
 			-- Process comment
