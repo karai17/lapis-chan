@@ -190,10 +190,11 @@ function Boards:regen_thumbs()
 		-- Grab first frame from video
 		if ext == ".webm" then
 			magick.thumb(thumb_path, string.format("%sx%s", w, h), thumb_path)
-		end
-
-		-- Grab first frame of a gif instead of the last
-		if ext == ".gif" then
+		elseif ext == ".svg" then
+			thumb_path = thumb_path:sub(1, -5) .. ".png"
+			os.execute(string.format("convert -background none -resize %dx%d %s %s", w, h, full_path, thumb_path))
+		elseif ext == ".gif" then
+			-- Grab first frame of a gif instead of the last
 			local gif, err = giflib.load_gif(full_path)
 
 			if err then
@@ -202,7 +203,7 @@ function Boards:regen_thumbs()
 				gif:write_first_frame(thumb_path)
 				magick.thumb(thumb_path, string.format("%sx%s", w, h), thumb_path)
 			end
-		elseif ext ~= ".webm" then
+		else
 			magick.thumb(full_path, string.format("%sx%s", w, h), thumb_path)
 		end
 	end

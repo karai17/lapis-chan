@@ -249,11 +249,13 @@ function Posts:create_post(params, session, board, thread, op)
 				-- Grab first frame from video
 				if ext == ".webm" then
 					magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
+				-- Generate a thumbnail
+				elseif ext == ".svg" then
+					thumb_path = ss(thumb_path, 1, -5) .. ".png"
+					os.execute(sf("convert -background none -resize %dx%d %s %s", w, h, full_path, thumb_path))
 					return post
-				end
-
 				-- Grab first frame of a gif instead of the last
-				if ext == ".gif" then
+				elseif ext == ".gif" then
 					local gif, err = giflib.load_gif(full_path)
 
 					if err then
@@ -297,6 +299,11 @@ function Posts:delete_post(session, board, post)
 			-- Change path from webm to png
 			if ss(post.file_path, -5) == ".webm" then
 				post.file_path = ss(post.file_path, 1, -6) .. ".png"
+			end
+
+			-- Change path from svg to png
+			if ss(post.file_path, -4) == ".svg" then
+				post.file_path = ss(post.file_path, 1, -5) .. ".png"
 			end
 
 			os.remove(dir .. "s" .. post.file_path)

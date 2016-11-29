@@ -67,6 +67,8 @@ return {
 					else
 						if thread.op.file_path:sub(-5) == ".webm" then
 							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path:sub(1, -6) .. '.png')
+						elseif thread.op.file_path:sub(-4) == ".svg" then
+							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path:sub(1, -5) .. '.png')
 						else
 							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path)
 						end

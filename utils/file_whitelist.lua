@@ -9,7 +9,7 @@ return {
 		[".jpeg"] = true,
 		[".webp"] = true,
 		[".webm"] = true,
-		[".svg"]  = false
+		[".svg"]  = true
 	},
 
 	-- Audio formats
