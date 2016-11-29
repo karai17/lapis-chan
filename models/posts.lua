@@ -96,7 +96,8 @@ function Posts:prepare_post(params, session, board, thread, files)
 		end
 
 		local name = sf("%s%s", time, ss(generate.random(time, params), -3))
-		local ext  = params.file.filename:match("^.+(%..+)$") or ""
+		local ext  = params.file.filename:match("^.+(%..+)$")
+		ext = string.lower(ext)
 
 		-- Figure out how to deal with the file
 		if filetypes.image[ext] and board.filetype_image then
@@ -201,8 +202,9 @@ function Posts:create_post(params, session, board, thread, op)
 		board:update("posts")
 
 		if post.file_path then
-			local ext  = post.file_path:match("^.+(%..+)$") or ""
-			local dir  = sf("./static/%s/", board.short_name)
+			local dir       = sf("./static/%s/", board.short_name)
+			local name, ext = post.file_path:match("^(.+)(%..+)$")
+			ext = string.lower(ext)
 
 			-- Filesystem paths
 			local full_path  = dir .. post.file_path
@@ -224,10 +226,10 @@ function Posts:create_post(params, session, board, thread, op)
 			if post.file_type == "image" and not post.file_spoiler then
 				-- Generate a thumbnail
 				if ext == ".webm" then
-					thumb_path = ss(thumb_path, 1, -6) .. ".png"
+					thumb_path = dir .. "s" .. name .. ".png"
 
 					-- Create screenshot of first frame
-					os.execute(sf("ffmpeg -i %s -ss 00:00:01 -vframes 1 %s", full_path, thumb_path))
+					os.execute(sf("ffmpeg -i %s -ss 00:00:01 -vframes 1 %s -y", full_path, thumb_path))
 
 					local image        = magick.load_image(thumb_path)
 					post.file_width    = image:get_width()
@@ -251,7 +253,7 @@ function Posts:create_post(params, session, board, thread, op)
 					magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
 				-- Generate a thumbnail
 				elseif ext == ".svg" then
-					thumb_path = ss(thumb_path, 1, -5) .. ".png"
+					thumb_path = dir .. "s" .. name .. ".png"
 					os.execute(sf("convert -background none -resize %dx%d %s %s", w, h, full_path, thumb_path))
 					return post
 				-- Grab first frame of a gif instead of the last
@@ -294,16 +296,13 @@ function Posts:delete_post(session, board, post)
 	local function rm_post(short_name)
 		if post.file_path then
 			local dir = sf("./static/%s/", short_name)
+			local name, ext = post.file_path:match("^(.+)(%..+)$")
+			ext = string.lower(ext)
 			os.remove(dir .. post.file_path)
 
-			-- Change path from webm to png
-			if ss(post.file_path, -5) == ".webm" then
-				post.file_path = ss(post.file_path, 1, -6) .. ".png"
-			end
-
-			-- Change path from svg to png
-			if ss(post.file_path, -4) == ".svg" then
-				post.file_path = ss(post.file_path, 1, -5) .. ".png"
+			-- Change path to png
+			if ext == ".webm" or ext == ".svg" then
+				post.file_path = name .. ".png"
 			end
 
 			os.remove(dir .. "s" .. post.file_path)

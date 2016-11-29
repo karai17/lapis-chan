@@ -3,3 +3,5 @@ static/a
 static/b
 *_temp
 *.compiled
+_config.lua
+_install.lua

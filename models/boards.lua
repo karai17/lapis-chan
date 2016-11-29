@@ -165,14 +165,17 @@ function Boards:regen_thumbs()
 		end
 
 		-- Filesystem paths
-		local ext        = result.file_path:match("^.+(%..+)$")
+		local name, ext = result.file_path:match("^(.+)(%..+)$")
+		ext = string.lower(ext)
+
 		local full_path  = dir .. result.file_path
 		local thumb_path = dir .. "s" .. result.file_path
 
 		-- Generate a thumbnail
 		if ext == ".webm" then
+			thumb_path = dir .. "s" .. name .. ".png"
+
 			-- Create screenshot of first frame
-			thumb_path = thumb_path:sub(1, -6) .. ".png"
 			os.execute(string.format("ffmpeg -i %s -ss 00:00:01 -vframes 1 %s -y", full_path, thumb_path))
 		end
 
@@ -191,7 +194,7 @@ function Boards:regen_thumbs()
 		if ext == ".webm" then
 			magick.thumb(thumb_path, string.format("%sx%s", w, h), thumb_path)
 		elseif ext == ".svg" then
-			thumb_path = thumb_path:sub(1, -5) .. ".png"
+			thumb_path = dir .. "s" .. name .. ".png"
 			os.execute(string.format("convert -background none -resize %dx%d %s %s", w, h, full_path, thumb_path))
 		elseif ext == ".gif" then
 			-- Grab first frame of a gif instead of the last

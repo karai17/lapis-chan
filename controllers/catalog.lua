@@ -58,6 +58,9 @@ return {
 			thread.url     = self:format_url(self.thread_url, self.board.short_name, thread.op.post_id)
 
 			if thread.op.file_path then
+				local name, ext = thread.op.file_path:match("^(.+)(%..+)$")
+				ext = string.lower(ext)
+
 				-- Get thumbnail URL
 				if thread.op.file_type == "audio" then
 					thread.op.thumb = self:format_url(self.static_url, "post_audio.png")
@@ -65,10 +68,8 @@ return {
 					if thread.op.file_spoiler then
 						thread.op.thumb = self:format_url(self.static_url, "post_spoiler.png")
 					else
-						if thread.op.file_path:sub(-5) == ".webm" then
-							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path:sub(1, -6) .. '.png')
-						elseif thread.op.file_path:sub(-4) == ".svg" then
-							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path:sub(1, -5) .. '.png')
+						if ext == ".webm" or ext == ".svg" then
+							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. name .. '.png')
 						else
 							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path)
 						end

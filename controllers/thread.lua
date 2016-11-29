@@ -99,6 +99,9 @@ return {
 			end
 
 			if post.file_path then
+				local name, ext = post.file_path:match("^(.+)(%..+)$")
+				ext = string.lower(ext)
+
 				-- Get thumbnail URL
 				if post.file_type == "audio" then
 					if post == self.posts[1] then
@@ -114,10 +117,8 @@ return {
 							post.thumb = self:format_url(self.static_url, "post_spoiler.png")
 						end
 					else
-						if post.file_path:sub(-5) == ".webm" then
-							post.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. post.file_path:sub(1, -6) .. '.png')
-						elseif post.file_path:sub(-4) == ".svg" then
-							post.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. post.file_path:sub(1, -5) .. '.png')
+						if ext == ".webm" or ext == ".svg" then
+							post.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. name .. '.png')
 						else
 							post.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. post.file_path)
 						end
