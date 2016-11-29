@@ -92,7 +92,7 @@ return {
 				post.file_dimensions = string.format(", %dx%d", post.file_width, post.file_height)
 			end
 
-			if post.file_duration == "0" then
+			if not post.file_duration or post.file_duration == "0" then
 				post.file_duration = ""
 			else
 				post.file_duration = string.format(", %s", post.file_duration)
