@@ -1,6 +1,7 @@
 local assert_error  = require("lapis.application").assert_error
 local assert_valid  = require("lapis.validate").assert_valid
 local csrf          = require "lapis.csrf"
+local generate      = require "utils.generate"
 local Announcements = require "models.announcements"
 local Boards        = require "models.boards"
 
@@ -67,10 +68,7 @@ return {
 		end
 	end,
 	on_error = function(self)
-		local err = self.i18n(unpack(self.errors))
-		if err then
-			self.errors = { err }
-		end
+		self.errors = generate.errors(self.i18n, self.errors)
 
 		if not self.session.name then
 			return { render = "admin.login" }

@@ -12,17 +12,18 @@ function Pages:create_page(page)
 		"name", "url", "content"
 	}, nil)
 
-	local page = self:create {
+	local p = self:create {
 		name    = page.name,
 		url     = page.url,
 		content = page.content
 	}
 
-	if page then
-		return page
-	else
-		return false, "err_create_page", { page.url, page.name }
+	if p then
+		return p
 	end
+
+	return false, { "err_create_page", { page.url, page.name } }
+
 end
 
 --- Modify a page

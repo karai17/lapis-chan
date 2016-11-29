@@ -21,7 +21,7 @@ function Boards:create_board(board)
 		"archive", "archive_time", "group"
 	}, nil)
 
-	local board = self:create {
+	local b = self:create {
 		short_name        = board.short_name,
 		name              = board.name,
 		subtext           = board.subtext,
@@ -46,12 +46,12 @@ function Boards:create_board(board)
 		group             = board.group
 	}
 
-	if board then
-		lfs.mkdir(string.format("./static/%s/", board.short_name))
-		return board
+	if b then
+		lfs.mkdir(string.format("./static/%s/", b.short_name))
+		return b
 	end
 
-	return false, "err_create_board", { board.short_name, board.name }
+	return false, { "err_create_board", { board.short_name, board.name } }
 end
 
 --- Modify a board.
@@ -106,7 +106,7 @@ function Boards:delete_board(board, threads, posts)
 		return lfs.rmdir(dir)
 	end
 
-	return false, "err_delete_board", { board.short_name, board.name }
+	return false, { "err_delete_board", { board.short_name, board.name } }
 end
 
 --- Get all boards

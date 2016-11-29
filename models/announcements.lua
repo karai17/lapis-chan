@@ -12,16 +12,16 @@ function Announcements:create_announcement(ann)
 		"board_id", "text"
 	}, nil)
 
-	local ann = self:create {
+	local a = self:create {
 		board_id = ann.board_id,
 		text     = ann.text
 	}
 
-	if ann then
-		return ann
+	if a then
+		return a
 	end
 
-	return false, "err_create_ann", { ann.text }
+	return false, { "err_create_ann", { ann.text } }
 end
 
 --- Modify an announcement

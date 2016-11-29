@@ -2,7 +2,6 @@ local encoding  = require "lapis.util.encoding"
 local trim      = require("lapis.util").trim_filter
 local Model     = require("lapis.db.model").Model
 local giflib    = require "giflib"
-local lfs       = require "lfs"
 local magick    = require "magick"
 local md5       = require "md5"
 local filetypes = require "utils.file_whitelist"
@@ -56,23 +55,23 @@ function Posts:prepare_post(params, session, board, thread, files)
 	-- Check board flags
 	if thread then
 		if thread.lock and not session.admin and not session.mod then
-			return false, "err_locked_thread", { thread.post_id }
+			return false, { "err_locked_thread", { thread.post_id } }
 		end
 
 		if board.post_comment and not params.comment then
-			return false, "err_comment_post"
+			return false, { "err_comment_post" }
 		end
 
 		if board.post_file and #params.file.content == 0 then
-			return false, "err_file_post"
+			return false, { "err_file_post" }
 		end
 	else
 		if board.thread_comment and not params.comment then
-			return false, "err_comment_thread"
+			return false, { "err_comment_thread" }
 		end
 
 		if board.thread_file and #params.file.content == 0 then
-			return false, "err_file_thread"
+			return false, { "err_file_thread" }
 		end
 	end
 
@@ -86,13 +85,13 @@ function Posts:prepare_post(params, session, board, thread, files)
 
 		-- Reject files in text-only boards
 		if board.text_only then
-			return false, "err_no_files"
+			return false, { "err_no_files" }
 		end
 
 		-- Thread limit is already met.
 		if thread then
 			if files >= board.thread_file_limit and not thread.size_override then
-				return false, "err_file_limit", { thread.post_id }
+				return false, { "err_file_limit", { thread.post_id } }
 			end
 		end
 
@@ -108,7 +107,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 				local image = magick.load_image_from_blob(params.file.content)
 
 				if not image then
-					return false, "err_invalid_image"
+					return false, { "err_invalid_image" }
 				end
 
 				params.file_width  = image:get_width()
@@ -117,7 +116,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 		elseif filetypes.audio[ext] and board.filetype_audio then
 			params.file_type = "audio"
 		else
-			return false, "err_invalid_ext", { ext }
+			return false, { "err_invalid_ext", { ext } }
 		end
 
 		params.file_name   = params.file.filename
@@ -134,7 +133,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 		-- Check if file already exists
 		local file = self:find_file(board.id, params.file_md5)
 		if file then
-			return false, "err_file_exists"
+			return false, { "err_file_exists" }
 		end
 	else
 		params.file_spoiler = false
@@ -142,7 +141,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 
 	-- Check contributions
 	if not params.comment and not params.file_name then
-		return false, "err_contribute"
+		return false, { "err_contribute" }
 	end
 
 	return true
@@ -279,7 +278,7 @@ function Posts:create_post(params, session, board, thread, op)
 
 		return post
 	else
-		return false, "err_create_post"
+		return false, { "err_create_post" }
 	end
 end
 
@@ -328,7 +327,7 @@ function Posts:delete_post(session, board, post)
 	if success then
 		return success
 	else
-		return false, "err_delete_post", { post.post_id }
+		return false, { "err_delete_post", { post.post_id } }
 	end
 end
 

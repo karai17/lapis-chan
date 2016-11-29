@@ -77,4 +77,17 @@ function generate.hash(password)
 	return bcrypt.digest(password, 12)
 end
 
+function generate.errors(i18n, errors)
+	local err = {}
+
+	if #errors > 0 then
+		for _, error in ipairs(errors) do
+			local e = i18n(unpack(error))
+			table.insert(err, e)
+		end
+	end
+
+	return err
+end
+
 return generate

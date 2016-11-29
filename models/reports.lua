@@ -13,7 +13,7 @@ function Reports:create_report(report)
 		"timestamp", "num_reports"
 	}, nil)
 
-	local report = self:create {
+	local r = self:create {
 		board_id    = report.board_id,
 		thread_id   = report.thread_id,
 		post_id     = report.post_id,
@@ -21,11 +21,11 @@ function Reports:create_report(report)
 		num_reports = report.num_reports
 	}
 
-	if report then
-		return report
-	else
-		return false, "err_create_report"
+	if r then
+		return r
 	end
+
+	return false, { "err_create_report" }
 end
 
 --- Modify a report

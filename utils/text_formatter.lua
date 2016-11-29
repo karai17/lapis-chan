@@ -1,7 +1,6 @@
-local Boards  = require "models.boards"
-local Threads = require "models.threads"
-local Posts   = require "models.posts"
-
+local Boards    = require "models.boards"
+local Threads   = require "models.threads"
+local Posts     = require "models.posts"
 local escape    = require("lapis.html").escape
 local sf        = string.format
 local formatter = {}
@@ -79,11 +78,11 @@ function formatter.quote(text, request, board, post)
 
 	-- >>>/a/1234 check over here
 	-- >>>/(%w+)/(%d*)
-	local match_pattern = "&gt;&gt;&gt;/(%w+)/(%d*)"
-	local sub_pattern   = "&gt;&gt;&gt;/%s/%s"
+	match_pattern = "&gt;&gt;&gt;/(%w+)/(%d*)"
+	sub_pattern   = "&gt;&gt;&gt;/%s/%s"
 
 	-- Get all the matches and store them in an ordered list
-	local posts = {}
+	posts = {}
 	for b, post_id in text:gmatch(match_pattern) do
 		b = Boards:get_board(b) or b
 		table.insert(posts, { board=b, id=post_id })
@@ -106,7 +105,7 @@ function formatter.quote(text, request, board, post)
 	end
 
 	-- Substitute each match with the formatted match
-	local i = 0
+	i = 0
 	text = text:gsub(match_pattern, function()
 		i = i + 1
 		return posts[i]

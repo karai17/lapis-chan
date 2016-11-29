@@ -14,7 +14,7 @@ function Threads:create_thread(board_id, flags)
 		"size_override", "save"
 	}, false)
 
-	local thread = self:create {
+	local t = self:create {
 		board_id      = board_id,
 		last_active   = os.time(),
 		sticky        = flags.sticky,
@@ -23,11 +23,11 @@ function Threads:create_thread(board_id, flags)
 		save          = flags.save
 	}
 
-	if thread then
-		return thread
-	else
-		return false, "err_create_thread"
+	if t then
+		return t
 	end
+
+	return false, { "err_create_thread" }
 end
 
 --- Delete entire thread
@@ -59,7 +59,7 @@ function Threads:delete_thread(session, thread, op)
 	if success then
 		return success
 	else
-		return false, "err_delete_post", { op.post_id }
+		return false, { "err_delete_post", { op.post_id } }
 	end
 end
 

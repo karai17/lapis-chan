@@ -20,7 +20,7 @@ function Users:create_user(user)
 	local hash = generate.hash(user.username .. user.password .. token)
 	user.password = nil
 
-	local user = self:create {
+	local u = self:create {
 		username = user.username,
 		password = hash,
 		admin    = user.admin,
@@ -28,11 +28,11 @@ function Users:create_user(user)
 		janitor  = user.janitor
 	}
 
-	if user then
-		return user
-	else
-		return false, "err_create_user", { user.username }
+	if u then
+		return u
 	end
+
+	return false, { "err_create_user", { user.username } }
 end
 
 --- Modify a user
@@ -70,7 +70,7 @@ function Users:verify_user(params)
 
 	-- No user found with that username
 	if not user then
-		return false, "err_invalid_user"
+		return false, { "err_invalid_user" }
 	end
 
 	-- Prepare password and remove raw password from memory
@@ -84,7 +84,7 @@ function Users:verify_user(params)
 	if verified then
 		return user
 	else
-		return false, "err_invalid_user"
+		return false, { "err_invalid_user" }
 	end
 end
 
@@ -98,7 +98,7 @@ end
 -- @tparam string username Username
 -- @treturn table user
 function Users:get_user(username)
-	local username = string.lower(username)
+	username = string.lower(username)
 	return unpack(self:select("where lower(username)=? limit 1", username))
 end
 

@@ -13,7 +13,7 @@ function Bans:create_ban(ban)
 		"ip", "board_id", "reason", "duration",
 	}, nil)
 
-	local ban = self:create {
+	local b = self:create {
 		ip       = ban.ip,
 		board_id = ban.board_id,
 		reason   = ban.reason,
@@ -21,11 +21,11 @@ function Bans:create_ban(ban)
 		duration = (ban.duration and ban.duration or 3) * 24 * 60 * 60
 	}
 
-	if ban then
-		return ban
-	else
-		return false, "err_create_ban", { ban.ip }
+	if b then
+		return b
 	end
+
+	return false, { "err_create_ban", { ban.ip } }
 end
 
 --- Delete ban

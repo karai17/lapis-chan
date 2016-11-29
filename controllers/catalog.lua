@@ -3,6 +3,7 @@ local assert_valid  = require("lapis.validate").assert_valid
 local process       = require "utils.request_processor"
 local csrf          = require "lapis.csrf"
 local format        = require "utils.text_formatter"
+local generate      = require "utils.generate"
 local Announcements = require "models.announcements"
 local Boards        = require "models.boards"
 local Posts         = require "models.posts"
@@ -93,14 +94,10 @@ return {
 		end
 	end,
 	on_error = function(self)
-		local err = self.i18n(unpack(self.errors))
-		if err then
-			self.errors = { err }
-		end
-
+		self.errors = generate.errors(self.i18n, self.errors)
 		return { render = "catalog"}
 	end,
-	GET = function(self)
+	GET = function()
 		return { render = "catalog" }
 	end,
 	POST = function(self)

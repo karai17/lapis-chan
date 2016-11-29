@@ -1,5 +1,4 @@
 local Bans         = require "models.bans"
-local Boards       = require "models.boards"
 local Threads      = require "models.threads"
 local Posts        = require "models.posts"
 local Reports      = require "models.reports"
@@ -30,9 +29,6 @@ function process.create_thread(params, session, board)
 	if err then
 		return false, err
 	end
-
-	-- No need to query the db for this
-	local posts = 0
 
 	-- Archive old threads
 	local max_threads = board.threads_per_page * board.pages
@@ -116,13 +112,13 @@ function process.delete_thread(params, session, board)
 	-- Validate post
 	local post = Posts:get_post(board.id, params.thread_id)
 	if not post then
-		return false, "err_invalid_post", { params.thread_id }
+		return false, { "err_invalid_post", { params.thread_id } }
 	end
 
 	-- Validate thread
 	local thread = Threads:get_thread(post.thread_id)
 	if not thread then
-		return false, "err_invalid_thread"
+		return false, { "err_invalid_thread" }
 	end
 
 	local posts = Posts:get_posts_by_thread(thread.id)
@@ -151,13 +147,13 @@ function process.delete_post(params, session, board)
 	-- Validate post
 	local post = Posts:get_post(board.id, params.post_id)
 	if not post then
-		return false, "err_invalid_post", { params.post_id }
+		return false, { "err_invalid_post", { params.post_id } }
 	end
 
 	-- Validate thread
 	local thread = Threads:get_thread(post.thread_id)
 	if not thread then
-		return false, "err_invalid_thread"
+		return false, { "err_invalid_thread" }
 	end
 
 	-- Delete post
@@ -178,7 +174,7 @@ function process.report_post(params, board)
 	-- Validate post
 	local post = Posts:get_post(board.id, params.post_id)
 	if not post then
-		return false, "err_invalid_post", { params.thread }
+		return false, { "err_invalid_post", { params.thread } }
 	end
 
 	local report = Reports:get_report(board.id, post.post_id)
@@ -192,7 +188,7 @@ function process.report_post(params, board)
 		end
 	-- If report is new, create it
 	else
-		local report, err = Reports:create_report {
+		local _, err = Reports:create_report {
 			board_id    = board.id,
 			thread_id   = post.thread_id,
 			post_id     = post.post_id,
@@ -212,13 +208,13 @@ function process.sticky_thread(params, board)
 	-- Validate post
 	local post   = Posts:get_post(board.id, params.post_id)
 	if not post then
-		return false, "err_invalid_post", { params.post_id }
+		return false, { "err_invalid_post", { params.post_id } }
 	end
 
 	-- Validate thread
 	local thread = Threads:get_thread(post.thread_id)
 	if not thread then
-		return false, "err_invalid_thread"
+		return false, { "err_invalid_thread" }
 	end
 
 	thread.sticky = not thread.sticky
@@ -232,13 +228,13 @@ function process.lock_thread(params, board)
 	-- Validate post
 	local post   = Posts:get_post(board.id, params.post_id)
 	if not post then
-		return false, "err_invalid_post", { params.post_id }
+		return false, { "err_invalid_post", { params.post_id } }
 	end
 
 	-- Validate thread
 	local thread = Threads:get_thread(post.thread_id)
 	if not thread then
-		return false, "err_invalid_thread"
+		return false, { "err_invalid_thread" }
 	end
 
 	thread.lock = not thread.lock
@@ -252,13 +248,13 @@ function process.save_thread(params, board)
 	-- Validate post
 	local post   = Posts:get_post(board.id, params.post_id)
 	if not post then
-		return false, "err_invalid_post", { params.post_id }
+		return false, { "err_invalid_post", { params.post_id } }
 	end
 
 	-- Validate thread
 	local thread = Threads:get_thread(post.thread_id)
 	if not thread then
-		return false, "err_invalid_thread"
+		return false, { "err_invalid_thread" }
 	end
 
 	thread.save = not thread.save
@@ -272,13 +268,13 @@ function process.override_thread(params, board)
 	-- Validate post
 	local post   = Posts:get_post(board.id, params.post_id)
 	if not post then
-		return false, "err_invalid_post", { params.post_id }
+		return false, { "err_invalid_post", { params.post_id } }
 	end
 
 	-- Validate thread
 	local thread = Threads:get_thread(post.thread_id)
 	if not thread then
-		return false, "err_invalid_thread"
+		return false, { "err_invalid_thread" }
 	end
 
 	thread.size_override = not thread.size_override
@@ -292,7 +288,7 @@ function process.ban_user(params, board)
 	-- Validate post
 	local post = Posts:get_post(board.id, params.post_id)
 	if not post then
-		return false, "err_invalid_post", { params.post_id }
+		return false, { "err_invalid_post", { params.post_id } }
 	end
 
 	params.ip = post.ip
@@ -303,7 +299,7 @@ function process.ban_user(params, board)
 	end
 
 	-- Ban user
-	local ban, err = Bans:create_ban(params)
+	local _, err = Bans:create_ban(params)
 	if err then
 		return false, err
 	end
