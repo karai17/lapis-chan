@@ -17,7 +17,7 @@ To view a complete list of features, check out the [Feature Set](https://docs.go
 
 * ffmpeg
 * libmagicwand-dev
-* Lua 5.1+ or LuaJIT 2.0+
+* LuaJIT 2.0+
 * Luarocks
 * PostgreSQL or MySQL (untested)
 

@@ -1,13 +1,12 @@
 local encoding = require "lapis.util.encoding"
 local sha256   = require "resty.sha256"
+local ffi      = require "ffi"
 local posix    = require "posix"
 local salt     = require "secrets.salt"
 local token    = require "secrets.token"
 local bcrypt   = require "bcrypt"
 local sf       = string.format
 local ss       = string.sub
-local tn       = tonumber
-local ts       = tostring
 
 local function get_chunks(str)
 	-- Secure trip
@@ -28,19 +27,25 @@ end
 
 local generate = {}
 
--- Generate a 6char pseudo random number using a supplied timestamp and the
--- memory location of a supplied table because math.random isn't reliable for
--- this use case.
--- HACK: If you have a better idea, send a PR. I hate this as much as you do.
-function generate.random(time, t)
-	return sf("%s%s", time, tn("0x" .. ss(ts(t), -6)))
-	--return tn(ts(t):match("0x(.+)"), 16) -- bartbes thinks this might be better
+-- math.random isn't reliable for this use case, so instead we're gonna snag
+-- some bytes from /dev/urandom, create a uint32, and grab the last 3 digits.
+function generate.random()
+	-- Read uint32_t from /dev/urandom
+	local r = io.open("/dev/urandom", "rb")
+	local bytes = r:read(4)
+	r:close()
+
+	-- Build number
+	local num = ffi.new("unsigned int[1]")
+	ffi.copy(num, bytes, 4)
+
+	return sf("%03d", num[0] % 1000)
 end
 
 -- Generate an insecure password
-function generate.password(time, t)
+function generate.password(time)
 	local hasher = sha256:new()
-	hasher:update(generate.random(time, t))
+	hasher:update(sf("%s%s", time, generate.random()))
 	return encoding.encode_base64(hasher:final())
 end
 

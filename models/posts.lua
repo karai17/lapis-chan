@@ -8,7 +8,6 @@ local filetypes = require "utils.file_whitelist"
 local generate  = require "utils.generate"
 local Posts     = Model:extend("posts")
 local sf        = string.format
-local ss        = string.sub
 
 --- Prepare post for insertion
 -- @tparam table params Input from the user
@@ -22,7 +21,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 	local time = os.time()
 
 	-- Prepare session stuff
-	session.password = session.password or generate.password(time, session)
+	session.password = session.password or generate.password(time)
 
 	-- Trim white space
 	trim(params, {
@@ -95,7 +94,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 			end
 		end
 
-		local name = sf("%s%s", time, ss(generate.random(time, params), -3))
+		local name = sf("%s%s", time, generate.random())
 		local ext  = params.file.filename:match("^.+(%..+)$")
 		ext = string.lower(ext)
 
