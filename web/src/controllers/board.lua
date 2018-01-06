@@ -66,7 +66,7 @@ return {
 			-- Get op
 			local op = thread.posts[#thread.posts]
 			if not op then
-				assert_error(false, { "err_orphaned", thread.id })
+				assert_error(false, { "err_orphaned", { thread.id } })
 			end
 
 			thread.url = self:format_url(self.thread_url, self.board.short_name, op.post_id)

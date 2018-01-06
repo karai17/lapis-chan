@@ -1,3 +1,0 @@
-<div class="return">
-	[ <a href="<%= format_url(thread_url, board.short_name, op.post_id) %>"><%= i18n("return_thread") %></a> ]
-</div>

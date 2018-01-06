@@ -11,7 +11,7 @@ return function(self)
 
 	-- Get localization files
 	self.locales = {}
-	for file in lfs.dir("locale") do
+	for file in lfs.dir("src/locale") do
 		local name, ext = string.match(file, "^(.+)(%..+)$")
 		if ext == ".lua" then
 			table.insert(self.locales, name)
@@ -24,7 +24,7 @@ return function(self)
 	end
 
 	i18n.setLocale(self.session.locale or "en")
-	i18n.loadFile("locale/en.lua")
+	i18n.loadFile("src/locale/en.lua")
 	if i18n.getLocale() ~= "en" then
 		i18n.loadFile("locale/" .. i18n.getLocale() .. ".lua")
 	end
@@ -32,7 +32,7 @@ return function(self)
 
 	-- Static
 	self.static_url  = "/static/%s"
-	self.files_url   = "/static/%s/%s"
+	self.files_url   = "/files/%s/%s"
 	self.styles_url  = "/static/styles/%s.css"
 	self.scripts_url = "/static/scripts/%s.js"
 	self.styles_dir  = "./static/styles"

@@ -1,6 +1,0 @@
-<div id="error">
-<h3>/!\ ALART /!\</h3>
-<% for _, err in ipairs(errors) do %>
-<p><%= err %></p>
-<% end %>
-</div>

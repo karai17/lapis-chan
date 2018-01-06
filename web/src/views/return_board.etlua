@@ -1,0 +1,3 @@
+<div class="return">
+	[ <a href="<%= format_url(board_url, board.short_name) %>"><%= i18n("return_board") %></a> ]
+</div>

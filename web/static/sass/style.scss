@@ -138,31 +138,6 @@ ol {
 	}
 }
 
-#right {
-	top: $spacing;
-	right: $spacing;
-	position: absolute;
-	text-align: right;
-
-	#locale {
-		form {
-			display: inline;
-			margin: 0;
-			padding: 0;
-
-			select {
-				margin: 0;
-				padding: 0;
-				width: 75px;
-			}
-		}
-	}
-
-	#logout {
-
-	}
-}
-
 #post_form, .admin_form {
 	text-align: center;
 
@@ -269,6 +244,12 @@ ol {
 		max-width: 125px;
 		max-height: 125px;
 	}
+}
+
+.logout {
+	top: $spacing;
+	right: $spacing;
+	position: absolute;
 }
 
 .copyright {

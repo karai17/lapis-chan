@@ -14,7 +14,7 @@
 <% for _, thread in ipairs(threads) do %>
 <div class="thread_container">
 <%
-	local posts = thread.posts
+	local posts = thread.posts or {}
 	for i=#posts, 1, -1 do
 		local post = posts[i]
 		local op   = posts[#posts]

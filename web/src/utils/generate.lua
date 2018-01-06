@@ -1,10 +1,12 @@
+
+local config   = require("lapis.config").get()
 local encoding = require "lapis.util.encoding"
 local sha256   = require "resty.sha256"
+local bcrypt   = require "bcrypt"
 local ffi      = require "ffi"
 local posix    = require "posix"
-local salt     = require "secrets.salt"
-local token    = require "secrets.token"
-local bcrypt   = require "bcrypt"
+local salt     = loadfile("../data/secrets/salt.lua")()
+local token    = config.secret
 local sf       = string.format
 local ss       = string.sub
 

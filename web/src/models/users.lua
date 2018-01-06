@@ -1,9 +1,10 @@
 local bcrypt   = require "bcrypt"
-local token    = require "secrets.token"
 local generate = require "utils.generate"
+local config   = require("lapis.config").get()
 local trim     = require("lapis.util").trim_filter
 local Model    = require("lapis.db.model").Model
 local Users    = Model:extend("users")
+local token    = config.secret
 
 --- Create a new user
 -- @tparam table user User data
