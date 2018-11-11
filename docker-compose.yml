@@ -24,7 +24,7 @@ services:
       - psql
     volumes:
       - ./web:/var/www
-      - ./data/webdata:/var/data
+      - ./data:/var/data
     ports:
       - 1001:80
     restart: unless-stopped
