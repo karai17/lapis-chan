@@ -4,7 +4,7 @@ LABEL maintainer="Landon Manning <lmanning17@gmail.com>"
 
 # Software versions
 ARG LUAROCKS_VERSION="2.4.3"
-ARG RESTY_VERSION="1.13.6.1"
+ARG RESTY_VERSION="1.13.6.2"
 ARG GIFLIB_VERSION="5.1.1"
 
 # Necessary files
