@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
   # PostgreSQL database server
   psql:
     build:
@@ -12,22 +11,23 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
       - ./psql/pg_hba.conf:/var/lib/postgres/data/pg_hba.conf
-      - ./data/pgdata:/pgdata
+      - ./data/backup:/pgbackup
     restart: unless-stopped
 
-  # Lapis-chan web client
-  web:
+  # Lapis-chan
+  app:
     build:
-      context: ./web
+      context: ./app
       dockerfile: Dockerfile
     depends_on:
       - psql
     volumes:
-      - ./web:/var/www
+      - ./app:/var/www
       - ./data:/var/data
     ports:
       - 1001:80
     restart: unless-stopped
+    command: bash -c "/usr/local/bin/docker-entrypoint.sh ${LAPIS_CONFIG}"
 
 volumes:
   postgres:

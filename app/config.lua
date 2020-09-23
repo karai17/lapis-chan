@@ -12,8 +12,8 @@ local body_size  = "15m"
 local text_size  = 10000
 
 -- Path to your lua libraries (LuaRocks and OpenResty)
-local lua_path  = "/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/?/init.lua;/usr/share/lua/5.1/?.lua;/usr/share/lua/5.1/?/init.lua;./?.lua;/usr/share/luajit-2.0.4/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua" .. ";/usr/local/openresty/lualib/?.lua" .. ";./src/?.lua;./src/?/init.lua"
-local lua_cpath = "/root/.luarocks/lib/lua/5.1/?.so;/usr/lib/lua/5.1/?.so;./?.so;/usr/local/lib/lua/5.1/?.so;/usr/lib64/lua/5.1/?.so;/usr/local/lib/lua/5.1/loadall.so" .. ";/usr/lib/?.so;/usr/lib64/?.so;/usr/local/lib/?.so;/usr/local/lib64/?.so"
+local lua_path  = "./src/?.lua;./src/?/init.lua"
+local lua_cpath = ""
 
 config("development", {
 	site_name  = "[DEVEL] Lapis-chan",
@@ -47,5 +47,22 @@ config("production", {
 		user     = "postgres",
 		password = "",
 		database = "lapischan"
+	},
+})
+
+config("test", {
+	site_name  = "[DEVEL] Lapis-chan",
+	port       = 80,
+	secret     = secret,
+	subdomains = subdomains,
+	body_size  = body_size,
+	text_size  = text_size,
+	lua_path   = lua_path,
+	lua_cpath  = lua_cpath,
+	postgres   = {
+		host     = "psql",
+		user     = "postgres",
+		password = "",
+		database = "lapischan_test"
 	},
 })

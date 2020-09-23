@@ -33,9 +33,9 @@ return function(self)
 	-- Static
 	self.static_url  = "/static/%s"
 	self.files_url   = "/files/%s/%s"
-	self.styles_url  = "/static/styles/%s.css"
-	self.scripts_url = "/static/scripts/%s.js"
-	self.styles_dir  = "./static/styles"
+	self.styles_url  = "/static/css/%s.css"
+	self.scripts_url = "/static/js/%s.js"
+	self.styles_dir  = "./static/css"
 
 	-- Private
 	self.admin_url               = "/admin"

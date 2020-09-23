@@ -1,0 +1,12 @@
+package.path  = "./src/?.lua;./src/?/init.lua;" .. package.path
+package.cpath = "" .. package.cpath
+
+return {
+	_all = {
+		coverage = true
+	},
+
+	default = {
+
+	}
+}

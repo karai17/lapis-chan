@@ -1,6 +1,6 @@
 # Lapis-chan
 
-Lapis-chan is an text/image board written in Lua using the Lapis web framework.
+Lapis-chan is a text and image board written in Lua using the Lapis web framework.
 
 # Features
 
@@ -11,7 +11,7 @@ To view a complete list of features, check out the [Feature Set](https://docs.go
 # Installing
 
 ```
-docker-compose build && docker-compose up
+$ docker-compose build
 ```
 
 ## Create Cryptographic Secrets
@@ -31,5 +31,5 @@ The secret salt should be a random string of characters exactly two characters i
 Now we're ready to finish the installation!
 
 ```
-lapis server production
+$ prod.sh
 ```

@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"target":         "es6",
+		"module":         "es6",
+		"outDir":         "app/static/js",
+		"alwaysStrict":   true,
+		"noEmitOnError":  true,
+		"pretty":         true,
+		"removeComments": true,
+		"sourceMap":      true,
+		"watch":          true
+	}
+}
