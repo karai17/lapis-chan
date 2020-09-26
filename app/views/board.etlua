@@ -7,9 +7,9 @@
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= format_url(catalog_url, board.short_name) %>"><%= i18n("catalog") %></a>]
-[<a href="<%= format_url(archive_url, board.short_name) %>"><%= i18n("archive") %></a>]
-[<a href="<%= format_url(board_url, board.short_name) %>"><%= i18n("refresh") %></a>]
+[<a href="<%= url_for('catalog', { board=board.short_name }) %>"><%= i18n("catalog") %></a>]
+[<a href="<%= url_for('archive', { board=board.short_name }) %>"><%= i18n("archive") %></a>]
+[<a href="<%= url_for('board', { board=board.short_name }) %>"><%= i18n("refresh") %></a>]
 <hr />
 <% for _, thread in ipairs(threads) do %>
 <div class="thread_container">
@@ -31,11 +31,11 @@
 <div class="pages">
 	<% for i=1, pages do %>
 		<% if i == params.page then %>
-		[<a href="<%= format_url(board_page_url, board.short_name, i) %>"><strong><%= i %></strong></a>]
+		[<a href="<%= url_for('board', { board=board.short_name, page=i }) %>"><strong><%= i %></strong></a>]
 		<% else %>
-		[<a href="<%= format_url(board_page_url, board.short_name, i) %>"><%= i %></a>]
+		[<a href="<%= url_for('board', { board=board.short_name, page=i }) %>"><%= i %></a>]
 		<% end %>
 	<% end %>
-	[<a href="<%= format_url(catalog_url, board.short_name) %>"><%= i18n("catalog") %></a>]
-	[<a href="<%= format_url(archive_url, board.short_name) %>"><%= i18n("archive") %></a>]
+	[<a href="<%= url_for('catalog', { board=board.short_name }) %>"><%= i18n("catalog") %></a>]
+	[<a href="<%= url_for('archive', { board=board.short_name }) %>"><%= i18n("archive") %></a>]
 </div>

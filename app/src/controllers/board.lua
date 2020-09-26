@@ -25,7 +25,7 @@ return {
 		-- Board not found
 		if not self.board or
 			self.params.page and not tonumber(self.params.page) then
-			self:write({ redirect_to = self:build_url() })
+			self:write({ redirect_to = self:url_for("index") })
 			return
 		end
 
@@ -69,7 +69,7 @@ return {
 				assert_error(false, { "err_orphaned", { thread.id } })
 			end
 
-			thread.url = self:format_url(self.thread_url, self.board.short_name, op.post_id)
+			thread.url = self:url_for("thread", { board=self.board.short_name, thread=op.post_id })
 
 			-- Format comments
 			for _, post in ipairs(thread.posts) do
@@ -79,9 +79,9 @@ return {
 				end
 
 				post.name            = post.name or self.board.anon_name
-				post.reply           = self: format_url(self.reply_url, self.board.short_name, op.post_id, post.post_id)
-				post.link            = self: format_url(self.post_url,  self.board.short_name, op.post_id, post.post_id)
-				post.remix           = self: format_url(self.remix_url, self.board.short_name, op.post_id, post.post_id)
+				post.reply           = self:url_for("thread", { board=self.board.short_name, thread=op.post_id, anchor="q", id=post.post_id })
+				post.link            = self:url_for("thread", { board=self.board.short_name, thread=op.post_id, anchor="p", id=post.post_id })
+				post.remix           = self:url_for("thread", { board=self.board.short_name, thread=op.post_id, anchor="r", id=post.post_id })
 				post.timestamp       = os.date("%Y-%m-%d (%a) %H:%M:%S", post.timestamp)
 				post.file_size       = math.floor(post.file_size / 1024)
 				post.file_dimensions = ""
@@ -153,7 +153,7 @@ return {
 		-- Validate CSRF token
 		csrf.assert_token(self)
 
-		local board_url = self:format_url(self.board_url, self.board.short_name)
+		local board_url = self:url_for("board", { board=self.board.short_name })
 
 		-- Submit new thread
 		if self.params.submit then
@@ -167,7 +167,7 @@ return {
 
 			-- Validate post
 			local post = assert_error(process.create_thread(self.params, self.session, self.board))
-			return { redirect_to = self:format_url(self.post_url, self.board.short_name, post.post_id, post.post_id) }
+			return { redirect_to = self:url_for("thread", { board=self.board.short_name, thread=post.post_id, anchor="p", id=post.post_id }) }
 		end
 
 		-- Delete thread

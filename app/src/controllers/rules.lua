@@ -11,7 +11,7 @@ return function(self)
 	self.board = { theme = "yotsuba_b" }
 
 	for _, board in ipairs(self.boards) do
-		board.url   = self:format_url(self.board_url, board.short_name)
+		board.url   = self:url_for("board", { board=board.short_name })
 		if board.rules then
 			board.rules = _G.markdown(board.rules)
 		else

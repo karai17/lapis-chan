@@ -135,9 +135,9 @@
 	</p>
 	<p>
 		<%-
-		i18n("form_readme", {
-			rules = '<a href="'..build_url(rules_url)..'"><strong>Rules</strong></a>',
-			faq   = '<a href="'..build_url(faq_url)..'"><strong>FAQ</strong></a>'
+		i18n("form_readme", { -- FIXME
+			rules = '<a href="'..url_for('rules')..'"><strong>Rules</strong></a>',
+			faq   = '<a href="'..url_for('faq')..'"><strong>FAQ</strong></a>'
 		})
 		%>
 	</p>

@@ -3,7 +3,7 @@
 	<h2><%= i18n("index_boards") %></h2>
 	<% for _, board in ipairs(boards) do %>
 	<div class="board">
-		<a href="<%= format_url(board_url, board.short_name) %>">/<%= board.short_name %>/ - <%= board.name %></a>
+		<a href="<%= url_for('board', { board=board.short_name }) %>">/<%= board.short_name %>/ - <%= board.name %></a>
 		<% if board.subtext then %><em class="subtext"><%= board.subtext %></em><% end %>
 		<% if board.rules then %>
 		<h3><%= i18n("rules") %></h3>

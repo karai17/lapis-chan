@@ -31,40 +31,8 @@ return function(self)
 	self.i18n = i18n
 
 	-- Static
-	self.static_url  = "/static/%s"
-	self.files_url   = "/files/%s/%s"
-	self.styles_url  = "/static/css/%s.css"
-	self.scripts_url = "/static/js/%s.js"
-	self.styles_dir  = "./static/css"
-
-	-- Private
-	self.admin_url               = "/admin"
-	self.admin_users_url         = "/admin/%s/user"
-	self.admin_user_url          = "/admin/%s/user/%s"
-	self.admin_boards_url        = "/admin/%s/board"
-	self.admin_board_url         = "/admin/%s/board/%s"
-	self.admin_announcements_url = "/admin/%s/announcement"
-	self.admin_announcement_url  = "/admin/%s/announcement/%s"
-	self.admin_pages_url         = "/admin/%s/page"
-	self.admin_page_url          = "/admin/%s/page/%s"
-	self.admin_reports_url       = "/admin/%s/report"
-	self.admin_report_url        = "/admin/%s/report/%s"
-
-	-- Public
-	self.c404_url       = "/404"
-	self.rules_url      = "/rules"
-	self.faq_url        = "/faq"
-	self.login_url      = "/login"
-	self.logout_url     = "/logout"
-	self.board_url      = "/board/%s"
-	self.catalog_url    = "/board/%s/catalog"
-	self.archive_url    = "/board/%s/archive"
-	self.board_page_url = "/board/%s/%d"
-	self.thread_url     = "/board/%s/thread/%d"
-	self.post_url       = "/board/%s/thread/%d#p%d"
-	self.reply_url      = "/board/%s/thread/%d#q%d"
-	self.remix_url      = "/board/%s/thread/%d#r%d"
-	self.page_url       = "/%s"
+	self.static_url = "/static/%s"
+	self.files_url  = "/files/%s/%s"
 
 	function self:format_url(pattern, ...)
 		return self:build_url(string.format(pattern, ...))

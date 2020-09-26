@@ -1,6 +1,6 @@
 <% if boards then %>
 <div class="boards">
-	[ <a href="<%= build_url() %>"><%= i18n("index") %></a> ]
+	[ <a href="<%= url_for('index') %>"><%= i18n("index") %></a> ]
 	<% local group = 1 %>
 	<% for i, board in ipairs(boards) do %>
 		<% local sub = sub_page or "" %>
@@ -10,7 +10,7 @@
 			<%= i == 1 and "[" or "/" %>
 		<% end %>
 
-		<a href="<%= format_url(board_url, board.short_name) %>" title="<%= board.name %>"><%= board.short_name %></a>
+		<a href="<%= url_for('board', { board=board.short_name }) %>" title="<%= board.name %>"><%= board.short_name %></a>
 		<%= i == #boards and "]" or "" %>
 	<% end %>
 </div>

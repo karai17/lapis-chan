@@ -3,15 +3,15 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<link rel="stylesheet" href="<%= build_url(string.format(styles_url, 'style')) %>" />
+		<link rel="stylesheet" href="/static/css/style.css" />
 		<% if board then %>
-		<link rel="stylesheet" href="<%= build_url(string.format(styles_url, board.theme)) %>" />
-			<% if board.draw then %>
-			<link rel="stylesheet" href="<%= build_url(string.format(styles_url, 'tegaki')) %>" />
-			<script src="<%= build_url(string.format(scripts_url, 'tegaki/tegaki')) %>"></script>
-			<% end %>
+		<link rel="stylesheet" href="/static/css/<%= board.theme %>.css" />
+		<% if board.draw then %>
+		<link rel="stylesheet" href="/static/css/tegaki.css" />
+		<script src="/static/js/tegaki/tegaki.js"></script>
 		<% end %>
-		<script src="<%= build_url(string.format(scripts_url, 'script')) %>"></script>
+		<% end %>
+		<script src="/static/js/script.js"></script>
 		<title><%= page_title %></title>
 	</head>
 	<body>
@@ -22,7 +22,7 @@
 		<div id="right">
 			<% render("views.form_locale") %>
 			<% if session.name then %>
-			<span id="logout">[<a href="<%= build_url(logout_url) %>"><%= i18n("logout") %></a>]</span>
+			<span id="logout">[<a href="<%= url_for('logout') %>"><%= i18n("logout") %></a>]</span>
 			<% end %>
 		</div>
 		<% content_for("inner") %>

@@ -4,5 +4,5 @@
 	<p><strong><%= reason %></strong></p>
 	<p><%- i18n("ban_expire", { expire="<strong>"..expire.."</strong>" }) %></p>
 	<p><%- i18n("ban_ip", { ip="<strong>"..ip.."</strong>" }) %></p>
-	<div><img src="<%= format_url(static_url, 'banned.jpg') %>" alt="Catfish." /></div>
+	<div><img src="/static/banned.jpg" alt="Catfish." /></div>
 </div>

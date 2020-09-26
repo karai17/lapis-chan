@@ -36,10 +36,10 @@ function formatter.quote(text, request, board, post)
 
 			local op = Posts:get_thread_op(thread.id)
 			return
-				request:format_url(request.thread_url, board.short_name, op.post_id),
+				request:url_for("thread", { board=board.short_name, thread=op.post_id }),
 				op
 		else
-			return request:format_url(request.board_url, board.short_name)
+			return request:url_for("board", { board=board.short_name })
 		end
 	end
 

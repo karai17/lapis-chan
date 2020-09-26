@@ -24,7 +24,7 @@ return {
 
 		-- Board not found
 		if not self.board then
-			self:write({ redirect_to = self:build_url() })
+			self:write({ redirect_to = self:url_for("index") })
 			return
 		end
 
@@ -55,7 +55,7 @@ return {
 			thread.op      = Posts:get_thread_op(thread.id)
 			thread.replies = Posts:count_posts(thread.id) - 1
 			thread.files   = Posts:count_files(thread.id)
-			thread.url     = self:format_url(self.thread_url, self.board.short_name, thread.op.post_id)
+			thread.url     = self:url_for("thread", { board=self.board.short_name, thread=thread.op.post_id })
 
 			if thread.op.file_path then
 				local name, ext = thread.op.file_path:match("^(.+)(%..+)$")
@@ -119,9 +119,9 @@ return {
 
 			-- Validate post
 			local post = assert_error(process.create_thread(self.params, self.session, self.board))
-			return { redirect_to = self:format_url(self.post_url, self.board.short_name, post.post_id, post.post_id) }
+			return { redirect_to = self:url_for("thread", { board=self.board.short_name, thread=post.post_id, anchor="p", id=post.post_id }) }
 		end
 
-		return { redirect_to = self:format_url(self.catalog_url, self.board.short_name) }
+		return { redirect_to = self:url_for("catalog", { board=self.board.short_name }) }
 	end
 }
