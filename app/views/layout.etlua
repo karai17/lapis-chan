@@ -22,7 +22,7 @@
 		<div id="right">
 			<% render("views.form_locale") %>
 			<% if session.name then %>
-			<span id="logout">[<a href="<%= url_for('logout') %>"><%= i18n("logout") %></a>]</span>
+			<span id="logout">[<a href="<%= url_for('web.pages.logout') %>"><%= i18n("logout") %></a>]</span>
 			<% end %>
 		</div>
 		<% content_for("inner") %>

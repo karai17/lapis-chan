@@ -10,8 +10,7 @@ return function(self)
 	self.page = Pages:get_page(self.params.page)
 
 	if not self.page then
-		self:write({ redirect_to = self:url_for("c404") })
-		return
+		return self:write({ redirect_to = self:url_for("web.pages.c404") })
 	end
 
 	-- Page title

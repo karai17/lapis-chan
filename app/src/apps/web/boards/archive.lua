@@ -18,8 +18,7 @@ return function(self)
 
 	-- Board not found
 	if not self.board then
-		self:write({ redirect_to = self:url_for("index") })
-		return
+		return self:write({ redirect_to = self:url_for("web.pages.index") })
 	end
 
 	-- Get announcements
@@ -45,7 +44,7 @@ return function(self)
 	for _, thread in ipairs(self.threads) do
 		thread.op      = Posts:get_thread_op(thread.id)
 		thread.replies = Posts:count_posts(thread.id) - 1
-		thread.url     = self:url_for("thread", { board=self.board.short_name, thread=thread.op.post_id })
+		thread.url     = self:url_for("web.boards.thread", { board=self.board.short_name, thread=thread.op.post_id })
 
 		-- Process name
 		thread.op.name = thread.op.name or self.board.anon_name

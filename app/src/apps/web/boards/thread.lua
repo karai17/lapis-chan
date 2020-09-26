@@ -24,8 +24,7 @@ return {
 
 		-- Board not found
 		if not self.board then
-			self:write({ redirect_to = self:url_for("index") })
-			return
+			return self:write({ redirect_to = self:url_for("web.pages.index") })
 		end
 
 		-- Get current thread data
@@ -33,23 +32,20 @@ return {
 
 		-- Post not found
 		if not post then
-			self:write({ redirect_to = self:url_for("board", { board=self.board.short_name }) })
-			return
+			return self:write({ redirect_to = self:url_for("web.boards.board", { board=self.board.short_name }) })
 		end
 
 		local op = Posts:get_thread_op(post.thread_id)
 
 		if post.post_id ~= op.post_id then
-			self:write({ redirect_to = self:url_for("thread", { board=self.board.short_name, thread=op.post_id, anchor="p", id=post.post_id }) })
-			return
+			return self:write({ redirect_to = self:url_for("web.boards.thread", { board=self.board.short_name, thread=op.post_id, anchor="p", id=post.post_id }) })
 		end
 
 		self.thread = Threads:get_thread(post.thread_id)
 
 		-- Thread not found
 		if not self.thread then
-			self:write({ redirect_to = self:url_for("board", { board=self.board.short_name }) })
-			return
+			return self:write({ redirect_to = self:url_for("web.boards.board", { board=self.board.short_name }) })
 		end
 
 		-- Get announcements
@@ -82,8 +78,8 @@ return {
 			end
 
 			post.name            = post.name or self.board.anon_name
-			post.reply           = self:url_for("thread", { board=self.board.short_name, thread=self.posts[1].post_id, anchor="q", id=post.post_id })
-			post.link            = self:url_for("thread", { board=self.board.short_name, thread=self.posts[1].post_id, anchor="p", id=post.post_id })
+			post.reply           = self:url_for("web.boards.thread", { board=self.board.short_name, thread=self.posts[1].post_id, anchor="q", id=post.post_id })
+			post.link            = self:url_for("web.boards.thread", { board=self.board.short_name, thread=self.posts[1].post_id, anchor="p", id=post.post_id })
 			post.timestamp       = os.date("%Y-%m-%d (%a) %H:%M:%S", post.timestamp)
 			post.file_size       = math.floor(post.file_size / 1024)
 			post.file_dimensions = ""
@@ -154,8 +150,8 @@ return {
 		-- Validate CSRF token
 		csrf.assert_token(self)
 
-		local board_url  = self:url_for("board",  { board=self.board.short_name })
-		local thread_url = self:url_for("thread", { board=self.board.short_name, thread=self.posts[1].post_id })
+		local board_url  = self:url_for("web.boards.board",  { board=self.board.short_name })
+		local thread_url = self:url_for("web.boards.thread", { board=self.board.short_name, thread=self.posts[1].post_id })
 
 		-- Submit new post
 		if self.params.submit and self.thread then
@@ -170,7 +166,7 @@ return {
 
 			-- Validate post
 			local post = assert_error(process.create_post(self.params, self.session, self.board, self.thread))
-			return { redirect_to = self:url_for("thread", { board=self.board.short_name, thread=self.posts[1].post_id, anchor="p", id=post.post_id }) }
+			return { redirect_to = self:url_for("web.boards.thread", { board=self.board.short_name, thread=self.posts[1].post_id, anchor="p", id=post.post_id }) }
 		end
 
 		-- Delete thread

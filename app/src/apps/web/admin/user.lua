@@ -3,15 +3,15 @@ local assert_valid = require("lapis.validate").assert_valid
 local csrf         = require "lapis.csrf"
 local generate     = require "utils.generate"
 local Boards       = require "models.boards"
-local Pages        = require "models.pages"
+local Users        = require "models.users"
 
 return {
 	before = function(self)
 		-- Get all board data
 		self.boards = Boards:get_boards()
 
-		-- Get all page data
-		self.pages = Pages:get_pages()
+		-- Get all user data
+		self.users = Users:get_users()
 
 		-- Display a theme
 		self.board = { theme = "yotsuba_b" }
@@ -36,9 +36,9 @@ return {
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
-				self.i18n("create_page")
+				self.i18n("create_user")
 			)
-			self.page = self.params
+			self.user = self.params
 			return
 		end
 
@@ -47,23 +47,23 @@ return {
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
-				self.i18n("modify_page")
+				self.i18n("modify_user")
 			)
-			self.page = Pages:get_page(self.params.page)
+			self.user = Users:get_user_by_id(self.params.user)
 			return
 		end
 
-		-- Delete page
+		-- Delete user
 		if self.params.action == "delete" then
-			local page = Pages:get_page(self.params.page)
-			assert_error(Pages:delete_page(page))
+			local user = Users:get_user_by_id(self.params.user)
+			assert_error(Users:delete_user(user))
 
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("deleted_page", { page.url, page.name })
+			self.action = self.i18n("deleted_user", { user.username })
 			return
 		end
 	end,
@@ -73,9 +73,9 @@ return {
 		if not self.session.name then
 			return { render = "admin.login" }
 		elseif self.params.action == "create" then
-			return { render = "admin.page" }
+			return { render = "admin.user" }
 		elseif self.params.action == "modify" then
-			return { render = "admin.page" }
+			return { render = "admin.user" }
 		elseif self.params.action == "delete" then
 			return { render = "admin.admin" }
 		end
@@ -84,9 +84,9 @@ return {
 		if not self.session.name then
 			return { render = "admin.login" }
 		elseif self.params.action == "create" then
-			return { render = "admin.page" }
+			return { render = "admin.user" }
 		elseif self.params.action == "modify" then
-			return { render = "admin.page" }
+			return { render = "admin.user" }
 		elseif self.params.action == "delete" then
 			return { render = "admin.success" }
 		end
@@ -95,70 +95,96 @@ return {
 		-- Validate CSRF token
 		csrf.assert_token(self)
 
-		-- Validate user input
-		assert_valid(self.params, {
-			{ "url",  max_length=255, exists=true },
-			{ "name", max_length=255, exists=true }
-		})
-
-		-- Create new page
-		if self.params.create_page then
+		-- Create new user
+		if self.params.create_user then
 			local sl = string.lower
+
+			-- Validate user input
+			assert_valid(self.params, {
+				{ "username",        exists=true, max_length=255 },
+				{ "new_password",    exists=true, equals=self.params.retype_password },
+				{ "retype_password", exists=true }
+			})
+
+			self.params.password = self.params.new_password
+
 			-- Verify unique names
-			for _, page in ipairs(self.pages) do
-				if sl(page.url) == sl(self.params.url) then
-					assert_error(false, "err_url_used")
+			for _, user in ipairs(self.users) do
+				if sl(user.username) == sl(self.params.username) then
+					assert_error(false, "err_user_used")
 				end
 			end
 
-			-- Create page
-			local page = assert_error(Pages:create_page(self.params))
+			-- Create user
+			local user = assert_error(Users:create_user(self.params))
 
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("created_page", { page.url, page.name })
+			self.action = self.i18n("created_user", { user.username })
 
 			return { render = "admin.success" }
 		end
 
-		-- Modify page
-		if self.params.modify_page then
+		-- Modify user
+		if self.params.modify_user then
+			-- Validate user input
+			assert_valid(self.params, {
+				{ "username",        exists=true, max_length=255 },
+				{ "new_password",    equals=self.params.retype_password },
+				{ "retype_password", }
+			})
+
 			local discard = {
-				"page",
-				"modify_page",
+				"user",
+				"modify_user",
 				"ip",
 				"action",
 				"csrf_token",
-				"old"
+				"old_password",
+				"new_password",
+				"retype_password",
 			}
 
-			local page = Pages:get_page(self.params.old)
+			local user = Users:get_user(self.params.username)
+
+			-- Validate user
+			if #self.params.old_password > 0 then
+				-- Validate user input
+				assert_valid(self.params, {
+					{ "new_password",    exists=true },
+					{ "retype_password", exists=true }
+				})
+
+				-- TODO: verify user's old password in non-admin setting
+
+				self.params.password = self.params.new_password
+			end
 
 			-- Fill in board with new data
 			for k, param in pairs(self.params) do
-				page[k] = param
+				user[k] = param
 			end
 
 			-- Get rid of form trash
 			for _, param in ipairs(discard) do
-				page[param] = nil
+				user[param] = nil
 			end
 
-			assert_error(Pages:modify_page(page))
+			assert_error(Users:modify_user(user))
 
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("modified_page", { page.url, page.name })
+			self.action = self.i18n("modified_user", { user.username })
 
 			return { render = "admin.success" }
 		end
 
-		return { redirect_to = self:url_for("admin") }
+		return { redirect_to = self:url_for("web.admin.index") }
 	end
 }

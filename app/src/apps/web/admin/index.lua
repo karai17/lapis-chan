@@ -70,42 +70,42 @@ return {
 		if self.session.admin then
 			-- Redirect to modify user page
 			if self.params.modify_user then
-				return { redirect_to = self:url_for("admin_users", { action="modify", user=self.params.user }) }
+				return { redirect_to = self:url_for("web.admin.users", { action="modify", user=self.params.user }) }
 			end
 
 			-- Redirect to delete user page
 			if self.params.delete_user then
-				return { redirect_to = self:url_for("admin_users", { action="delete", user=self.params.user }) }
+				return { redirect_to = self:url_for("web.admin.users", { action="delete", user=self.params.user }) }
 			end
 
 			-- Redirect to modify board page
 			if self.params.modify_board then
-				return { redirect_to = self:url_for("admin_boards", { action="modify", board=self.params.board }) }
+				return { redirect_to = self:url_for("web.admin.boards", { action="modify", board=self.params.board }) }
 			end
 
 			-- Redirect to delete board page
 			if self.params.delete_board then
-				return { redirect_to = self:url_for("admin_boards", { action="delete", board=self.params.board }) }
+				return { redirect_to = self:url_for("web.admin.boards", { action="delete", board=self.params.board }) }
 			end
 
 			-- Redirect to modify announcement page
 			if self.params.modify_announcement then
-				return { redirect_to = self:url_for("admin_announcements", { action="modify", ann=self.params.ann }) }
+				return { redirect_to = self:url_for("web.admin.announcements", { action="modify", ann=self.params.ann }) }
 			end
 
 			-- Redirect to delete announcement page
 			if self.params.delete_announcement then
-				return { redirect_to = self:url_for("admin_announcements", { action="delete", ann=self.params.ann }) }
+				return { redirect_to = self:url_for("web.admin.announcements", { action="delete", ann=self.params.ann }) }
 			end
 
 			-- Redirect to modify page page
 			if self.params.modify_page then
-				return { redirect_to = self:url_for("admin_pages", { action="modify", page=self.params.page }) }
+				return { redirect_to = self:url_for("web.admin.pages", { action="modify", page=self.params.page }) }
 			end
 
 			-- Redirect to delete page page
 			if self.params.delete_page then
-				return { redirect_to = self:url_for("admin_pages", { action="delete", page=self.params.page }) }
+				return { redirect_to = self:url_for("web.admin.pages", { action="delete", page=self.params.page }) }
 			end
 
 			-- Redirect to reported post
@@ -115,12 +115,12 @@ return {
 				local post   = Posts:get_post(board.id, report.post_id)
 				local op     = Posts:get_thread_op(report.thread_id)
 
-				return { redirect_to = self:url_for("thread", { board=board.short_name, thread=op.post_id, anchor="p", id=post.post_id }) }
+				return { redirect_to = self:url_for("web.boards.thread", { board=board.short_name, thread=op.post_id, anchor="p", id=post.post_id }) }
 			end
 
 			-- Redirect to delete report page
 			if self.params.delete_report then
-				return { redirect_to = self:url_for("admin_reports", { action="delete", report=self.params.report }) }
+				return { redirect_to = self:url_for("web.admin.reports", { action="delete", report=self.params.report }) }
 			end
 
 			-- Regenerate thumbnails

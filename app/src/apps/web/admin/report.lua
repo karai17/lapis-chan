@@ -59,6 +59,6 @@ return {
 		end
 	end,
 	POST = function(self)
-		return { redirect_to = self:url_for("admin") }
+		return { redirect_to = self:url_for("web.admin.index") }
 	end
 }

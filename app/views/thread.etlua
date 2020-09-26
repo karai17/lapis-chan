@@ -11,10 +11,10 @@ end
 <p class="announcement"><%= announcement.text %></p>
 <% end %>
 <hr />
-[<a href="<%= url_for('board', { board=board.short_name }) %>"><%= i18n("return") %></a>]
-[<a href="<%= url_for('catalog', { board=board.short_name }) %>"><%= i18n("catalog") %></a>]
+[<a href="<%= url_for('web.boards.board', { board=board.short_name }) %>"><%= i18n("return") %></a>]
+[<a href="<%= url_for('web.boards.catalog', { board=board.short_name }) %>"><%= i18n("catalog") %></a>]
 [<a href="#bottom"><%= i18n("bottom") %></a>]
-[<a href="<%= url_for('thread', { board=board.short_name, thread=posts[1].post_id }) %>"><%= i18n("refresh") %></a>]
+[<a href="<%= url_for('web.boards.thread', { board=board.short_name, thread=posts[1].post_id }) %>"><%= i18n("refresh") %></a>]
 <hr />
 <div class="thread_container">
 	<%
@@ -28,8 +28,8 @@ end
 	%>
 </div>
 <hr />
-[<a href="<%= url_for('board', { board=board.short_name }) %>"><%= i18n("return") %></a>]
-[<a href="<%= url_for('catalog', { board=board.short_name }) %>"><%= i18n("catalog") %></a>]
+[<a href="<%= url_for('web.boards.board', { board=board.short_name }) %>"><%= i18n("return") %></a>]
+[<a href="<%= url_for('web.boards.catalog', { board=board.short_name }) %>"><%= i18n("catalog") %></a>]
 [<a href="#top"><%= i18n("top") %></a>]
-[<a href="<%= url_for('thread', { board=board.short_name, thread=posts[1].post_id }) %>"><%= i18n("refresh") %></a>]
+[<a href="<%= url_for('web.boards.thread', { board=board.short_name, thread=posts[1].post_id }) %>"><%= i18n("refresh") %></a>]
 <hr />
