@@ -1,6 +1,6 @@
 <div class="post_container" id="p<%= post.post_id %>">
 	<div class="post_info">
-		<% render("views.post_menu", { post=post }) %>
+		<% render("views.fragments.post_menu", { post=post }) %>
 		<% if post.subject then %>
 		<span class="post_subject"><%= post.subject %></span>
 		<% end %>

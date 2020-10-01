@@ -15,18 +15,16 @@
 		<title><%= page_title %></title>
 	</head>
 	<body>
-		<% if errors then %>
-		<% render("views.error") %>
-		<% end %>
-		<% render("views.list_boards") %>
+		<% if errors then render('views.fragments.error') end %>
+		<% render('views.fragments.list_boards') %>
 		<div id="right">
-			<% render("views.form_locale") %>
+			<% render('views.fragments.form_locale') %>
 			<% if session.name then %>
-			<span id="logout">[<a href="<%= url_for('web.pages.logout') %>"><%= i18n("logout") %></a>]</span>
+			<span id="logout">[<a href="<%= url_for('web.pages.logout') %>"><%= i18n('logout') %></a>]</span>
 			<% end %>
 		</div>
-		<% content_for("inner") %>
-		<% render("views.list_boards") %>
-		<% render("views.copyright") %>
+		<% content_for('inner') %>
+		<% render('views.fragments.list_boards') %>
+		<% render('views.fragments.copyright') %>
 	</body>
 </html>

@@ -1,0 +1,49 @@
+<% render('views.fragments.board_title') %>
+<% render('views.fragments.announcements') %>
+<hr />
+[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('catalog') %></a>]
+[<a href="#bottom"><%= i18n('bottom') %></a>]
+<hr />
+<p class="archive_stats">
+	<strong>
+	<%= i18n('arc_display', {
+		n_thread = #threads,
+		p_thread = i18n('threads', { count=#threads }),
+		n_day = days,
+		p_day = i18n('days', { count=days })
+	}) %>
+	</strong>
+</p>
+<table id="archive_table">
+	<thead>
+		<tr>
+			<td><%= i18n('arc_number') %></td>
+			<td><%= i18n('arc_name') %></td>
+			<td><%= i18n('arc_excerpt') %></td>
+			<td><%= i18n('arc_replies') %></td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<% for _, thread in ipairs(threads) do %>
+		<tr>
+			<td><%= thread.op.post_id %></td>
+			<td><strong><%= thread.op.name %><strong> <%= thread.op.trip %></td>
+			<td>
+				<% if thread.op.subject then %>
+				<strong><%= thread.op.subject %>:</strong>
+				<% end %>
+				<%- thread.op.comment %>
+			</td>
+			<td><%= thread.replies %></td>
+			<td>[<a href="<%= thread.url %>"><%= i18n('arc_view') %></a>]</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+<hr />
+[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('catalog') %></a>]
+[<a href="#top"><%= i18n('top') %></a>]
+<hr />

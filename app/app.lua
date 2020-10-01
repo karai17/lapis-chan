@@ -16,10 +16,7 @@ do
 end
 --]]
 
-app:before_filter(require "apps.web.global.config_site")
-app:before_filter(require "apps.web.global.check_auth")
-app:before_filter(require "apps.web.global.check_ban")
-
+app:include("apps.api.boards")
 app:include("apps.web.admin")
 app:include("apps.web.pages")
 app:include("apps.web.boards")

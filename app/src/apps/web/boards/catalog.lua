@@ -5,18 +5,15 @@ local csrf          = require "lapis.csrf"
 local format        = require "utils.text_formatter"
 local generate      = require "utils.generate"
 local Announcements = require "models.announcements"
-local Boards        = require "models.boards"
 local Posts         = require "models.posts"
 local Threads       = require "models.threads"
 
 return {
 	before = function(self)
-		-- Get all board data
-		self.boards = Boards:get_boards()
 
-		-- Get current board data
+		-- Get board
 		for _, board in ipairs(self.boards) do
-			if board.short_name == self.params.board then
+			if board.short_name == self.params.uri_short_name then
 				self.board = board
 				break
 			end
@@ -54,7 +51,7 @@ return {
 			thread.op      = Posts:get_thread_op(thread.id)
 			thread.replies = Posts:count_posts(thread.id) - 1
 			thread.files   = Posts:count_files(thread.id)
-			thread.url     = self:url_for("web.boards.thread", { board=self.board.short_name, thread=thread.op.post_id })
+			thread.url     = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=thread.op.post_id })
 
 			if thread.op.file_path then
 				local name, ext = thread.op.file_path:match("^(.+)(%..+)$")
@@ -118,9 +115,9 @@ return {
 
 			-- Validate post
 			local post = assert_error(process.create_thread(self.params, self.session, self.board))
-			return { redirect_to = self:url_for("web.boards.thread", { board=self.board.short_name, thread=post.post_id, anchor="p", id=post.post_id }) }
+			return { redirect_to = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=post.post_id, anchor="p", id=post.post_id }) }
 		end
 
-		return { redirect_to = self:url_for("web.boards.catalog", { board=self.board.short_name }) }
+		return { redirect_to = self:url_for("web.boards.catalog", { uri_short_name=self.board.short_name }) }
 	end
 }

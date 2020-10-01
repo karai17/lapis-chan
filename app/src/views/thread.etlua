@@ -1,0 +1,26 @@
+<% render('views.fragments.board_title') %>
+<% if not thread.lock or session.admin or session.mod then
+	render('views.fragments.form_submit')
+end %>
+<% render('views.fragments.announcements') %>
+<hr />
+[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('catalog') %></a>]
+[<a href="#bottom"><%= i18n('bottom') %></a>]
+[<a href="<%= url_for('web.boards.thread', { uri_short_name=board.short_name, thread=posts[1].post_id }) %>"><%= i18n('refresh') %></a>]
+<hr />
+<div class="thread_container">
+<% for i, post in ipairs(posts) do
+	if i == 1 then
+		render('views.fragments.op_content', { thread=thread, post=post })
+	else
+		render('views.fragments.post_content', { thread=thread, post=post, op=posts[1] })
+	end
+end %>
+</div>
+<hr />
+[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('catalog') %></a>]
+[<a href="#top"><%= i18n('top') %></a>]
+[<a href="<%= url_for('web.boards.thread', { uri_short_name=board.short_name, thread=posts[1].post_id }) %>"><%= i18n('refresh') %></a>]
+<hr />

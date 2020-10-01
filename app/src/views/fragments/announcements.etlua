@@ -1,0 +1,6 @@
+<% if #announcements > 0 then %>
+<hr />
+<% for _, announcement in ipairs(announcements) do %>
+<p class="announcement"><%= announcement.text %></p>
+<% end %>
+<% end %>

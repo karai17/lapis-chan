@@ -84,7 +84,8 @@ function formatter.quote(text, request, board, post)
 	-- Get all the matches and store them in an ordered list
 	posts = {}
 	for b, post_id in text:gmatch(match_pattern) do
-		b = Boards:get_board(b) or b
+		local response = request.api.boards.GET(request)
+		b = response.json or b
 		table.insert(posts, { board=b, id=post_id })
 	end
 

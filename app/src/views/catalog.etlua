@@ -1,0 +1,34 @@
+<% render('views.fragments.board_title') %>
+<% render('views.fragments.form_submit') %>
+<% render('views.fragments.announcements') %>
+<hr />
+[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.archive', { uri_short_name=board.short_name }) %>"><%= i18n('archive') %></a>]
+[<a href="#bottom"><%= i18n('bottom') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('refresh') %></a>]
+<hr />
+<% for t, thread in ipairs(threads) do %>
+<div class="catalog_container">
+	<a href="<%= thread.url %>">
+		<% if thread.op.file_name then %>
+		<img src="<%= thread.op.thumb %>" alt="" /><br />
+		<% end %>
+		<span class="catalog_stats">
+			<%- i18n('cat_stats', {
+				replies = '<strong>'..thread.replies..'</strong>',
+				files   = '<strong>'..thread.files..'</strong>'
+			}) %>
+		</span><br />
+		<% if thread.op.subject then %>
+		<strong><%= thread.op.subject %>:</strong>
+		<% end %>
+		<%- thread.op.comment %>
+	</a>
+</div>
+<% end %>
+<hr />
+[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.archive', { uri_short_name=board.short_name }) %>"><%= i18n('archive') %></a>]
+[<a href="#top"><%= i18n('top') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('refresh') %></a>]
+<hr />

@@ -5,26 +5,22 @@ local format        = require "utils.text_formatter"
 local generate      = require "utils.generate"
 local process       = require "utils.request_processor"
 local Announcements = require "models.announcements"
-local Boards        = require "models.boards"
 local Posts         = require "models.posts"
 local Threads       = require "models.threads"
 
 return {
 	before = function(self)
-		-- Get all board data
-		self.boards = Boards:get_boards()
 
-		-- Get current board data
+		-- Get board
 		for _, board in ipairs(self.boards) do
-			if board.short_name == self.params.board then
+			if board.short_name == self.params.uri_short_name then
 				self.board = board
 				break
 			end
 		end
 
 		-- Board not found
-		if not self.board or
-			self.params.page and not tonumber(self.params.page) then
+		if not self.board or self.params.page and not tonumber(self.params.page) then
 			return self:write({ redirect_to = self:url_for("web.pages.index") })
 		end
 
@@ -68,7 +64,7 @@ return {
 				assert_error(false, { "err_orphaned", { thread.id } })
 			end
 
-			thread.url = self:url_for("web.boards.thread", { board=self.board.short_name, thread=op.post_id })
+			thread.url = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=op.post_id })
 
 			-- Format comments
 			for _, post in ipairs(thread.posts) do
@@ -78,9 +74,9 @@ return {
 				end
 
 				post.name            = post.name or self.board.anon_name
-				post.reply           = self:url_for("web.boards.thread", { board=self.board.short_name, thread=op.post_id, anchor="q", id=post.post_id })
-				post.link            = self:url_for("web.boards.thread", { board=self.board.short_name, thread=op.post_id, anchor="p", id=post.post_id })
-				post.remix           = self:url_for("web.boards.thread", { board=self.board.short_name, thread=op.post_id, anchor="r", id=post.post_id })
+				post.reply           = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=op.post_id, anchor="q", id=post.post_id })
+				post.link            = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=op.post_id, anchor="p", id=post.post_id })
+				post.remix           = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=op.post_id, anchor="r", id=post.post_id })
 				post.timestamp       = os.date("%Y-%m-%d (%a) %H:%M:%S", post.timestamp)
 				post.file_size       = math.floor(post.file_size / 1024)
 				post.file_dimensions = ""
@@ -152,7 +148,7 @@ return {
 		-- Validate CSRF token
 		csrf.assert_token(self)
 
-		local board_url = self:url_for("web.boards.board", { board=self.board.short_name })
+		local board_url = self:url_for("web.boards.board", { uri_short_name=self.board.short_name })
 
 		-- Submit new thread
 		if self.params.submit then
@@ -166,7 +162,7 @@ return {
 
 			-- Validate post
 			local post = assert_error(process.create_thread(self.params, self.session, self.board))
-			return { redirect_to = self:url_for("web.boards.thread", { board=self.board.short_name, thread=post.post_id, anchor="p", id=post.post_id }) }
+			return { redirect_to = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=post.post_id, anchor="p", id=post.post_id }) }
 		end
 
 		-- Delete thread

@@ -1,67 +1,61 @@
 local db     = require "lapis.db"
-local trim   = require("lapis.util").trim_filter
 local giflib = require "giflib"
 local lfs    = require "lfs"
 local magick = require "magick"
 local Model  = require("lapis.db.model").Model
-local Boards = Model:extend("boards")
+local Boards = Model:extend("boards", {
+	relations = {
+		{ "announcements", has_many="Announcements" },
+		{ "bans",          has_many="Bans" },
+		{ "posts",         has_many="Posts" },
+		{ "reports",       has_many="Reports" },
+		{ "threads",       has_many="Threads" },
+	}
+})
+
+Boards.valid_record = {
+	{ "short_name",        max_length=255, exists=true },
+	{ "name",              max_length=255, exists=true },
+	{ "subtext",           max_length=255 },
+	{ "ban_message",       max_length=255 },
+	{ "anon_name",         max_length=255 },
+	{ "theme",             max_length=255 },
+	{ "pages",             exists=true },
+	{ "threads_per_page",  exists=true },
+	{ "thread_file_limit", exists=true },
+	{ "post_limit",        exists=true },
+	{ "archive_time",      exists=true },
+	{ "group",             exists=true }
+}
 
 --- Create a board
--- @tparam table board Board data
+-- @tparam table params Board parameters
 -- @treturn boolean success
 -- @treturn string error
-function Boards:create_board(board)
-	-- Trim white space
-	trim(board, {
-		"short_name", "name", "subtext", "rules",
-		"anon_name", "theme",
-		"posts", "pages", "threads_per_page", "text_only", "filetype_image", "filetype_audio", "draw",
-		"thread_file", "thread_comment", "thread_file_limit",
-		"post_file", "post_comment", "post_limit",
-		"archive", "archive_time", "group"
-	}, nil)
-
-	local b = self:create {
-		short_name        = board.short_name,
-		name              = board.name,
-		subtext           = board.subtext,
-		rules             = board.rules,
-		anon_name         = board.anon_name,
-		theme             = board.theme,
-		posts             = board.posts,
-		pages             = board.pages,
-		threads_per_page  = board.threads_per_page,
-		text_only         = board.text_only,
-		filetype_image    = board.filetype_image,
-		filetype_audio    = board.filetype_audio,
-		draw              = board.draw,
-		thread_file       = board.thread_file,
-		thread_comment    = board.thread_comment,
-		thread_file_limit = board.thread_file_limit,
-		post_file         = board.post_file,
-		post_comment      = board.post_comment,
-		post_limit        = board.post_limit,
-		archive           = board.archive,
-		archive_time      = board.archive_time,
-		group             = board.group
-	}
-
-	if b then
-		lfs.mkdir(string.format("./static/%s/", b.short_name))
-		return b
+function Boards:new(params)
+	local board = self:create(params)
+	if not board then
+		return false, { "err_create_board", { params.short_name, params.name } }
 	end
 
-	return false, { "err_create_board", { board.short_name, board.name } }
+	lfs.mkdir(string.format("./static/%s/", board.short_name))
+	return board
 end
 
 --- Modify a board.
--- @tparam table board Board data
+-- @tparam table params Board parameters
+-- @tparam old_short_name Board's current short name
 -- @treturn boolean success
 -- @treturn string error
-function Boards:modify_board(board, old_short_name)
-	local columns = {}
-	for col in pairs(board) do
-		table.insert(columns, col)
+function Boards:modify(params, old_short_name)
+	local board = self:get(old_short_name)
+	if not board then
+		return false, { "err_create_board", { params.short_name, params.name } } -- FIXME: wrong error message
+	end
+
+	local success, err = board:update(params)
+	if not success then
+		return false, "FIXME: " .. tostring(err)
 	end
 
 	if board.short_name ~= old_short_name then
@@ -70,30 +64,32 @@ function Boards:modify_board(board, old_short_name)
 		os.rename(old, new)
 	end
 
-	return board:update(unpack(columns))
+	return board
 end
 
 --- Delete a board.
--- @tparam table board Board data
--- @tparam table threads List of threads
--- @tparam table posts List of posts
+-- @tparam string short_name Board's short name
 -- @treturn boolean success
 -- @treturn string error
-function Boards:delete_board(board, threads, posts)
-	local dir = string.format("./static/%s/", board.short_name)
-
-	-- Clear posts
-	for _, post in ipairs(posts) do
-		post:delete()
+function Boards:delete(short_name)
+	local board = self:get(short_name)
+	if not board then
+		return false, { "err_create_board", { short_name, short_name } } -- FIXME: wrong error message
 	end
 
-	-- Clear threads
-	for _, thread in ipairs(threads) do
-		thread:delete()
-	end
+	local announcements = board:get_announcements()
+	local bans          = board:get_bans()
+	local posts         = board:get_posts()
+	local reports       = board:get_reports()
+	local threads       = board:get_threads()
+	local dir           = string.format("./static/%s/", board.short_name)
 
-	-- Clear board
-	board:delete()
+	-- Clear data
+	for _, announcement in ipairs(announcements) do announcement:delete() end
+	for _, ban          in ipairs(bans)          do ban:delete()          end
+	for _, post         in ipairs(posts)         do post:delete()         end
+	for _, report       in ipairs(reports)       do report:delete()       end
+	for _, thread       in ipairs(threads)       do thread:delete()       end
 
 	-- Clear filesystem
 	if lfs.attributes(dir, "mode") == "directory" then
@@ -103,32 +99,36 @@ function Boards:delete_board(board, threads, posts)
 		end
 
 		-- Delete directory
-		return lfs.rmdir(dir)
+		lfs.rmdir(dir)
 	end
 
-	return false, { "err_delete_board", { board.short_name, board.name } }
+	-- Clear board
+	local success = board:delete()
+	if not success then
+		return false, { "err_delete_board", { board.short_name, board.name } }
+	end
+
+	return board
 end
 
 --- Get all boards
 -- @treturn table boards
-function Boards:get_boards()
-	return self:select("order by boards.group asc, short_name asc")
+function Boards:get_all()
+	local boards = self:select("order by boards.group asc, short_name asc")
+	return boards and boards or false, "FIXME: ALART!"
 end
 
 --- Get board data
--- @tparam number id Board ID or Board short name
+-- @tparam string short_name Board's short name
 -- @treturn table board
-function Boards:get_board(id)
-	if type(id) == "number" then
-		return self:find(id)
-	else
-		return self:find { short_name = id }
-	end
+function Boards:get(short_name)
+	local board = self:find { short_name=short_name }
+	return board and board or false, "FIXME: ALART!"
 end
 
 --- Regenerate thumbnails for all posts
 -- @treturn none
-function Boards:regen_thumbs()
+function Boards.regen_thumbs(_)
 	local sql = [[
 		select
 			boards.short_name as board,

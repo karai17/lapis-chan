@@ -155,11 +155,12 @@ end
 -- @treturn boolean success
 -- @treturn string error
 function Posts:create_post(params, session, board, thread, op)
-	board.posts = board.posts + 1
+	-- FIXME: there needs to be a better way to do this to avoid race conditions...
+	board.total_posts = board.total_posts + 1
 
 	-- Create post
 	local post = self:create {
-		post_id       = board.posts,
+		post_id       = board.total_posts,
 		thread_id     = thread.id,
 		board_id      = board.id,
 		timestamp     = os.time(),

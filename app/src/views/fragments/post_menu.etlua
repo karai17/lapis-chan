@@ -1,0 +1,21 @@
+<div class="post_menu">
+	<span>▶</span>
+	<div class="menu">
+		<% if board.draw then %>
+		<div><% render("views.fragments.form_remix", { post=post }) %></div>
+		<% end %>
+		<div><% render("views.fragments.form_report", { post=post }) %></div>
+		<div><% render("views.fragments.form_delete", { post=post }) %></div>
+		<% if session.admin or session.mod then %>
+			<% if not post.banned then %>
+			<div><% render("views.fragments.form_ban", { post=post }) %></div>
+			<% end %>
+			<% if op then %>
+			<div><% render("views.fragments.form_sticky", { post=post }) %></div>
+			<div><% render("views.fragments.form_lock", { post=post }) %></div>
+			<div><% render("views.fragments.form_save", { post=post }) %></div>
+			<div><% render("views.fragments.form_override", { post=post }) %></div>
+			<% end %>
+		<% end %>
+	</div>
+</div>

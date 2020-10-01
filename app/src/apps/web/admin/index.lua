@@ -12,7 +12,6 @@ return {
 	before = function(self)
 		-- Get data
 		self.announcements = Announcements:get_announcements()
-		self.boards        = Boards:get_boards()
 		self.pages         = Pages:get_pages()
 		self.reports       = Reports:get_reports()
 		self.users         = Users:get_users()
@@ -80,12 +79,12 @@ return {
 
 			-- Redirect to modify board page
 			if self.params.modify_board then
-				return { redirect_to = self:url_for("web.admin.boards", { action="modify", board=self.params.board }) }
+				return { redirect_to = self:url_for("web.admin.boards", { action="modify", uri_short_name=self.params.board }) }
 			end
 
 			-- Redirect to delete board page
 			if self.params.delete_board then
-				return { redirect_to = self:url_for("web.admin.boards", { action="delete", board=self.params.board }) }
+				return { redirect_to = self:url_for("web.admin.boards", { action="delete", uri_short_name=self.params.board }) }
 			end
 
 			-- Redirect to modify announcement page

@@ -19,7 +19,7 @@
 	</div>
 	<% end %>
 	<div class="post_info">
-		<% render("views.post_menu", { post=post, op=true }) %>
+		<% render("views.fragments.post_menu", { post=post, op=true }) %>
 		<% if post.subject then %>
 		<span class="post_subject"><%= post.subject %></span>
 		<% end %>

@@ -107,5 +107,8 @@ return {
 		schema.add_column("boards", "filetype_audio", types.boolean { default=false })
 		schema.add_column("posts",  "file_type",      types.varchar { default="image" })
 		schema.add_column("posts",  "file_duration",  types.varchar { null=true })
+	end,
+	[200] = function()
+		schema.rename_column("boards", "posts", "total_posts")
 	end
 }

@@ -1,16 +1,13 @@
 local format        = require "utils.text_formatter"
 local Announcements = require "models.announcements"
-local Boards        = require "models.boards"
 local Posts         = require "models.posts"
 local Threads       = require "models.threads"
 
 return function(self)
-	-- Get all board data
-	self.boards = Boards:get_boards()
 
-	-- Get current board data
+	-- Get board
 	for _, board in ipairs(self.boards) do
-		if board.short_name == self.params.board then
+		if board.short_name == self.params.uri_short_name then
 			self.board = board
 			break
 		end
@@ -44,7 +41,7 @@ return function(self)
 	for _, thread in ipairs(self.threads) do
 		thread.op      = Posts:get_thread_op(thread.id)
 		thread.replies = Posts:count_posts(thread.id) - 1
-		thread.url     = self:url_for("web.boards.thread", { board=self.board.short_name, thread=thread.op.post_id })
+		thread.url     = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=thread.op.post_id })
 
 		-- Process name
 		thread.op.name = thread.op.name or self.board.anon_name

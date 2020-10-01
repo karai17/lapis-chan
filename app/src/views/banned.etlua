@@ -1,0 +1,8 @@
+<h1><%= page_title %></h1>
+<div class="banned">
+	<p><%= i18n('ban_reason') %></p>
+	<p><strong><%= reason %></strong></p>
+	<p><%- i18n('ban_expire', { expire='<strong>'..expire..'</strong>' }) %></p>
+	<p><%- i18n('ban_ip', { ip='<strong>'..ip..'</strong>' }) %></p>
+	<div><img src="/static/banned.jpg" alt="Catfish." /></div>
+</div>

@@ -1,0 +1,36 @@
+<% render('views.fragments.board_title') %>
+<% render('views.fragments.form_submit') %>
+<% render('views.fragments.announcements') %>
+<hr />
+[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('catalog') %></a>]
+[<a href="<%= url_for('web.boards.archive', { uri_short_name=board.short_name }) %>"><%= i18n('archive') %></a>]
+[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('refresh') %></a>]
+<hr />
+<% for _, thread in ipairs(threads) do %>
+<div class="thread_container">
+<%
+	local posts = thread.posts or {}
+	for i=#posts, 1, -1 do
+		local post = posts[i]
+		local op   = posts[#posts]
+		if post.post_id == op.post_id then
+			render('views.fragments.op_content', { thread=thread, post=post, posts=posts, is_board=true })
+		else
+			render('views.fragments.post_content', { thread=thread, post=post, posts=posts, is_board=true, op=op })
+		end
+	end
+%>
+</div>
+<hr />
+<% end %>
+<div class="pages">
+	<% for i=1, pages do %>
+		<% if i == params.page then %>
+		[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name, page=i }) %>"><strong><%= i %></strong></a>]
+		<% else %>
+		[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name, page=i }) %>"><%= i %></a>]
+		<% end %>
+	<% end %>
+	[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('catalog') %></a>]
+	[<a href="<%= url_for('web.boards.archive', { uri_short_name=board.short_name }) %>"><%= i18n('archive') %></a>]
+</div>

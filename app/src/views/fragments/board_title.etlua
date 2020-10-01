@@ -1,6 +1,6 @@
 <div id="board_title">
 	<h1><%= page_title %></h1>
 	<% if board.subtext then %>
-	<h2><em><%= board.subtext or "" %></em></h2>
+	<h2><em><%= board.subtext %></em></h2>
 	<% end %>
 </div>
