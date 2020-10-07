@@ -1,7 +1,8 @@
-local format        = require "utils.text_formatter"
-local Announcements = require "models.announcements"
-local Posts         = require "models.posts"
-local Threads       = require "models.threads"
+local assert_error = require("lapis.application").assert_error
+local capture      = require "utils.capture"
+local format       = require "utils.text_formatter"
+local Posts        = require "models.posts"
+local Threads      = require "models.threads"
 
 return function(self)
 
@@ -19,7 +20,7 @@ return function(self)
 	end
 
 	-- Get announcements
-	self.announcements = Announcements:get_board_announcements(self.board.id)
+	self.announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_short_name=self.params.uri_short_name })))
 
 	-- Page title
 	self.page_title = string.format(

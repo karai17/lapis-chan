@@ -1,10 +1,10 @@
 local assert_error  = require("lapis.application").assert_error
 local assert_valid  = require("lapis.validate").assert_valid
 local csrf          = require "lapis.csrf"
+local capture       = require "utils.capture"
 local format        = require "utils.text_formatter"
 local generate      = require "utils.generate"
 local process       = require "utils.request_processor"
-local Announcements = require "models.announcements"
 local Posts         = require "models.posts"
 local Threads       = require "models.threads"
 
@@ -25,7 +25,12 @@ return {
 		end
 
 		-- Get announcements
-		self.announcements = Announcements:get_board_announcements(self.board.id)
+		-- TODO: Consolidate these into a single call
+		self.announcements        = assert_error(capture.get(self:url_for("api.announcements.announcement", { uri_id="global" })))
+		local board_announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_short_name=self.params.uri_short_name })))
+		for _, announcement in ipairs(board_announcements) do
+			table.insert(self.announcements, announcement)
+		end
 
 		-- Page title
 		self.page_title = string.format(

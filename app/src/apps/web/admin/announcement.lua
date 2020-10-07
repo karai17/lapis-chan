@@ -1,17 +1,13 @@
-local assert_error  = require("lapis.application").assert_error
-local assert_valid  = require("lapis.validate").assert_valid
-local csrf          = require "lapis.csrf"
-local generate      = require "utils.generate"
-local Announcements = require "models.announcements"
-local Boards        = require "models.boards"
+local assert_error = require("lapis.application").assert_error
+local assert_valid = require("lapis.validate").assert_valid
+local csrf         = require "lapis.csrf"
+local capture      = require "utils.capture"
+local generate     = require "utils.generate"
 
 return {
 	before = function(self)
-		-- Get all announcement data
-		self.announcements = Announcements:get_announcements()
-
-		-- Get all board data
-		self.boards = Boards:get_boards()
+		-- Get announcements
+		self.announcements = assert_error(capture.get(self:url_for("api.announcements.announcements")))
 
 		-- Display a theme
 		self.board = { theme = "yotsuba_b" }
@@ -44,29 +40,28 @@ return {
 
 		-- Display modification form
 		if self.params.action == "modify" then
+			self.announcement = assert_error(capture.get(self:url_for("api.announcements.announcement", { uri_id=self.params.uri_id })))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("modify_ann")
 			)
-			self.announcement = Announcements:get_announcement(self.params.ann)
 			return
 		end
 
 		-- Delete announcement
 		if self.params.action == "delete" then
-			local ann = Announcements:get_announcement(self.params.ann)
-			assert_error(Announcements:delete_announcement(ann))
-
+			self.announcement = assert_error(capture.delete(self:url_for("api.announcements.announcement", { uri_id=self.params.uri_id })))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("deleted_ann", { ann.text })
+			self.action = self.i18n("deleted_ann", { self.announcement.text })
 			return
 		end
 	end,
+
 	on_error = function(self)
 		self.errors = generate.errors(self.i18n, self.errors)
 
@@ -80,6 +75,7 @@ return {
 			return { render = "admin.admin" }
 		end
 	end,
+
 	GET = function(self)
 		if not self.session.name then
 			return { render = "admin.login" }
@@ -91,6 +87,7 @@ return {
 			return { render = "admin.success" }
 		end
 	end,
+
 	POST = function(self)
 		-- Validate CSRF token
 		csrf.assert_token(self)
@@ -102,48 +99,26 @@ return {
 
 		-- Create announcement
 		if self.params.create_announcement then
-			local ann = assert_error(Announcements:create_announcement(self.params))
-
+			self.announcement = assert_error(capture.post(self:url_for("api.announcements.announcements"), self.params))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("created_ann", { ann.text })
+			self.action = self.i18n("created_ann", { self.announcement.text })
 
 			return { render = "admin.success" }
 		end
 
 		-- Modify announcement
 		if self.params.modify_announcement then
-			local discard = {
-				"ann",
-				"modify_announcement",
-				"ip",
-				"action",
-				"csrf_token"
-			}
-
-			local ann = Announcements:get_announcement(self.params.ann)
-
-			-- Fill in board with new data
-			for k, param in pairs(self.params) do
-				ann[k] = param
-			end
-
-			-- Get rid of form trash
-			for _, param in ipairs(discard) do
-				ann[param] = nil
-			end
-
-			assert_error(Announcements:modify_announcement(ann))
-
+			self.announcement = assert_error(capture.put(self:url_for("api.announcements.announcement", { uri_id=self.params.uri_id }), self.params))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("modified_ann", { ann.text })
+			self.action = self.i18n("modified_ann", { self.announcement.text })
 
 			return { render = "admin.success" }
 		end

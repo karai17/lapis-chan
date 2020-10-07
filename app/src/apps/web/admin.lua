@@ -1,15 +1,10 @@
-local lapis = require "lapis"
-local r2    = require("lapis.application").respond_to
-local app   = lapis.Application()
-
+local lapis    = require "lapis"
+local r2       = require("lapis.application").respond_to
+local app      = lapis.Application()
 app.__base     = app
 app.name       = "web.admin."
 app.path       = "/admin"
 app.handle_404 = require "apps.web.global.code_404"
-
-app:before_filter(require "apps.web.global.config_site")
-app:before_filter(require "apps.web.global.check_auth")
-app:before_filter(require "apps.web.global.check_ban")
 
 app:match("index",         "",                             r2(require "apps.web.admin.index"))
 app:match("users",         "/:action/user(/:user)",        r2(require "apps.web.admin.user"))

@@ -126,6 +126,21 @@ function Boards:get(short_name)
 	return board and board or false, "FIXME: ALART!"
 end
 
+--- Format board paramaters for DB insertion
+-- @tparam table params Board parameters
+function Boards.format_to_db(_, params)
+	-- Convert archive_time from days to seconds
+	params.archive_time = (tonumber(params.archive_time) or 0) * 86400
+end
+
+--- Format board parameters for User consumption
+-- @tparam table params Board parameters
+function Boards.format_from_db(_, params)
+	-- Convert archive_time from seconds to days
+	params.archive_time = tonumber(params.archive_time) / 86400
+
+end
+
 --- Regenerate thumbnails for all posts
 -- @treturn none
 function Boards.regen_thumbs(_)

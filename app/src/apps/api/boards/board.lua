@@ -10,6 +10,7 @@ function action:GET()
 
 	-- Get Board
 	local board = assert_error(Boards:get(self.params.uri_short_name))
+	Boards:format_from_db(board)
 
 	return {
 		status = ngx.HTTP_OK,
@@ -44,14 +45,13 @@ function action:PUT()
 		archive_time      = self.params.archive_time,
 		group             = self.params.group
 	}
+	Boards:format_to_db(params)
 	trim_filter(params)
 	assert_valid(params, Boards.valid_record)
 
-	-- Convert archive_time to seconds
-	params.archive_time = tonumber(params.archive_time) * 24 * 60 * 60
-
 	-- Modify board
 	local board = assert_error(Boards:modify(params, self.params.uri_short_name))
+	Boards:format_from_db(board)
 
 	return {
 		status = ngx.HTTP_OK,

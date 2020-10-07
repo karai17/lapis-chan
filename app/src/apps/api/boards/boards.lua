@@ -10,6 +10,9 @@ function action.GET()
 
 	-- Get Boards
 	local boards = assert_error(Boards:get_all())
+	for _, board in ipairs(boards) do
+		Boards:format_from_db(board)
+	end
 
 	return {
 		status = ngx.HTTP_OK,
@@ -44,6 +47,7 @@ function action:POST()
 		archive_time      = self.params.archive_time,
 		group             = self.params.group
 	}
+	Boards:format_to_db(params)
 	trim_filter(params)
 	assert_valid(params, Boards.valid_record)
 
@@ -55,11 +59,9 @@ function action:POST()
 		end
 	end
 
-	-- Convert archive_time to seconds
-	params.archive_time = tonumber(params.archive_time) * 24 * 60 * 60
-
 	-- Create board
 	local board = assert_error(Boards:new(params))
+	Boards:format_from_db(board)
 
 	return {
 		status = ngx.HTTP_OK,

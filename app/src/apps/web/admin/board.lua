@@ -1,9 +1,8 @@
-local ngx          = _G.ngx
 local assert_error = require("lapis.application").assert_error
 local csrf         = require "lapis.csrf"
 local lfs          = require "lfs"
+local capture      = require "utils.capture"
 local generate     = require "utils.generate"
-local Boards       = require "models.boards"
 
 return {
 	before = function(self)
@@ -54,24 +53,18 @@ return {
 
 		-- Display modification form
 		if self.params.action == "modify" then
+			self.board = assert_error(capture.get(self:url_for("api.boards.board", { uri_short_name=self.params.uri_short_name })))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("modify_board")
 			)
-			self.board = Boards:get(self.params.uri_short_name) -- FIXME
-			self.board.archive_time = self.board.archive_time / 24 / 60 / 60
 			return
 		end
 
 		-- Delete board
 		if self.params.action == "delete" then
-			local response = self.api.board.DELETE(self)
-			if response.status ~= ngx.HTTP_OK then
-				-- FIXME: board not deleted
-			end
-
-			local board     = response.json
+			local board = assert_error(capture.delete(self:url_for("api.boards.board", { uri_short_name=self.params.uri_short_name })))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
@@ -114,12 +107,7 @@ return {
 
 		-- Create new board
 		if self.params.create_board then
-			local response = self.api.boards.POST(self)
-			if response.status ~= ngx.HTTP_OK then
-				-- FIXME: board not created
-			end
-
-			local board     = response.json
+			local board = assert_error(capture.post(self:url_for("api.boards.boards"), self.params))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
@@ -132,12 +120,7 @@ return {
 
 		-- Modify board
 		if self.params.modify_board then
-			local response = self.api.board.PUT(self)
-			if response.status ~= ngx.HTTP_OK then
-				-- FIXME: board not modified
-			end
-
-			local board     = response.json
+			local board = assert_error(capture.put(self:url_for("api.boards.board", { uri_short_name=self.params.uri_short_name }), self.params))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),

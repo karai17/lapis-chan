@@ -1,7 +1,8 @@
-local ngx    = _G.ngx
-local config = require("lapis.config").get()
-local i18n   = require "i18n"
-local lfs    = require "lfs"
+local config       = require("lapis.config").get()
+local assert_error = require("lapis.application").assert_error
+local i18n         = require "i18n"
+local lfs          = require "lfs"
+local capture      = require "utils.capture"
 
 return function(self)
 	-- Set basic information
@@ -9,12 +10,6 @@ return function(self)
 	self.version   = "1.2.5"
 	self.site_name = config.site_name
 	self.text_size = _G.text_size
-
-	-- Prepare internal API
-	self.api = {
-		boards = require "apps.api.boards.boards",
-		board  = require "apps.api.boards.board"
-	}
 
 	-- Get localization files
 	self.locales = {}
@@ -38,17 +33,13 @@ return function(self)
 	self.i18n = i18n
 
 	-- Get all boards
-	local response = self.api.boards.GET(self)
-	self.boards = response.json
-
-	local res = ngx.location.capture(self:url_for("api.boards.boards"))
-	--print(res.status)
+	self.boards = assert_error(capture.get(self:url_for("api.boards.boards")))
 
 	-- Static
 	self.static_url = "/static/%s"
 	self.files_url  = "/files/%s/%s"
 
-	function self:format_url(pattern, ...)
+	function self.format_url(_, pattern, ...)
 		return self:build_url(string.format(pattern, ...))
 	end
 end

@@ -1,75 +1,87 @@
-local trim          = require("lapis.util").trim_filter
 local Model         = require("lapis.db.model").Model
-local Announcements = Model:extend("announcements")
+local Announcements = Model:extend("announcements", {
+	relations = {
+		{ "board", belongs_to="Boards" }
+	}
+})
+
+Announcements.valid_record = {
+	{ "text", exists=true }
+}
 
 --- Create an announcement
--- @tparam table ann Announcement data
+-- @tparam table params Announcement parameters
 -- @treturn boolean success
 -- @treturn string error
-function Announcements:create_announcement(ann)
-	-- Trim white space
-	trim(ann, {
-		"board_id", "text"
-	}, nil)
-
-	local a = self:create {
-		board_id = ann.board_id,
-		text     = ann.text
-	}
-
-	if a then
-		return a
+function Announcements:new(params)
+	local announcement = self:create(params)
+	if not announcement then
+		return false, { "err_create_ann", { params.text } }
 	end
 
-	return false, { "err_create_ann", { ann.text } }
+	return announcement
 end
 
 --- Modify an announcement
--- @tparam table ann Announcement data
+-- @tparam table params Announcement parameters
 -- @treturn boolean success
 -- @treturn string error
-function Announcements:modify_announcement(ann)
-	local columns = {}
-	for col in pairs(ann) do
-		table.insert(columns, col)
+function Announcements:modify(params)
+	local announcement = self:get(params.id)
+	if not announcement then
+		return false, { "err_create_ann", { params.text } } -- FIXME: wrong error
 	end
 
-	return ann:update(unpack(columns))
+	local success, err = announcement:update(params)
+	if not success then
+		return false, "FIXME: " .. tostring(err)
+	end
+
+	return announcement
 end
 
 --- Delete an announcement
--- @tparam table ann Announcement data
+-- @tparam number id Announcement ID
 -- @treturn boolean success
 -- @treturn string error
-function Announcements:delete_announcement(ann)
-	return ann:delete()
+function Announcements:delete(id)
+	local announcement = self:get(id)
+	if not announcement then
+		return false, "FIXME"
+	end
+
+	local success = announcement:delete()
+	if not success then
+		return false, "FIXME"
+	end
+
+	return announcement
 end
 
 --- Get all announcements
--- @treturn table announcements
-function Announcements:get_announcements()
-	return self:select("order by board_id asc")
+-- @treturn boolean success
+-- @treturn string error
+function Announcements:get_all()
+	local announcements = self:select("order by board_id asc")
+	return announcements and announcements or false, "FIXME"
 end
 
 --- Get announcements
 -- @tparam number board_id Board ID
--- @treturn table announcements
-function Announcements:get_board_announcements(board_id)
-	local sql = [[
-		where
-			board_id = ? or
-			board_id = 0
-		order by
-			board_id asc
-	]]
-	return self:select(sql, board_id)
+-- @treturn boolean success
+-- @treturn string error
+function Announcements:get_global()
+	local announcements = self:select("where board_id=0")
+	return announcements and announcements or false, "FIXME"
 end
 
 --- Get announcement
 -- @tparam number id Announcement ID
--- @treturn table announcement
-function Announcements:get_announcement(id)
-	return unpack(self:select("where id=? limit 1", id))
+-- @treturn boolean success
+-- @treturn string error
+function Announcements:get(id)
+	local announcement = self:find(id)
+	return announcement and announcement or false, "FIXME"
 end
 
 return Announcements

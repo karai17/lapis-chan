@@ -1,4 +1,6 @@
 local Bans = require "models.bans"
+local assert_error = require("lapis.application").assert_error
+local capture      = require "utils.capture"
 
 return function(self)
 	-- MODS = FAGS
@@ -15,8 +17,7 @@ return function(self)
 	-- Get current board
 	local board = {}
 	if self.params.uri_short_name then
-		local response = self.api.board.GET(self)
-		board = response.json
+		board = assert_error(capture.get(self:url_for("api.boards.board", { uri_short_name=self.params.uri_short_name })))
 	end
 
 	-- If you are banned, gtfo

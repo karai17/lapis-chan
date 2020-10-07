@@ -1,17 +1,17 @@
-local assert_error  = require("lapis.application").assert_error
-local csrf          = require "lapis.csrf"
-local generate      = require "utils.generate"
-local Announcements = require "models.announcements"
-local Boards        = require "models.boards"
-local Pages         = require "models.pages"
-local Posts         = require "models.posts"
-local Reports       = require "models.reports"
-local Users         = require "models.users"
+local assert_error = require("lapis.application").assert_error
+local csrf         = require "lapis.csrf"
+local capture      = require "utils.capture"
+local generate     = require "utils.generate"
+local Boards       = require "models.boards"
+local Pages        = require "models.pages"
+local Posts        = require "models.posts"
+local Reports      = require "models.reports"
+local Users        = require "models.users"
 
 return {
 	before = function(self)
 		-- Get data
-		self.announcements = Announcements:get_announcements()
+		self.announcements = assert_error(capture.get(self:url_for("api.announcements.announcements")))
 		self.pages         = Pages:get_pages()
 		self.reports       = Reports:get_reports()
 		self.users         = Users:get_users()
@@ -34,6 +34,7 @@ return {
 			return
 		end
 	end,
+
 	on_error = function(self)
 		self.errors = generate.errors(self.i18n, self.errors)
 
@@ -43,6 +44,7 @@ return {
 
 		return { render = "admin.admin" }
 	end,
+
 	GET = function(self)
 		if not self.session.name then
 			return { render = "admin.login" }
@@ -50,6 +52,7 @@ return {
 
 		return { render = "admin.admin" }
 	end,
+
 	POST = function(self)
 		-- Validate CSRF token
 		csrf.assert_token(self)

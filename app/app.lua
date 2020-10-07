@@ -1,10 +1,19 @@
 local lapis = require "lapis"
 local app   = lapis.Application()
-
-app:enable "etlua"
-app.layout  = require "views.layout"
 app.include = function(self, a)
 	self.__class.include(self, a, nil, self)
+end
+
+app:enable "etlua"
+app.layout = require "views.layout"
+
+-- NOTE: https://github.com/leafo/lapis/issues/706
+do
+	local super = app.__index.dispatch
+	app.__index.dispatch = function(self, req, res)
+		req.parsed_url.path = _G.ngx.var.uri
+		super(self, req, res)
+	end
 end
 
 --[[ -- app:before_filter(require "apps.web.global.install") -- FIXME: set up installer as a simple before filter
@@ -16,9 +25,7 @@ do
 end
 --]]
 
-app:include("apps.api.boards")
-app:include("apps.web.admin")
-app:include("apps.web.pages")
-app:include("apps.web.boards")
+app:include("apps.api")
+app:include("apps.web")
 
 return app
