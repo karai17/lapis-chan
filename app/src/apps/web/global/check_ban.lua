@@ -1,4 +1,3 @@
-local Bans = require "models.bans"
 local assert_error = require("lapis.application").assert_error
 local capture      = require "utils.capture"
 
@@ -12,7 +11,7 @@ return function(self)
 	end
 
 	-- Get list of bans by ip
-	local bans = Bans:get_bans_by_ip(self.params.ip)
+	local bans = assert_error(capture.get(self:url_for("api.bans.ban_ip", { uri_ip=self.params.ip })))
 
 	-- Get current board
 	local board = {}

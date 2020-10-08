@@ -15,11 +15,7 @@ Announcements.valid_record = {
 -- @treturn string error
 function Announcements:new(params)
 	local announcement = self:create(params)
-	if not announcement then
-		return false, { "err_create_ann", { params.text } }
-	end
-
-	return announcement
+	return announcement and announcement or  false, { "err_create_ann", { params.text } }
 end
 
 --- Modify an announcement
@@ -33,11 +29,7 @@ function Announcements:modify(params)
 	end
 
 	local success, err = announcement:update(params)
-	if not success then
-		return false, "FIXME: " .. tostring(err)
-	end
-
-	return announcement
+	return success and announcement or false, "FIXME: " .. tostring(err)
 end
 
 --- Delete an announcement
@@ -51,11 +43,7 @@ function Announcements:delete(id)
 	end
 
 	local success = announcement:delete()
-	if not success then
-		return false, "FIXME"
-	end
-
-	return announcement
+	return success and announcement or false, "FIXME"
 end
 
 --- Get all announcements

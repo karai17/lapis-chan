@@ -6,6 +6,7 @@ app.include = function(self, a)
 end
 
 app:include("apps.api.announcements")
+app:include("apps.api.bans")
 app:include("apps.api.boards")
 
 return app

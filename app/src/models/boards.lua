@@ -42,7 +42,7 @@ function Boards:new(params)
 	return board
 end
 
---- Modify a board.
+--- Modify a board
 -- @tparam table params Board parameters
 -- @tparam old_short_name Board's current short name
 -- @treturn boolean success
@@ -67,7 +67,7 @@ function Boards:modify(params, old_short_name)
 	return board
 end
 
---- Delete a board.
+--- Delete a board
 -- @tparam string short_name Board's short name
 -- @treturn boolean success
 -- @treturn string error
@@ -104,11 +104,7 @@ function Boards:delete(short_name)
 
 	-- Clear board
 	local success = board:delete()
-	if not success then
-		return false, { "err_delete_board", { board.short_name, board.name } }
-	end
-
-	return board
+	return success and board or false, { "err_delete_board", { board.short_name, board.name } }
 end
 
 --- Get all boards
@@ -138,7 +134,6 @@ end
 function Boards.format_from_db(_, params)
 	-- Convert archive_time from seconds to days
 	params.archive_time = tonumber(params.archive_time) / 86400
-
 end
 
 --- Regenerate thumbnails for all posts

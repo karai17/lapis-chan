@@ -27,7 +27,8 @@ function action:PUT()
 
 	-- Validate parameters
 	local params = {
-		board_id = tonumber(self.params.board_id or 0) or 0,
+		id       = tonumber(self.params.uri_id),
+		board_id = tonumber(self.params.board_id),
 		text     = self.params.text,
 	}
 	trim_filter(params)
