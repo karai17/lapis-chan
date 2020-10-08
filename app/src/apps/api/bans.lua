@@ -9,8 +9,8 @@ app.path      = "/api/bans"
 
 local function handle() end -- FIXME: proper error handler
 
-app:match("bans",   "",            capture({ on_error=handle, r2(require "apps.api.bans.bans")   }))
-app:match("ban",    "/:uri_id",    capture({ on_error=handle, r2(require "apps.api.bans.ban")    }))
-app:match("ban_ip", "/ip/:uri_ip", capture({ on_error=handle, r2(require "apps.api.bans.ban_ip") }))
+app:match("bans",    "",            capture({ on_error=handle, r2(require "apps.api.bans.bans")    }))
+app:match("bans_ip", "/ip/:uri_ip", capture({ on_error=handle, r2(require "apps.api.bans.bans_ip") }))
+app:match("ban",     "/:uri_id",    capture({ on_error=handle, r2(require "apps.api.bans.ban")     }))
 
 return app

@@ -11,7 +11,7 @@ return function(self)
 	end
 
 	-- Get list of bans by ip
-	local bans = assert_error(capture.get(self:url_for("api.bans.ban_ip", { uri_ip=self.params.ip })))
+	local bans = assert_error(capture.get(self:url_for("api.bans.bans_ip", { uri_ip=self.params.ip })))
 
 	-- Get current board
 	local board = {}
