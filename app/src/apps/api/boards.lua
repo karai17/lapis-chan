@@ -9,8 +9,9 @@ app.path      = "/api/boards"
 
 local function handle() end -- FIXME: proper error handler
 
-app:match("boards",        "",                               capture({ on_error=handle, r2(require "apps.api.boards.boards") }))
-app:match("board",         "/:uri_short_name",               capture({ on_error=handle, r2(require "apps.api.boards.board")  }))
-app:match("announcements", "/:uri_short_name/announcements", capture({ on_error=handle, r2(require "apps.api.boards.announcements") }))
-
+app:match("boards",        "",                                           capture({ on_error=handle, r2(require "apps.api.boards.boards")        }))
+app:match("board",         "/:uri_short_name",                           capture({ on_error=handle, r2(require "apps.api.boards.board")         }))
+app:match("announcements", "/:uri_short_name/announcements",             capture({ on_error=handle, r2(require "apps.api.boards.announcements") }))
+app:match("threads",       "/:uri_short_name/threads(/pages/:uri_page)", capture({ on_error=handle, r2(require "apps.api.boards.threads")       }))
+app:match("archived",      "/:uri_short_name/threads/archived",          capture({ on_error=handle, r2(require "apps.api.boards.archived")      }))
 return app

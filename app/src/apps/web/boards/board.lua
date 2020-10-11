@@ -1,12 +1,11 @@
-local assert_error  = require("lapis.application").assert_error
-local assert_valid  = require("lapis.validate").assert_valid
-local csrf          = require "lapis.csrf"
-local capture       = require "utils.capture"
-local format        = require "utils.text_formatter"
-local generate      = require "utils.generate"
-local process       = require "utils.request_processor"
-local Posts         = require "models.posts"
-local Threads       = require "models.threads"
+local assert_error = require("lapis.application").assert_error
+local assert_valid = require("lapis.validate").assert_valid
+local csrf         = require "lapis.csrf"
+local capture      = require "utils.capture"
+local format       = require "utils.text_formatter"
+local generate     = require "utils.generate"
+local process      = require "utils.request_processor"
+local Posts        = require "models.posts"
 
 return {
 	before = function(self)
@@ -49,11 +48,9 @@ return {
 		self.params.page = self.params.page or 1
 
 		-- Get threads
-		self.threads, self.pages = Threads:get_page_threads(
-			self.board.id,
-			self.board.threads_per_page,
-			self.params.page
-		)
+		local response = assert_error(capture.get(self:url_for("api.boards.threads", { uri_short_name=self.params.uri_short_name, uri_page=self.params.page })))
+		self.threads   = response.threads
+		self.pages     = response.pages
 
 		-- Get posts
 		for _, thread in ipairs(self.threads) do

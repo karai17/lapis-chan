@@ -1,152 +1,86 @@
-local trim    = require("lapis.util").trim_filter
 local Model   = require("lapis.db.model").Model
-local Threads = Model:extend("threads")
+local Threads = Model:extend("threads", {
+	relations = {
+		{ "board", belongs_to="Boards" },
+		{ "posts", has_many="Posts" }
+	}
+})
+
+Threads.valid_record = {
+	{ "board_id", exists=true }
+}
 
 --- Create thread
--- @tparam number board_id Board ID
--- @tparam table flags List of thread flags
+-- @tparam table params Thread parameters
 -- @treturn boolean success
 -- @treturn string error
-function Threads:create_thread(board_id, flags)
-	-- Trim white space
-	trim(flags, {
-		"sticky", "lock",
-		"size_override", "save"
-	}, false)
+function Threads:new(params)
+	local thread = self:create(params)
+	return thread and thread or false, { "err_create_thread" }
+end
 
-	local t = self:create {
-		board_id      = board_id,
-		last_active   = os.time(),
-		sticky        = flags.sticky,
-		lock          = flags.lock,
-		size_override = flags.size_override,
-		save          = flags.save
-	}
-
-	if t then
-		return t
+--- Modify a thread
+-- @tparam table params Thread parameters
+-- @treturn boolean success
+-- @treturn string error
+function Threads:modify(params)
+	local thread = self:get(params.id)
+	if not thread then
+		return false, { "err_create_board" } -- FIXME: wrong error message
 	end
 
-	return false, { "err_create_thread" }
+	local success, err = thread:update(params)
+	return success and thread or false, "FIXME: " .. tostring(err)
 end
 
 --- Delete entire thread
+-- @tparam number id Thread ID
 -- @tparam table session User session
--- @tparam table thread Thread data
 -- @tparam table op Post data of op
 -- @treturn boolean success
 -- @treturn string error
-function Threads:delete_thread(session, thread, op)
-	local success = false
+function Threads:delete(id, session, op)
+	 -- FIXME: API needs to create a user object for better auth checking
+	local thread, err = self:get(id)
+	if not thread then
+		return false, err
+	end
+
+	local success
 
 	-- MODS = FAGS
 	if type(session) == "table" and
 		(session.admin or session.mod or session.janitor) then
-		thread:delete()
-		success = true
+		success = thread:delete()
+
 	-- Override password
 	elseif type(session) == "string" and
 		session == "override" then
-		thread:delete()
-		success = true
+		success = thread:delete()
+
 	-- Password has to match!
 	elseif op and session.password and
 		op.password == session.password then
-		thread:delete()
-		success = true
+		success = thread:delete()
 	end
 
-	if success then
-		return success
-	else
-		return false, { "err_delete_post", { op.post_id } }
-	end
-end
-
---- Get all threads from board
--- @tparam number board_id Board ID
--- @treturn table threads
-function Threads:get_threads(board_id)
-	local sql = [[
-		where
-			board_id = ? and
-			archive = false
-		order by
-			sticky desc,
-			last_active desc
-	]]
-	return self:select(sql, board_id)
+	return success and thread or false, { "err_delete_post", { op.post_id } }
 end
 
 --- Get thread data
 -- @tparam number id Thread ID
 -- @treturn table thread
-function Threads:get_thread(id)
-	return unpack(self:select("where id=?", id))
-end
-
---- Get page of threads
--- @tparam number board_id Board ID
--- @tparam number tpp Threads per page
--- @tparam number page Page to pull from
--- @treturn table threads
--- @treturn number pages
-function Threads:get_page_threads(board_id, tpp, page)
-	local sql = [[
-		where
-			board_id = ? and
-			archive = false
-		order by
-			sticky desc,
-			last_active desc
-	]]
-	local pages = self:paginated(sql, board_id,{ per_page = tpp })
-
-	return pages:get_page(page), pages:num_pages()
+function Threads:get(id)
+	local thread = self:find(id)
+	return thread and thread or false, "FIXME"
 end
 
 --- Get archived threads
 -- @tparam number board_id Board ID
 -- @treturn table threads
-function Threads:get_archived_threads(board_id)
+function Threads:get_archived(board_id)
 	local sql = "where board_id=? and archive=true order by last_active desc"
 	return self:select(sql, board_id)
-end
-
---- Sticky a thread
--- @tparam table thread Thread data
--- @treturn boolean success
--- @treturn string error
-function Threads:sticky_thread(thread)
-	thread.sticky = true
-	return thread:update("sticky")
-end
-
---- Unsticky a thread
--- @tparam table thread Thread data
--- @treturn boolean success
--- @treturn string error
-function Threads:unsticky_thread(thread)
-	thread.sticky = false
-	return thread:update("sticky")
-end
-
---- Lock a thread
--- @tparam table thread Thread data
--- @treturn boolean success
--- @treturn string error
-function Threads:lock_thread(thread)
-	thread.lock = true
-	return thread:update("lock")
-end
-
---- Unlock a thread
--- @tparam table thread Thread data
--- @treturn boolean success
--- @treturn string error
-function Threads:unlock_thread(thread)
-	thread.lock = false
-	return thread:update("lock")
 end
 
 --- Bump threads to archive
@@ -183,8 +117,7 @@ end
 --- Find threads with no posts
 -- @treturn table threads
 function Threads:find_orphans()
-	local sql = "where id not in (select distinct thread_id from posts)"
-	return self:select(sql)
+	return self:select("where id not in (select distinct thread_id from posts)")
 end
 
 return Threads

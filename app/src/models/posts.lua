@@ -6,7 +6,11 @@ local magick    = require "magick"
 local md5       = require "md5"
 local filetypes = require "utils.file_whitelist"
 local generate  = require "utils.generate"
-local Posts     = Model:extend("posts")
+local Posts     = Model:extend("posts", {
+	relations = {
+		{ "thread", belongs_to="Threads" }
+	}
+})
 local sf        = string.format
 
 --- Prepare post for insertion

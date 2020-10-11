@@ -20,7 +20,12 @@ return function(self)
 	end
 
 	-- Get announcements
-	self.announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_short_name=self.params.uri_short_name })))
+	-- TODO: Consolidate these into a single call
+	self.announcements        = assert_error(capture.get(self:url_for("api.announcements.announcement", { uri_id="global" })))
+	local board_announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_short_name=self.params.uri_short_name })))
+	for _, announcement in ipairs(board_announcements) do
+		table.insert(self.announcements, announcement)
+	end
 
 	-- Page title
 	self.page_title = string.format(
@@ -33,7 +38,7 @@ return function(self)
 	self.sub_page = "archive"
 
 	-- Get threads
-	self.threads = Threads:get_archived_threads(self.board.id)
+	self.threads = assert_error(capture.get(self:url_for("api.boards.archived", { uri_short_name=self.params.uri_short_name })))
 
 	-- Get time
 	self.days = math.floor(self.board.archive_time / 24 / 60 / 60)

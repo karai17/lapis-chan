@@ -110,5 +110,8 @@ return {
 	end,
 	[200] = function()
 		schema.rename_column("boards", "posts", "total_posts")
+		-- TODO: rename more board fields
+		-- schema.rename_column("boards", "name", "title")
+		-- schema.rename_column("boards", "short_name", "name")
 	end
 }

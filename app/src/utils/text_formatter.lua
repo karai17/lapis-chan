@@ -1,5 +1,3 @@
-local Boards    = require "models.boards"
-local Threads   = require "models.threads"
 local Posts     = require "models.posts"
 local escape    = require("lapis.html").escape
 local sf        = string.format
@@ -31,7 +29,7 @@ function formatter.quote(text, request, board, post)
 			local p = Posts:get_post(board.id, post_id)
 			if not p then return false end
 
-			local thread = Threads:get_thread(p.thread_id)
+			local thread = p:get_thread()
 			if not thread then return false end
 
 			local op = Posts:get_thread_op(thread.id)

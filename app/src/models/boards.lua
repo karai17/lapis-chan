@@ -9,7 +9,8 @@ local Boards = Model:extend("boards", {
 		{ "bans",          has_many="Bans" },
 		{ "posts",         has_many="Posts" },
 		{ "reports",       has_many="Reports" },
-		{ "threads",       has_many="Threads" },
+		{ "threads",       has_many="Threads", where={ archive=false }, order="sticky desc, last_active desc" },
+		{ "archived",       has_many="Threads", where={ archive=true },  order="last_active desc" },
 	}
 })
 

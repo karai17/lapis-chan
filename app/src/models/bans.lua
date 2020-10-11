@@ -1,7 +1,7 @@
 local Model = require("lapis.db.model").Model
 local Bans  = Model:extend("bans", {
 	relations = {
-		{ "boards", belongs_to="Boards" },
+		{ "board", belongs_to="Boards" },
 	}
 })
 
