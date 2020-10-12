@@ -112,10 +112,10 @@ return {
 	[200] = function()
 		schema.rename_column("boards", "posts",      "total_posts")
 		schema.rename_column("boards", "name",       "title")
-		schema.rename_column("boards", "name", "name")
+		schema.rename_column("boards", "short_name", "name")
 	end,
 	[201] = function()
-		schema.rename_column("boards", "name", "title")
-		schema.rename_column("boards", "name", "name")
+		schema.rename_column("boards", "name",       "title")
+		schema.rename_column("boards", "short_name", "name")
 	end
 }
