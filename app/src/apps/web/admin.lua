@@ -4,7 +4,7 @@ local app      = lapis.Application()
 app.__base     = app
 app.name       = "web.admin."
 app.path       = "/admin"
-app.handle_404 = require "apps.web.global.code_404"
+app.handle_404 = require "apps.web.internal.code_404"
 
 app:match("index",         "",                             r2(require "apps.web.admin.index"))
 app:match("users",         "/:action/user(/:user)",        r2(require "apps.web.admin.user"))

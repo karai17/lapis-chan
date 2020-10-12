@@ -16,11 +16,11 @@ do
 	end
 end
 
---[[ -- app:before_filter(require "apps.web.global.install") -- FIXME: set up installer as a simple before filter
+--[[ -- app:before_filter(require "apps.web.internal.install") -- FIXME: set up installer as a simple before filter
 do
 	local r2 = require("lapis.application").respond_to
-	app:before_filter(require "apps.web.global.config_site")
-	app:match("/", r2(require "apps.web.global.install"))
+	app:before_filter(require "apps.web.internal.config_site")
+	app:match("/", r2(require "apps.web.internal.install"))
 	return app
 end
 --]]

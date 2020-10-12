@@ -5,9 +5,9 @@ app.include = function(self, a)
 	self.__class.include(self, a, nil, self)
 end
 
-app:before_filter(require "apps.web.global.config_site")
-app:before_filter(require "apps.web.global.check_auth")
-app:before_filter(require "apps.web.global.check_ban")
+app:before_filter(require "apps.web.internal.config_site")
+app:before_filter(require "apps.web.internal.check_auth")
+app:before_filter(require "apps.web.internal.check_ban")
 
 app:include("apps.web.admin")
 app:include("apps.web.pages")

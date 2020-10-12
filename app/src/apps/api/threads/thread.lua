@@ -1,5 +1,5 @@
 local ngx          = _G.ngx
-local action       = setmetatable({}, require "apps.api.global.action_base")
+local action       = setmetatable({}, require "apps.api.internal.action_base")
 local assert_error = require("lapis.application").assert_error
 local models       = require "models"
 local Threads      = models.threads
