@@ -9,12 +9,12 @@ local Pages = Model:extend("pages")
 function Pages:create_page(page)
 	-- Trim white space
 	trim(page, {
-		"name", "url", "content"
+		"title", "slug", "content"
 	}, nil)
 
 	local p = self:create {
-		name    = page.name,
-		url     = page.url,
+		title   = page.title,
+		slug    = page.slug,
 		content = page.content
 	}
 
@@ -22,7 +22,7 @@ function Pages:create_page(page)
 		return p
 	end
 
-	return false, { "err_create_page", { page.url, page.name } }
+	return false, { "err_create_page", { page.slug, page.title } }
 
 end
 
@@ -50,14 +50,14 @@ end
 --- Get all pages
 -- @treturn table pages List of pages
 function Pages:get_pages()
-	return self:select("order by url asc")
+	return self:select("order by slug asc")
 end
 
 --- Get page
--- @tparam string url Page URL
+-- @tparam string slug Page slug
 -- @treturn table page
-function Pages:get_page(url)
-	return unpack(self:select("where url=? limit 1", url))
+function Pages:get_page(slug)
+	return unpack(self:select("where slug=? limit 1", slug))
 end
 
 return Pages

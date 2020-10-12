@@ -1,19 +1,19 @@
 <div class="admin_form">
 	<form action="" method="post">
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
-		<input type="hidden" name="old" value="<%= page.old or page.url or '' %>" />
+		<input type="hidden" name="old" value="<%= page.old or page.slug or '' %>" />
 
 		<div>
 			<label class="title"><%= i18n("name") %></label>
 			<span class="fields">
-				<input type="text" name="name" placeholder="Frequently Asked Questions" value="<%= page.name or '' %>" />
+				<input type="text" name="title" placeholder="Frequently Asked Questions" value="<%= page.title or '' %>" />
 			</span>
 		</div>
 
 		<div>
-			<label class="title"><%= i18n("url") %></label>
+			<label class="title"><%= i18n("slug") %></label>
 			<span class="fields">
-				<input type="text" name="url" placeholder="faq" value="<%= page.url or '' %>" />
+				<input type="text" name="slug" placeholder="faq" value="<%= page.slug or '' %>" />
 			</span>
 		</div>
 

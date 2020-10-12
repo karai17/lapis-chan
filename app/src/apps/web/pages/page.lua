@@ -14,7 +14,7 @@ return function(self)
 	end
 
 	-- Page title
-	self.page_title = self.page.name
+	self.page_title = self.page.title
 
 	-- Markdown
 	if self.page.content then

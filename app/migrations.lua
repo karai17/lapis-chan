@@ -24,7 +24,7 @@ return {
 
 		schema.create_table("boards", {
 			{ "id",                types.serial  { unique=true, primary_key=true }},
-			{ "name",        types.varchar { unique=true }},
+			{ "short_name",        types.varchar { unique=true }},
 			{ "name",              types.varchar { unique=true }},
 			{ "subtext",           types.varchar { null=true }},
 			{ "rules",             types.text    { null=true }},
@@ -108,14 +108,20 @@ return {
 		schema.add_column("posts",  "file_type",      types.varchar { default="image" })
 		schema.add_column("posts",  "file_duration",  types.varchar { null=true })
 	end,
-	-- TODO: COLLAPSE ALL CHANGES FROM HERE FORWARD INTO [200]
 	[200] = function()
 		schema.rename_column("boards", "posts",      "total_posts")
 		schema.rename_column("boards", "name",       "title")
 		schema.rename_column("boards", "short_name", "name")
+		schema.rename_column("pages",  "url",        "slug")
+		schema.rename_column("pages",  "name",       "title")
 	end,
+	-- TODO: COLLAPSE ALL CHANGES FROM HERE FORWARD INTO [200]
 	[201] = function()
 		schema.rename_column("boards", "name",       "title")
 		schema.rename_column("boards", "short_name", "name")
-	end
+	end,
+	[202] = function()
+		schema.rename_column("pages", "url",  "slug")
+		schema.rename_column("pages", "name", "title")
+	end,
 }

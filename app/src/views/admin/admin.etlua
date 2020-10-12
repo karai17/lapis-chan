@@ -205,7 +205,7 @@
 				<select name="page" class="change_submit">
 					<option></option>
 					<% for _, page in ipairs(pages) do %>
-					<option value="<%= page.url %>"><%= page.url %> - <%= page.name %></option>
+					<option value="<%= page.slug %>"><%= page.slug %> - <%= page.title %></option>
 					<% end %>
 				</select>
 			</span>
@@ -223,7 +223,7 @@
 				<select name="page" class="change_delete">
 					<option></option>
 					<% for _, page in ipairs(pages) do %>
-					<option value="<%= page.url %>"><%= page.url %> - <%= page.name %></option>
+					<option value="<%= page.slug %>"><%= page.slug %> - <%= page.title %></option>
 					<% end %>
 				</select>
 			</span>

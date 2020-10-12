@@ -299,7 +299,7 @@ return {
 
 		-- Add new board
 		Boards:create_board {
-			name        = self.params.name,
+			name              = self.params.name,
 			title             = self.params.title,
 			subtext           = self.params.subtext,
 			rules             = self.params.rules,
@@ -325,8 +325,8 @@ return {
 
 		-- Add FAQ page
 		Pages:create_page {
-			name    = "Frequently Asked Questions",
-			url     = "faq",
+			title   = "Frequently Asked Questions",
+			slug    = "faq",
 			content = faq
 		}
 	end

@@ -63,7 +63,7 @@ return {
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("deleted_page", { page.url, page.name })
+			self.action = self.i18n("deleted_page", { page.slug, page.title })
 			return
 		end
 	end,
@@ -97,8 +97,8 @@ return {
 
 		-- Validate user input
 		assert_valid(self.params, {
-			{ "url",  max_length=255, exists=true },
-			{ "name", max_length=255, exists=true }
+			{ "slug",  max_length=255, exists=true },
+			{ "title", max_length=255, exists=true }
 		})
 
 		-- Create new page
@@ -106,8 +106,8 @@ return {
 			local sl = string.lower
 			-- Verify unique names
 			for _, page in ipairs(self.pages) do
-				if sl(page.url) == sl(self.params.url) then
-					assert_error(false, "err_url_used")
+				if sl(page.slug) == sl(self.params.slug) then
+					assert_error(false, "err_slug_used")
 				end
 			end
 
@@ -119,7 +119,7 @@ return {
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("created_page", { page.url, page.name })
+			self.action = self.i18n("created_page", { page.slug, page.title })
 
 			return { render = "admin.success" }
 		end
@@ -154,7 +154,7 @@ return {
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("modified_page", { page.url, page.name })
+			self.action = self.i18n("modified_page", { page.slug, page.title })
 
 			return { render = "admin.success" }
 		end
