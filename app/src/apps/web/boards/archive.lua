@@ -8,7 +8,7 @@ return function(self)
 
 	-- Get board
 	for _, board in ipairs(self.boards) do
-		if board.short_name == self.params.uri_short_name then
+		if board.name == self.params.uri_name then
 			self.board = board
 			break
 		end
@@ -22,7 +22,7 @@ return function(self)
 	-- Get announcements
 	-- TODO: Consolidate these into a single call
 	self.announcements        = assert_error(capture.get(self:url_for("api.announcements.announcement", { uri_id="global" })))
-	local board_announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_short_name=self.params.uri_short_name })))
+	local board_announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_name=self.params.uri_name })))
 	for _, announcement in ipairs(board_announcements) do
 		table.insert(self.announcements, announcement)
 	end
@@ -30,15 +30,15 @@ return function(self)
 	-- Page title
 	self.page_title = string.format(
 		"/%s/ - %s",
-		self.board.short_name,
-		self.board.name
+		self.board.name,
+		self.board.title
 	)
 
 	-- Nav links link to sub page if available
 	self.sub_page = "archive"
 
 	-- Get threads
-	self.threads = assert_error(capture.get(self:url_for("api.boards.archived", { uri_short_name=self.params.uri_short_name })))
+	self.threads = assert_error(capture.get(self:url_for("api.boards.archived", { uri_name=self.params.uri_name })))
 
 	-- Get time
 	self.days = math.floor(self.board.archive_time / 24 / 60 / 60)
@@ -47,7 +47,7 @@ return function(self)
 	for _, thread in ipairs(self.threads) do
 		thread.op      = Posts:get_thread_op(thread.id)
 		thread.replies = Posts:count_posts(thread.id) - 1
-		thread.url     = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=thread.op.post_id })
+		thread.url     = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=thread.op.post_id })
 
 		-- Process name
 		thread.op.name = thread.op.name or self.board.anon_name

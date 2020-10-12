@@ -12,7 +12,7 @@ return {
 
 		-- Get board
 		for _, board in ipairs(self.boards) do
-			if board.short_name == self.params.uri_short_name then
+			if board.name == self.params.uri_name then
 				self.board = board
 				break
 			end
@@ -26,7 +26,7 @@ return {
 		-- Get announcements
 		-- TODO: Consolidate these into a single call
 		self.announcements        = assert_error(capture.get(self:url_for("api.announcements.announcement", { uri_id="global" })))
-		local board_announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_short_name=self.params.uri_short_name })))
+		local board_announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_name=self.params.uri_name })))
 		for _, announcement in ipairs(board_announcements) do
 			table.insert(self.announcements, announcement)
 		end
@@ -34,8 +34,8 @@ return {
 		-- Page title
 		self.page_title = string.format(
 		"/%s/ - %s",
-		self.board.short_name,
-		self.board.name
+		self.board.name,
+		self.board.title
 		)
 
 		-- Nav links link to sub page if available
@@ -48,7 +48,7 @@ return {
 		self.csrf_token = csrf.generate_token(self)
 
 		-- Get threads
-		local response = assert_error(capture.get(self:url_for("api.boards.threads", { uri_short_name=self.params.uri_short_name })))
+		local response = assert_error(capture.get(self:url_for("api.boards.threads", { uri_name=self.params.uri_name })))
 		self.threads = response.threads
 
 		-- Get stats
@@ -56,7 +56,7 @@ return {
 			thread.op      = Posts:get_thread_op(thread.id)
 			thread.replies = Posts:count_posts(thread.id) - 1
 			thread.files   = Posts:count_files(thread.id)
-			thread.url     = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=thread.op.post_id })
+			thread.url     = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=thread.op.post_id })
 
 			if thread.op.file_path then
 				local name, ext = thread.op.file_path:match("^(.+)(%..+)$")
@@ -70,14 +70,14 @@ return {
 						thread.op.thumb = self:format_url(self.static_url, "post_spoiler.png")
 					else
 						if ext == ".webm" or ext == ".svg" then
-							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. name .. '.png')
+							thread.op.thumb = self:format_url(self.files_url, self.board.name, 's' .. name .. '.png')
 						else
-							thread.op.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. thread.op.file_path)
+							thread.op.thumb = self:format_url(self.files_url, self.board.name, 's' .. thread.op.file_path)
 						end
 					end
 				end
 
-				thread.op.file_path = self:format_url(self.files_url, self.board.short_name, thread.op.file_path)
+				thread.op.file_path = self:format_url(self.files_url, self.board.name, thread.op.file_path)
 			end
 
 			-- Process comment
@@ -120,9 +120,9 @@ return {
 
 			-- Validate post
 			local post = assert_error(process.create_thread(self.params, self.session, self.board))
-			return { redirect_to = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=post.post_id, anchor="p", id=post.post_id }) }
+			return { redirect_to = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=post.post_id, anchor="p", id=post.post_id }) }
 		end
 
-		return { redirect_to = self:url_for("web.boards.catalog", { uri_short_name=self.board.short_name }) }
+		return { redirect_to = self:url_for("web.boards.catalog", { uri_name=self.board.name }) }
 	end
 }

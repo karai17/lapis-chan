@@ -34,10 +34,10 @@ function formatter.quote(text, request, board, post)
 
 			local op = Posts:get_thread_op(thread.id)
 			return
-				request:url_for("web.boards.thread", { board=board.short_name, thread=op.post_id }),
+				request:url_for("web.boards.thread", { board=board.name, thread=op.post_id }),
 				op
 		else
-			return request:url_for("web.boards.board", { board=board.short_name })
+			return request:url_for("web.boards.board", { board=board.name })
 		end
 	end
 
@@ -90,7 +90,7 @@ function formatter.quote(text, request, board, post)
 	-- Format each match
 	for i, p in ipairs(posts) do
 		if type(p.board) == "table" then
-			local text    = sf(sub_pattern, p.board.short_name, p.id)
+			local text    = sf(sub_pattern, p.board.name, p.id)
 			local url, op = get_url(p.board, p.id)
 			if op then
 				posts[i] = sf("<a href='%s#p%s' class='quote_link'>%s</a>", url, p.id, text)

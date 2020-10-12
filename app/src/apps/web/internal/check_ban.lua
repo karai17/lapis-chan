@@ -15,8 +15,8 @@ return function(self)
 
 	-- Get current board
 	local board = {}
-	if self.params.uri_short_name then
-		board = assert_error(capture.get(self:url_for("api.boards.board", { uri_short_name=self.params.uri_short_name })))
+	if self.params.uri_name then
+		board = assert_error(capture.get(self:url_for("api.boards.board", { uri_name=self.params.uri_name })))
 	end
 
 	-- If you are banned, gtfo

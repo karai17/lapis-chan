@@ -10,13 +10,13 @@ local Boards = Model:extend("boards", {
 		{ "posts",         has_many="Posts" },
 		{ "reports",       has_many="Reports" },
 		{ "threads",       has_many="Threads", where={ archive=false }, order="sticky desc, last_active desc" },
-		{ "archived",       has_many="Threads", where={ archive=true },  order="last_active desc" },
+		{ "archived",      has_many="Threads", where={ archive=true },  order="last_active desc" },
 	}
 })
 
 Boards.valid_record = {
-	{ "short_name",        max_length=255, exists=true },
-	{ "name",              max_length=255, exists=true },
+	{ "name",        max_length=255, exists=true },
+	{ "title",             max_length=255, exists=true },
 	{ "subtext",           max_length=255 },
 	{ "ban_message",       max_length=255 },
 	{ "anon_name",         max_length=255 },
@@ -36,22 +36,22 @@ Boards.valid_record = {
 function Boards:new(params)
 	local board = self:create(params)
 	if not board then
-		return false, { "err_create_board", { params.short_name, params.name } }
+		return false, { "err_create_board", { params.name, params.title } }
 	end
 
-	lfs.mkdir(string.format("./static/%s/", board.short_name))
+	lfs.mkdir(string.format("./static/%s/", board.name))
 	return board
 end
 
 --- Modify a board
 -- @tparam table params Board parameters
--- @tparam old_short_name Board's current short name
+-- @tparam old_name Board's current short name
 -- @treturn boolean success
 -- @treturn string error
-function Boards:modify(params, old_short_name)
-	local board = self:get(old_short_name)
+function Boards:modify(params, old_name)
+	local board = self:get(old_name)
 	if not board then
-		return false, { "err_create_board", { params.short_name, params.name } } -- FIXME: wrong error message
+		return false, { "err_create_board", { params.name, params.title } } -- FIXME: wrong error message
 	end
 
 	local success, err = board:update(params)
@@ -59,9 +59,9 @@ function Boards:modify(params, old_short_name)
 		return false, "FIXME: " .. tostring(err)
 	end
 
-	if board.short_name ~= old_short_name then
-		local old = string.format("./static/%s/", old_short_name)
-		local new = string.format("./static/%s/", board.short_name)
+	if board.name ~= old_name then
+		local old = string.format("./static/%s/", old_name)
+		local new = string.format("./static/%s/", board.name)
 		os.rename(old, new)
 	end
 
@@ -69,13 +69,13 @@ function Boards:modify(params, old_short_name)
 end
 
 --- Delete a board
--- @tparam string short_name Board's short name
+-- @tparam string name Board's short name
 -- @treturn boolean success
 -- @treturn string error
-function Boards:delete(short_name)
-	local board = self:get(short_name)
+function Boards:delete(name)
+	local board = self:get(name)
 	if not board then
-		return false, { "err_create_board", { short_name, short_name } } -- FIXME: wrong error message
+		return false, { "err_create_board", { name, name } } -- FIXME: wrong error message
 	end
 
 	local announcements = board:get_announcements()
@@ -83,7 +83,7 @@ function Boards:delete(short_name)
 	local posts         = board:get_posts()
 	local reports       = board:get_reports()
 	local threads       = board:get_threads()
-	local dir           = string.format("./static/%s/", board.short_name)
+	local dir           = string.format("./static/%s/", board.name)
 
 	-- Clear data
 	for _, announcement in ipairs(announcements) do announcement:delete() end
@@ -105,21 +105,21 @@ function Boards:delete(short_name)
 
 	-- Clear board
 	local success = board:delete()
-	return success and board or false, { "err_delete_board", { board.short_name, board.name } }
+	return success and board or false, { "err_delete_board", { board.name, board.title } }
 end
 
 --- Get all boards
 -- @treturn table boards
 function Boards:get_all()
-	local boards = self:select("order by boards.group asc, short_name asc")
+	local boards = self:select("order by boards.group asc, name asc")
 	return boards and boards or false, "FIXME: ALART!"
 end
 
 --- Get board data
--- @tparam string short_name Board's short name
+-- @tparam string name Board's short name
 -- @treturn table board
-function Boards:get(short_name)
-	local board = self:find { short_name=short_name }
+function Boards:get(name)
+	local board = self:find { name=name }
 	return board and board or false, "FIXME: ALART!"
 end
 
@@ -142,7 +142,7 @@ end
 function Boards.regen_thumbs(_)
 	local sql = [[
 		select
-			boards.short_name as board,
+			boards.name as board,
 			posts.thread_id,
 			posts.file_path,
 			posts.file_width,

@@ -37,7 +37,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 
 	-- Save names on individual boards
 	if params.name then
-		session.names[board.short_name] = params.name
+		session.names[board.name] = params.name
 	end
 
 	-- Files take presidence over drawings, but if there is no file, fill in
@@ -206,7 +206,7 @@ function Posts:create_post(params, session, board, thread, op)
 		board:update("posts")
 
 		if post.file_path then
-			local dir       = sf("./static/%s/", board.short_name)
+			local dir       = sf("./static/%s/", board.name)
 			local name, ext = post.file_path:match("^(.+)(%..+)$")
 			ext = string.lower(ext)
 
@@ -297,9 +297,9 @@ end
 -- @treturn boolean success
 -- @treturn string error
 function Posts:delete_post(session, board, post)
-	local function rm_post(short_name)
+	local function rm_post(name)
 		if post.file_path then
-			local dir = sf("./static/%s/", short_name)
+			local dir = sf("./static/%s/", name)
 			local name, ext = post.file_path:match("^(.+)(%..+)$")
 			ext = string.lower(ext)
 			os.remove(dir .. post.file_path)
@@ -320,17 +320,17 @@ function Posts:delete_post(session, board, post)
 	-- MODS = FAGS
 	if type(session) == "table" and
 		(session.admin or session.mod or session.janitor) then
-		rm_post(board.short_name)
+		rm_post(board.name)
 		success = true
 	-- Override password
 	elseif type(session) == "string" and
 		session == "override" then
-		rm_post(board.short_name)
+		rm_post(board.name)
 		success = true
 	-- Password has to match!
 	elseif post and session.password and
 		post.password == session.password then
-		rm_post(board.short_name)
+		rm_post(board.name)
 		success = true
 	end
 

@@ -53,7 +53,7 @@ return {
 
 		-- Display modification form
 		if self.params.action == "modify" then
-			self.board = assert_error(capture.get(self:url_for("api.boards.board", { uri_short_name=self.params.uri_short_name })))
+			self.board = assert_error(capture.get(self:url_for("api.boards.board", { uri_name=self.params.uri_name })))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
@@ -64,13 +64,13 @@ return {
 
 		-- Delete board
 		if self.params.action == "delete" then
-			local board = assert_error(capture.delete(self:url_for("api.boards.board", { uri_short_name=self.params.uri_short_name })))
+			local board = assert_error(capture.delete(self:url_for("api.boards.board", { uri_name=self.params.uri_name })))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("deleted_board", { board.short_name, board.name })
+			self.action = self.i18n("deleted_board", { board.name, board.title })
 			return
 		end
 	end,
@@ -113,20 +113,20 @@ return {
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("created_board", { board.short_name, board.name })
+			self.action = self.i18n("created_board", { board.name, board.title })
 
 			return { render = "admin.success" }
 		end
 
 		-- Modify board
 		if self.params.modify_board then
-			local board = assert_error(capture.put(self:url_for("api.boards.board", { uri_short_name=self.params.uri_short_name }), self.params))
+			local board = assert_error(capture.put(self:url_for("api.boards.board", { uri_name=self.params.uri_name }), self.params))
 			self.page_title = string.format(
 				"%s - %s",
 				self.i18n("admin_panel"),
 				self.i18n("success")
 			)
-			self.action = self.i18n("modified_board", { board.short_name, board.name })
+			self.action = self.i18n("modified_board", { board.name, board.title })
 
 			return { render = "admin.success" }
 		end

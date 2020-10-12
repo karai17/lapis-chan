@@ -9,7 +9,7 @@
 	<tbody>
 		<% for _, board in ipairs(boards) do %>
 		<tr>
-			<td><a href="<%= board.url %>"><%= board.name %></a></td>
+			<td><a href="<%= board.url %>"><%= board.title %></a></td>
 			<td class="rules"><%- board.rules %></td>
 		</tr>
 		<% end %>

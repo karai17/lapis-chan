@@ -1,8 +1,8 @@
 <% render('views.fragments.board_title') %>
 <% render('views.fragments.announcements') %>
 <hr />
-[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
-[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('catalog') %></a>]
+[<a href="<%= url_for('web.boards.board', { uri_name=board.name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_name=board.name }) %>"><%= i18n('catalog') %></a>]
 [<a href="#bottom"><%= i18n('bottom') %></a>]
 <hr />
 <p class="archive_stats">
@@ -43,7 +43,7 @@
 	</tbody>
 </table>
 <hr />
-[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
-[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('catalog') %></a>]
+[<a href="<%= url_for('web.boards.board', { uri_name=board.name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_name=board.name }) %>"><%= i18n('catalog') %></a>]
 [<a href="#top"><%= i18n('top') %></a>]
 <hr />

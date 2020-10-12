@@ -90,7 +90,7 @@ local faq      = [[
 			To quote (and link to) another post, simply type "&gt;&gt;" followed by
 			the post number (e.g. &gt;&gt;2808). To quote a post that is on a
 			different board, You must type "&gt;&gt;&gt;" follow by a slash, the
-			short-name of the board, another slash, and then the post number
+			name of the board, another slash, and then the post number
 			(e.g. &gt;&gt;&gt;/a/2808).
 		</p>
 	</div>
@@ -246,8 +246,8 @@ return {
 		local errs = validate(self.params, {
 			{ "user_username", exists=true, max_length=255 },
 			{ "user_password", min_length=4, max_length=255 },
-			{ "short_name", exists=true, max_length=10 },
-			{ "name", min_length=2, max_length=255 },
+			{ "name", exists=true, max_length=10 },
+			{ "title", min_length=2, max_length=255 },
 			{ "subtext", max_length=255 },
 			{ "rules" },
 			{ "ban_message", max_length=255 },
@@ -299,8 +299,8 @@ return {
 
 		-- Add new board
 		Boards:create_board {
-			short_name        = self.params.short_name,
-			name              = self.params.name,
+			name        = self.params.name,
+			title             = self.params.title,
 			subtext           = self.params.subtext,
 			rules             = self.params.rules,
 			anon_name         = self.params.anon_name,

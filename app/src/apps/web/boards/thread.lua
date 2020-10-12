@@ -12,7 +12,7 @@ return {
 
 		-- Get board
 		for _, board in ipairs(self.boards) do
-			if board.short_name == self.params.uri_short_name then
+			if board.name == self.params.uri_name then
 				self.board = board
 				break
 			end
@@ -28,26 +28,26 @@ return {
 
 		-- Post not found
 		if not post then
-			return self:write({ redirect_to = self:url_for("web.boards.board", { uri_short_name=self.board.short_name }) })
+			return self:write({ redirect_to = self:url_for("web.boards.board", { uri_name=self.board.name }) })
 		end
 
 		local op = Posts:get_thread_op(post.thread_id)
 
 		if post.post_id ~= op.post_id then
-			return self:write({ redirect_to = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=op.post_id, anchor="p", id=post.post_id }) })
+			return self:write({ redirect_to = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=op.post_id, anchor="p", id=post.post_id }) })
 		end
 
 		self.thread = post:get_thread()
 
 		-- Thread not found
 		if not self.thread then
-			return self:write({ redirect_to = self:url_for("web.boards.board", { uri_short_name=self.board.short_name }) })
+			return self:write({ redirect_to = self:url_for("web.boards.board", { uri_name=self.board.name }) })
 		end
 
 		-- Get announcements
 		-- TODO: Consolidate these into a single call
 		self.announcements        = assert_error(capture.get(self:url_for("api.announcements.announcement", { uri_id="global" })))
-		local board_announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_short_name=self.params.uri_short_name })))
+		local board_announcements = assert_error(capture.get(self:url_for("api.boards.announcements", { uri_name=self.params.uri_name })))
 		for _, announcement in ipairs(board_announcements) do
 			table.insert(self.announcements, announcement)
 		end
@@ -55,8 +55,8 @@ return {
 		-- Page title
 		self.page_title = string.format(
 			"/%s/ - %s",
-			self.board.short_name,
-			self.board.name
+			self.board.name,
+			self.board.title
 		)
 
 		-- Flag comments as required or not
@@ -79,8 +79,8 @@ return {
 			end
 
 			post.name            = post.name or self.board.anon_name
-			post.reply           = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=self.posts[1].post_id, anchor="q", id=post.post_id })
-			post.link            = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=self.posts[1].post_id, anchor="p", id=post.post_id })
+			post.reply           = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=self.posts[1].post_id, anchor="q", id=post.post_id })
+			post.link            = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=self.posts[1].post_id, anchor="p", id=post.post_id })
 			post.timestamp       = os.date("%Y-%m-%d (%a) %H:%M:%S", post.timestamp)
 			post.file_size       = math.floor(post.file_size / 1024)
 			post.file_dimensions = ""
@@ -115,14 +115,14 @@ return {
 						end
 					else
 						if ext == ".webm" or ext == ".svg" then
-							post.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. name .. '.png')
+							post.thumb = self:format_url(self.files_url, self.board.name, 's' .. name .. '.png')
 						else
-							post.thumb = self:format_url(self.files_url, self.board.short_name, 's' .. post.file_path)
+							post.thumb = self:format_url(self.files_url, self.board.name, 's' .. post.file_path)
 						end
 					end
 				end
 
-				post.file_path = self:format_url(self.files_url, self.board.short_name, post.file_path)
+				post.file_path = self:format_url(self.files_url, self.board.name, post.file_path)
 			end
 
 			-- Process comment
@@ -151,8 +151,8 @@ return {
 		-- Validate CSRF token
 		csrf.assert_token(self)
 
-		local board_url  = self:url_for("web.boards.board",  { uri_short_name=self.board.short_name })
-		local thread_url = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=self.posts[1].post_id })
+		local board_url  = self:url_for("web.boards.board",  { uri_name=self.board.name })
+		local thread_url = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=self.posts[1].post_id })
 
 		-- Submit new post
 		if self.params.submit and self.thread then
@@ -167,7 +167,7 @@ return {
 
 			-- Validate post
 			local post = assert_error(process.create_post(self.params, self.session, self.board, self.thread))
-			return { redirect_to = self:url_for("web.boards.thread", { uri_short_name=self.board.short_name, thread=self.posts[1].post_id, anchor="p", id=post.post_id }) }
+			return { redirect_to = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=self.posts[1].post_id, anchor="p", id=post.post_id }) }
 		end
 
 		-- Delete thread

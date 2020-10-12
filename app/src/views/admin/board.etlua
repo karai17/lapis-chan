@@ -3,16 +3,16 @@
 		<input name="csrf_token" type="hidden" value="<%= csrf_token %>" />
 
 		<div>
-			<label class="title"><%= i18n("board_name") %></label>
+			<label class="title"><%= i18n("board_title") %></label>
 			<span class="fields">
-				<input type="text" name="name" placeholder="Random" value="<%= board.name or '' %>" />
+				<input type="text" name="title" placeholder="Random" value="<%= board.title or '' %>" />
 			</span>
 		</div>
 
 		<div>
-			<label class="title"><%= i18n("short_name") %></label>
+			<label class="title"><%= i18n("name") %></label>
 			<span class="fields">
-				<input type="text" name="short_name" placeholder="b" value="<%= board.short_name or '' %>" />
+				<input type="text" name="name" placeholder="b" value="<%= board.name or '' %>" />
 			</span>
 		</div>
 

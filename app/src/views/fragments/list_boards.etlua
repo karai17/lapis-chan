@@ -9,7 +9,7 @@
 		<% else %>
 			<%= i == 1 and '[' or '/' %>
 		<% end %>
-		<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>" title="<%= board.name %>"><%= board.short_name %></a>
+		<a href="<%= url_for('web.boards.board', { uri_name=board.name }) %>" title="<%= board.title %>"><%= board.name %></a>
 		<%= i == #boards and ']' or '' %>
 	<% end %>
 </div>

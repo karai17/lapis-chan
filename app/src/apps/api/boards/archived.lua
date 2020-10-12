@@ -7,7 +7,7 @@ local Threads      = models.threads
 
 function action:GET()
 
-	local board = assert_error(Boards:get(self.params.uri_short_name))
+	local board = assert_error(Boards:get(self.params.uri_name))
 
 	-- Get Threads
 	local threads = board:get_archived()

@@ -8,7 +8,7 @@
 				<select name="board_id">
 					<option value="0" <%= announcement.board_id == 0 and 'selected' or '' %>><%= i18n("global") %></option>
 					<% for _, board in ipairs(boards) do %>
-					<option value="<%= board.id %>" <%= announcement.board_id == board.id and 'selected' or '' %>>/<%= board.short_name %>/ - <%= board.name %></option>
+					<option value="<%= board.id %>" <%= announcement.board_id == board.id and 'selected' or '' %>>/<%= board.name %>/ - <%= board.title %></option>
 					<% end %>
 				</select>
 			</span>

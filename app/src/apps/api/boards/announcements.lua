@@ -7,7 +7,7 @@ local Boards       = models.boards
 function action:GET()
 
 	-- Get Board
-	local board = assert_error(Boards:get(self.params.uri_short_name))
+	local board = assert_error(Boards:get(self.params.uri_name))
 
 	-- Get Announcements
 	local announcements = board:get_announcements()

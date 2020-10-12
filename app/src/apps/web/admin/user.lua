@@ -108,7 +108,7 @@ return {
 
 			self.params.password = self.params.new_password
 
-			-- Verify unique names
+			-- Verify unique name
 			for _, user in ipairs(self.users) do
 				if sl(user.username) == sl(self.params.username) then
 					assert_error(false, "err_user_used")

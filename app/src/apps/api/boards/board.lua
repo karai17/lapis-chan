@@ -9,7 +9,7 @@ local Boards       = models.boards
 function action:GET()
 
 	-- Get Board
-	local board = assert_error(Boards:get(self.params.uri_short_name))
+	local board = assert_error(Boards:get(self.params.uri_name))
 	Boards:format_from_db(board)
 
 	return {
@@ -22,8 +22,8 @@ function action:PUT()
 
 	-- Validate parameters
 	local params = {
-		short_name        = self.params.short_name,
-		name              = self.params.name,
+		name        = self.params.name,
+		title             = self.params.title,
 		subtext           = self.params.subtext,
 		rules             = self.params.rules,
 		anon_name         = self.params.anon_name,
@@ -50,7 +50,7 @@ function action:PUT()
 	assert_valid(params, Boards.valid_record)
 
 	-- Modify board
-	local board = assert_error(Boards:modify(params, self.params.uri_short_name))
+	local board = assert_error(Boards:modify(params, self.params.uri_name))
 	Boards:format_from_db(board)
 
 	return {
@@ -62,14 +62,14 @@ end
 function action:DELETE()
 
 	-- Delete board
-	local board = assert_error(Boards:delete(self.params.uri_short_name))
+	local board = assert_error(Boards:delete(self.params.uri_name))
 
 	return {
 		status = ngx.HTTP_OK,
 		json   = {
 			id         = board.id,
-			name       = board.name,
-			short_name = board.short_name
+			name = board.name,
+			title      = board.title
 		}
 	}
 end

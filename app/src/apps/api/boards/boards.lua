@@ -24,8 +24,8 @@ function action:POST()
 
 	-- Validate parameters
 	local params = {
-		short_name        = self.params.short_name,
-		name              = self.params.name,
+		name        = self.params.name,
+		title             = self.params.title,
 		subtext           = self.params.subtext,
 		rules             = self.params.rules,
 		anon_name         = self.params.anon_name,
@@ -51,10 +51,9 @@ function action:POST()
 	trim_filter(params)
 	assert_valid(params, Boards.valid_record)
 
-	-- Verify unique names
+	-- Verify unique name
 	for _, board in ipairs(self.boards) do
-		if board.name       == params.name or
-			board.short_name == params.short_name then
+		if board.name == params.name then
 			assert_error(false, "err_board_used")
 		end
 	end

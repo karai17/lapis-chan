@@ -82,12 +82,12 @@ return {
 
 			-- Redirect to modify board page
 			if self.params.modify_board then
-				return { redirect_to = self:url_for("web.admin.boards", { action="modify", uri_short_name=self.params.board }) }
+				return { redirect_to = self:url_for("web.admin.boards", { action="modify", uri_name=self.params.board }) }
 			end
 
 			-- Redirect to delete board page
 			if self.params.delete_board then
-				return { redirect_to = self:url_for("web.admin.boards", { action="delete", uri_short_name=self.params.board }) }
+				return { redirect_to = self:url_for("web.admin.boards", { action="delete", uri_name=self.params.board }) }
 			end
 
 			-- Redirect to modify announcement page
@@ -117,7 +117,7 @@ return {
 				local post   = Posts:get_post(board.id, report.post_id)
 				local op     = Posts:get_thread_op(report.thread_id)
 
-				return { redirect_to = self:url_for("web.boards.thread", { board=board.short_name, thread=op.post_id, anchor="p", id=post.post_id }) }
+				return { redirect_to = self:url_for("web.boards.thread", { board=board.name, thread=op.post_id, anchor="p", id=post.post_id }) }
 			end
 
 			-- Redirect to delete report page

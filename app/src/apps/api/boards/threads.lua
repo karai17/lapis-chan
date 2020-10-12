@@ -8,7 +8,7 @@ local Threads      = models.threads
 function action:GET()
 
 	local threads, pages
-	local board = assert_error(Boards:get(self.params.uri_short_name))
+	local board = assert_error(Boards:get(self.params.uri_name))
 
 	-- Get Threads
 	if self.params.uri_page then

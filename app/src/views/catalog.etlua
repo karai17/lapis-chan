@@ -2,10 +2,10 @@
 <% render('views.fragments.form_submit') %>
 <% render('views.fragments.announcements') %>
 <hr />
-[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
-[<a href="<%= url_for('web.boards.archive', { uri_short_name=board.short_name }) %>"><%= i18n('archive') %></a>]
+[<a href="<%= url_for('web.boards.board', { uri_name=board.name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.archive', { uri_name=board.name }) %>"><%= i18n('archive') %></a>]
 [<a href="#bottom"><%= i18n('bottom') %></a>]
-[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('refresh') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_name=board.name }) %>"><%= i18n('refresh') %></a>]
 <hr />
 <% for t, thread in ipairs(threads) do %>
 <div class="catalog_container">
@@ -27,8 +27,8 @@
 </div>
 <% end %>
 <hr />
-[<a href="<%= url_for('web.boards.board', { uri_short_name=board.short_name }) %>"><%= i18n('return') %></a>]
-[<a href="<%= url_for('web.boards.archive', { uri_short_name=board.short_name }) %>"><%= i18n('archive') %></a>]
+[<a href="<%= url_for('web.boards.board', { uri_name=board.name }) %>"><%= i18n('return') %></a>]
+[<a href="<%= url_for('web.boards.archive', { uri_name=board.name }) %>"><%= i18n('archive') %></a>]
 [<a href="#top"><%= i18n('top') %></a>]
-[<a href="<%= url_for('web.boards.catalog', { uri_short_name=board.short_name }) %>"><%= i18n('refresh') %></a>]
+[<a href="<%= url_for('web.boards.catalog', { uri_name=board.name }) %>"><%= i18n('refresh') %></a>]
 <hr />

@@ -15,10 +15,10 @@
 		<h2>First Board Information</h2>
 
 		<label>Short Name</label>
-		<input name="short_name" type="text" placeholder="b" />
+		<input name="name" type="text" placeholder="b" />
 
-		<label>Long Name</label>
-		<input name="name" type="text" placeholder="Random" />
+		<label>Title</label>
+		<input name="title" type="text" placeholder="Random" />
 
 		<label>Subtext (optional)</label>
 		<input name="subtext" type="text" placeholder="Post at your own peril." />

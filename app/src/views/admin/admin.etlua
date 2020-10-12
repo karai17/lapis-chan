@@ -109,7 +109,7 @@
 				<select name="board" class="change_submit">
 					<option></option>
 					<% for _, board in ipairs(boards) do %>
-					<option value="<%= board.short_name %>"><%= string.format("/%s/ - %s", board.short_name, board.name) %></option>
+					<option value="<%= board.name %>"><%= string.format("/%s/ - %s", board.name, board.title) %></option>
 					<% end %>
 				</select>
 			</span>
@@ -127,7 +127,7 @@
 				<select name="board" class="change_delete">
 					<option></option>
 					<% for _, board in ipairs(boards) do %>
-					<option value="<%= board.short_name %>"><%= string.format("/%s/ - %s", board.short_name, board.name) %></option>
+					<option value="<%= board.name %>"><%= string.format("/%s/ - %s", board.name, board.title) %></option>
 					<% end %>
 				</select>
 			</span>

@@ -12,7 +12,7 @@
 				<span title="<%= i18n("form_submit_name_help") %>">(❓)</span>
 			</label>
 			<span class="fields">
-				<input name="name" type="text" placeholder="<%= board.anon_name or 'Anonymous' %>" value="<%= params.name or session.names[board.short_name] or '' %>" />
+				<input name="name" type="text" placeholder="<%= board.anon_name or 'Anonymous' %>" value="<%= params.name or session.names[board.name] or '' %>" />
 			</span>
 		</div>
 

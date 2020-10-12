@@ -26,7 +26,7 @@ end
 function Bans:modify(params)
 	local ban = self:get(params.id)
 	if not ban then
-		return false, { "err_create_board", { params.short_name, params.name } } -- FIXME: wrong error message
+		return false, { "err_create_board", { params.name, params.title } } -- FIXME: wrong error message
 	end
 
 	local success, err = ban:update(params)
