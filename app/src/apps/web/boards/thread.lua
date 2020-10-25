@@ -24,24 +24,19 @@ return {
 		end
 
 		-- Get current thread data
-		local post  = Posts:get_post(self.board.id, self.params.thread)
-
-		-- Post not found
+		local post = Posts:get(self.board.id, self.params.thread)
 		if not post then
 			return self:write({ redirect_to = self:url_for("web.boards.board", { uri_name=self.board.name }) })
 		end
 
-		local op = Posts:get_thread_op(post.thread_id)
-
-		if post.post_id ~= op.post_id then
-			return self:write({ redirect_to = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=op.post_id, anchor="p", id=post.post_id }) })
-		end
-
 		self.thread = post:get_thread()
-
-		-- Thread not found
 		if not self.thread then
 			return self:write({ redirect_to = self:url_for("web.boards.board", { uri_name=self.board.name }) })
+		end
+
+		local op = self.thread:get_op()
+		if post.post_id ~= op.post_id then
+			return self:write({ redirect_to = self:url_for("web.boards.thread", { uri_name=self.board.name, thread=op.post_id, anchor="p", id=post.post_id }) })
 		end
 
 		-- Get announcements
@@ -69,7 +64,7 @@ return {
 		self.num_files  = Posts:count_files(self.thread.id)
 
 		-- Get posts
-		self.posts = Posts:get_posts_by_thread(self.thread.id)
+		self.posts = self.thread:get_posts()
 
 		-- Format comments
 		for i, post in ipairs(self.posts) do

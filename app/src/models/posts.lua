@@ -1,5 +1,4 @@
 local encoding  = require "lapis.util.encoding"
-local trim      = require("lapis.util").trim_filter
 local Model     = require("lapis.db.model").Model
 local giflib    = require "giflib"
 local magick    = require "magick"
@@ -8,10 +7,27 @@ local filetypes = require "utils.file_whitelist"
 local generate  = require "utils.generate"
 local Posts     = Model:extend("posts", {
 	relations = {
-		{ "thread", belongs_to="Threads" }
+		{ "board",  belongs_to="Boards" },
+		{ "thread", belongs_to="Threads" },
 	}
 })
-local sf        = string.format
+local sf = string.format
+
+local function get_duration(path)
+	local cmd = sf("ffprobe -i %s -show_entries format=duration -v quiet -of csv=\"p=0\" -sexagesimal", path)
+	local f = io.popen(cmd, "r")
+	local s = f:read("*a")
+	f:close()
+
+	local hr, mn, sc = string.match(s, "(%d+):(%d+):(%d+).%d+")
+	local d = mn..":"..sc
+
+	if hr ~= "0" then
+		d = hr..":"..d
+	end
+
+	return d
+end
 
 --- Prepare post for insertion
 -- @tparam table params Input from the user
@@ -22,20 +38,14 @@ local sf        = string.format
 -- @treturn boolean success
 -- @treturn string error
 function Posts:prepare_post(params, session, board, thread, files)
+	-- FIXME: this whole function should be web-side, not api-side
 	local time = os.time()
 
 	-- Prepare session stuff
 	session.password = session.password or generate.password(time)
 
-	-- Trim white space
-	trim(params, {
-		"board", "thread", "sticky", "lock", "size_override", "save",
-		"ip", "name",
-		"subject", "options", "comment",
-		"file", "file_spoiler", "draw"
-	}, nil)
-
 	-- Save names on individual boards
+	-- TODO: Put this code elsewhere
 	if params.name then
 		session.names[board.name] = params.name
 	end
@@ -43,6 +53,7 @@ function Posts:prepare_post(params, session, board, thread, files)
 	-- Files take presidence over drawings, but if there is no file, fill in
 	-- the file fields with draw data. This should avoid ugly code branching
 	-- later on in the file.
+	-- TODO: send file data through api!
 	params.file = params.file or {
 		filename = "",
 		content  = ""
@@ -152,216 +163,141 @@ function Posts:prepare_post(params, session, board, thread, files)
 end
 
 --- Create a new post
--- @tparam table params Input from the user
--- @tparam table session User session
+-- @tparam table params Post parameters
 -- @tparam table board Board data
--- @tparam table thread Thread data
+-- @tparam boolean op OP flag
 -- @treturn boolean success
 -- @treturn string error
-function Posts:create_post(params, session, board, thread, op)
-	-- FIXME: there needs to be a better way to do this to avoid race conditions...
-	board.total_posts = board.total_posts + 1
+function Posts:new(params, board, op)
 
 	-- Create post
-	local post = self:create {
-		post_id       = board.total_posts,
-		thread_id     = thread.id,
-		board_id      = board.id,
-		timestamp     = os.time(),
-		ip            = params.ip,
-		comment       = params.comment,
-		name          = params.name,
-		trip          = params.trip,
-		subject       = params.subject,
-		password      = session.password,
-		file_name     = params.file_name,
-		file_path     = params.file_path,
-		file_type     = params.file_type,
-		file_md5      = params.file_md5,
-		file_size     = params.file_size,
-		file_width    = params.file_width,
-		file_height   = params.file_height,
-		file_duration = params.file_duration,
-		file_spoiler  = params.file_spoiler
-	}
-
-	if post then
-		local function get_duration(path)
-			local cmd = sf("ffprobe -i %s -show_entries format=duration -v quiet -of csv=\"p=0\" -sexagesimal", path)
-			local f = io.popen(cmd, "r")
-			local s = f:read("*a")
-			f:close()
-
-			local hr, mn, sc = string.match(s, "(%d+):(%d+):(%d+).%d+")
-			local d = mn..":"..sc
-
-			if hr ~= "0" then
-				d = hr..":"..d
-			end
-
-			return d
-		end
-
-		-- Update board
-		board:update("posts")
-
-		if post.file_path then
-			local dir       = sf("./static/%s/", board.name)
-			local name, ext = post.file_path:match("^(.+)(%..+)$")
-			ext = string.lower(ext)
-
-			-- Filesystem paths
-			local full_path  = dir .. post.file_path
-			local thumb_path = dir .. "s" .. post.file_path
-
-			-- Save file
-			local file = io.open(full_path, "w")
-			file:write(params.file.content)
-			file:close()
-
-			-- Audio file
-			if post.file_type == "audio" then
-				post.file_duration = get_duration(full_path)
-				post:update("file_duration")
-				return post
-			end
-
-			-- Image file
-			if post.file_type == "image" and not post.file_spoiler then
-				-- Generate a thumbnail
-				if ext == ".webm" then
-					thumb_path = dir .. "s" .. name .. ".png"
-
-					-- Create screenshot of first frame
-					os.execute(sf("ffmpeg -i %s -ss 00:00:01 -vframes 1 %s -y", full_path, thumb_path))
-
-					local image        = magick.load_image(thumb_path)
-					post.file_width    = image:get_width()
-					post.file_height   = image:get_height()
-					post.file_duration = get_duration(full_path)
-					post:update("file_width", "file_height", "file_duration")
-				end
-
-				-- Save thumbnail
-				local w, h
-				if op then
-					w = post.file_width  < 250 and post.file_width  or 250
-					h = post.file_height < 250 and post.file_height or 250
-				else
-					w = post.file_width  < 125 and post.file_width  or 125
-					h = post.file_height < 125 and post.file_height or 125
-				end
-
-				-- Grab first frame from video
-				if ext == ".webm" then
-					magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
-				-- Generate a thumbnail
-				elseif ext == ".svg" then
-					thumb_path = dir .. "s" .. name .. ".png"
-					os.execute(sf("convert -background none -resize %dx%d %s %s", w, h, full_path, thumb_path))
-					return post
-				-- Grab first frame of a gif instead of the last
-				elseif ext == ".gif" then
-					local gif, err = giflib.load_gif(full_path)
-
-					if err then
-						magick.thumb(full_path, sf("%sx%s", w, h), thumb_path)
-					else
-						gif:write_first_frame(thumb_path)
-						magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
-
-						-- gifs need to get dimension from the first frame
-						local width, height = gif:dimensions()
-						post.file_width     = width
-						post.file_height    = height
-						post:update("file_width", "file_height")
-					end
-				else
-					magick.thumb(full_path, sf("%sx%s", w, h), thumb_path)
-				end
-
-				return post
-			end
-		end
-
-		return post
-	else
+	local post = self:create(params)
+	if not post then
 		return false, { "err_create_post" }
 	end
+
+	-- Save file
+	if post.file_path then
+		local dir       = sf("./static/%s/", board.name)
+		local name, ext = post.file_path:match("^(.+)%.(.+)$")
+		ext = string.lower(ext)
+
+		-- Filesystem paths
+		local full_path  = dir .. post.file_path
+		local thumb_path = dir .. "s" .. post.file_path
+
+		-- Save file
+		local file = io.open(full_path, "w")
+		file:write(params.file_content)
+		file:close()
+
+		-- Audio file
+		if post.file_type == "audio" then
+			post.file_duration = get_duration(full_path)
+			post:update("file_duration")
+			return post
+		end
+
+		-- Image file
+		if post.file_type == "image" and not post.file_spoiler then
+
+			-- Save thumbnail
+			local w, h
+			if op then
+				w = post.file_width  < 250 and post.file_width  or 250
+				h = post.file_height < 250 and post.file_height or 250
+			else
+				w = post.file_width  < 125 and post.file_width  or 125
+				h = post.file_height < 125 and post.file_height or 125
+			end
+
+			-- Generate a thumbnail
+			if ext == "webm" then
+				thumb_path = dir .. "s" .. name .. ".png"
+
+				-- Create screenshot of first frame
+				os.execute(sf("ffmpeg -i %s -ss 00:00:01 -vframes 1 %s -y", full_path, thumb_path))
+
+				-- Update post info
+				local image        = magick.load_image(thumb_path)
+				post.file_width    = image:get_width()
+				post.file_height   = image:get_height()
+				post.file_duration = get_duration(full_path)
+				post:update("file_width", "file_height", "file_duration")
+
+				-- Resize thumbnail
+				magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
+
+			elseif ext == "svg" then
+				thumb_path = dir .. "s" .. name .. ".png"
+				os.execute(sf("convert -background none -resize %dx%d %s %s", w, h, full_path, thumb_path))
+
+			elseif ext == "gif" then
+				local gif, err = giflib.load_gif(full_path)
+
+				if err then
+					-- Not animated I presume? TODO: check what err represents
+					magick.thumb(full_path, sf("%sx%s", w, h), thumb_path)
+				else
+					-- Grab first frame of a gif instead of the last
+					gif:write_first_frame(thumb_path)
+
+					-- Update post info
+					local width, height = gif:dimensions()
+					post.file_width     = width
+					post.file_height    = height
+					post:update("file_width", "file_height")
+
+					-- Resize thumbnail
+					magick.thumb(thumb_path, sf("%sx%s", w, h), thumb_path)
+				end
+			else
+				magick.thumb(full_path, sf("%sx%s", w, h), thumb_path)
+			end
+		end
+	end
+
+	-- Update board
+	board:update("total_posts")
+
+	return post
 end
 
 --- Delete post data
--- @tparam table session User session
--- @tparam table board Board data
--- @tparam table post Post data
+-- @tparam number id Post ID
 -- @treturn boolean success
 -- @treturn string error
-function Posts:delete_post(session, board, post)
-	local function rm_post(name)
-		if post.file_path then
-			local dir = sf("./static/%s/", name)
-			local name, ext = post.file_path:match("^(.+)(%..+)$")
-			ext = string.lower(ext)
-			os.remove(dir .. post.file_path)
+function Posts:delete(id)
 
-			-- Change path to png
-			if ext == ".webm" or ext == ".svg" then
-				post.file_path = name .. ".png"
-			end
+	-- Get post
+	local post, err = self:get_post_by_id(id)
+	if not post then
+		return false, err
+	end
 
-			os.remove(dir .. "s" .. post.file_path)
+	-- Delete post
+	local success, err = post:delete()
+	if not success then
+		return false, err--{ "err_delete_post", { post.post_id } }
+	end
+
+	-- Delete files
+	if post.file_path then
+		local board     = post:get_board()
+		local dir       = sf("./static/%s/", board.name)
+		local name, ext = post.file_path:match("^(.+)%.(.+)$")
+		ext = string.lower(ext)
+		os.remove(dir .. post.file_path)
+
+		-- Change thumbnail path to png
+		if ext == "webm" or ext == "svg" then
+			post.file_path = name .. ".png"
 		end
 
-		post:delete()
+		os.remove(dir .. "s" .. post.file_path)
 	end
 
-	local success = false
-
-	-- MODS = FAGS
-	if type(session) == "table" and
-		(session.admin or session.mod or session.janitor) then
-		rm_post(board.name)
-		success = true
-	-- Override password
-	elseif type(session) == "string" and
-		session == "override" then
-		rm_post(board.name)
-		success = true
-	-- Password has to match!
-	elseif post and session.password and
-		post.password == session.password then
-		rm_post(board.name)
-		success = true
-	end
-
-	if success then
-		return success
-	else
-		return false, { "err_delete_post", { post.post_id } }
-	end
-end
-
---- Get all posts from board
--- @tparam number board_id Board ID
--- @treturn table posts
-function Posts:get_posts(board_id)
-	return self:select("where board_id=?", board_id)
-end
-
---- Get posts from thread
--- @tparam number thread_id Thread ID
--- @treturn table posts
-function Posts:get_posts_by_thread(thread_id)
-	local sql = "where thread_id=? order by post_id asc"
-	return self:select(sql, thread_id)
-end
-
---- Get op from thread
--- @tparam number thread_id Thread ID
--- @treturn table post
-function Posts:get_thread_op(thread_id)
-	local sql = "where thread_id=? order by post_id asc limit 1"
-	return unpack(self:select(sql, thread_id))
+	return post
 end
 
 --- Get op and last 5 posts of a thread to display on board index
@@ -372,7 +308,9 @@ function Posts:get_index_posts(thread_id)
 	local posts = self:select(sql, thread_id)
 
 	if self:count_posts(thread_id) > 5 then
-		table.insert(posts, self:get_thread_op(thread_id))
+		local thread = posts[1]:get_thread()
+		local op     = thread:get_op()
+		table.insert(posts, op)
 	end
 
 	return posts
@@ -382,15 +320,20 @@ end
 -- @tparam number board_id Board ID
 -- @tparam number post_id Local Post ID
 -- @treturn table post
-function Posts:get_post(board_id, post_id)
-	return unpack(self:select("where board_id=? and post_id=?", board_id, post_id))
+function Posts:get(board_id, post_id)
+	local post = self:find {
+		board_id = board_id,
+		post_id  = post_id
+	}
+	return post and post or false, "FIXME"
 end
 
 --- Get post data
 -- @tparam number id Post ID
 -- @treturn table post
 function Posts:get_post_by_id(id)
-	return unpack(self:select("where id=?", id))
+	local post = self:find(id)
+	return post and post or false, "FIXME"
 end
 
 --- Find file in active posts

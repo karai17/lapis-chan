@@ -2,7 +2,8 @@ local Model   = require("lapis.db.model").Model
 local Threads = Model:extend("threads", {
 	relations = {
 		{ "board", belongs_to="Boards" },
-		{ "posts", has_many="Posts" }
+		{ "posts", has_many="Posts" },
+		{ "op",    has_one="Posts", order="post_id asc" },
 	}
 })
 
@@ -35,36 +36,18 @@ end
 
 --- Delete entire thread
 -- @tparam number id Thread ID
--- @tparam table session User session
--- @tparam table op Post data of op
 -- @treturn boolean success
 -- @treturn string error
-function Threads:delete(id, session, op)
+function Threads:delete(id)
 	 -- FIXME: API needs to create a user object for better auth checking
 	local thread, err = self:get(id)
 	if not thread then
 		return false, err
 	end
 
-	local success
-
-	-- MODS = FAGS
-	if type(session) == "table" and
-		(session.admin or session.mod or session.janitor) then
-		success = thread:delete()
-
-	-- Override password
-	elseif type(session) == "string" and
-		session == "override" then
-		success = thread:delete()
-
-	-- Password has to match!
-	elseif op and session.password and
-		op.password == session.password then
-		success = thread:delete()
-	end
-
-	return success and thread or false, { "err_delete_post", { op.post_id } }
+	local op      = thread:get_op()
+	local success = thread:delete()
+	return success and thread or false, { "err_delete_thread", { op.post_id } }
 end
 
 --- Get thread data

@@ -15,8 +15,8 @@ return {
 
 		schema.create_table("bans", {
 			{ "id",       types.serial  { unique=true, primary_key=true }},
-			{ "ip",       types.varchar },
 			{ "board_id", types.integer { default=0 }},
+			{ "ip",       types.varchar },
 			{ "reason",   types.varchar { null=true }},
 			{ "time",     types.integer },
 			{ "duration", types.integer { default=259200 }}, -- 3 days
@@ -109,11 +109,26 @@ return {
 		schema.add_column("posts",  "file_duration",  types.varchar { null=true })
 	end,
 	[200] = function()
+		schema.drop_table("reports")
+
+		schema.add_column("boards", "anon_only", types.boolean { default=false })
+		schema.add_column("posts", "reports",    types.integer)
+		schema.add_column("users", "role",       types.integer)
+		schema.add_column("users", "auth_key",   types.varchar { default="00000000-0000-0000-0000-000000000000" })
+
 		schema.rename_column("boards", "posts",      "total_posts")
 		schema.rename_column("boards", "name",       "title")
 		schema.rename_column("boards", "short_name", "name")
 		schema.rename_column("pages",  "url",        "slug")
 		schema.rename_column("pages",  "name",       "title")
+		schema.rename_column("posts",  "post_id",    "post_number")
+
+		schema.drop_column("users", "admin")
+		schema.drop_column("users", "mod")
+		schema.drop_column("users", "janitor")
+
+		db.query("ALTER TABLE posts ALTER COLUMN file_type DROP DEFAULT")
+		db.query("ALTER TABLE posts ALTER COLUMN file_type DROP NOT NULL")
 	end,
 	-- TODO: COLLAPSE ALL CHANGES FROM HERE FORWARD INTO [200]
 	[201] = function()
@@ -124,4 +139,20 @@ return {
 		schema.rename_column("pages", "url",  "slug")
 		schema.rename_column("pages", "name", "title")
 	end,
+	[203] = function()
+		schema.add_column("boards", "anon_only", types.boolean { default=false })
+
+		schema.add_column("posts", "reports", types.integer)
+		schema.rename_column("posts", "post_id", "post_number")
+		db.query("ALTER TABLE posts ALTER COLUMN file_type DROP DEFAULT")
+		db.query("ALTER TABLE posts ALTER COLUMN file_type DROP NOT NULL")
+
+		schema.drop_table("reports")
+
+		schema.add_column("users", "role", types.integer)
+		schema.add_column("users", "auth_key", types.varchar { default="00000000-0000-0000-0000-000000000000" })
+		schema.drop_column("users", "admin")
+		schema.drop_column("users", "mod")
+		schema.drop_column("users", "janitor")
+	end
 }

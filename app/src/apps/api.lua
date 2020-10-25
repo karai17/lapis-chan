@@ -8,6 +8,7 @@ end
 app:include("apps.api.announcements")
 app:include("apps.api.bans")
 app:include("apps.api.boards")
+app:include("apps.api.posts")
 app:include("apps.api.threads")
 
 return app

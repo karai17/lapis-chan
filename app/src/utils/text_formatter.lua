@@ -26,13 +26,13 @@ end
 function formatter.quote(text, request, board, post)
 	local function get_url(board, post_id)
 		if tonumber(post_id) then
-			local p = Posts:get_post(board.id, post_id)
+			local p = Posts:get(board.id, post_id)
 			if not p then return false end
 
 			local thread = p:get_thread()
 			if not thread then return false end
 
-			local op = Posts:get_thread_op(thread.id)
+			local op = thread:get_op()
 			return
 				request:url_for("web.boards.thread", { board=board.name, thread=op.post_id }),
 				op

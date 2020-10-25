@@ -22,7 +22,7 @@ function action:PUT()
 
 	-- Validate parameters
 	local params = {
-		name        = self.params.name,
+		name              = self.params.name,
 		title             = self.params.title,
 		subtext           = self.params.subtext,
 		rules             = self.params.rules,

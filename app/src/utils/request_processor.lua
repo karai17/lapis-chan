@@ -5,27 +5,9 @@ local Reports      = require "models.reports"
 local process      = {}
 
 function process.create_thread(params, session, board)
-	-- Only admins and mods can flag threads
-	if not session.admin or session.mod then
-		params.sticky        = nil
-		params.lock          = nil
-		params.size_override = nil
-		params.save          = nil
-	end
 
 	-- Prepare data for entry
 	local _, err = Posts:prepare_post(params, session, board)
-	if err then
-		return false, err
-	end
-
-	-- Create new thread
-	local thread, err = Threads:create_thread(board.id, {
-		sticky        = params.sticky,
-		lock          = params.lock,
-		size_override = params.size_override,
-		save          = params.save
-	})
 	if err then
 		return false, err
 	end
@@ -181,7 +163,7 @@ function process.report_post(params, board)
 
 	-- If report exists, update it
 	if report then
-		report.num_reports = report.num_reports + 1
+		report.num_reports = report.num_reports + 1 -- FIXME: race condition
 		local _, err = Reports:modify_report(report)
 		if err then
 			return false, err
