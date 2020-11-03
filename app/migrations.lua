@@ -109,12 +109,6 @@ return {
 		schema.add_column("posts",  "file_duration",  types.varchar { null=true })
 	end,
 	[200] = function()
-		schema.drop_table("reports")
-
-		schema.add_column("boards", "anon_only", types.boolean { default=false })
-		schema.add_column("posts", "reports",    types.integer)
-		schema.add_column("users", "role",       types.integer)
-		schema.add_column("users", "auth_key",   types.varchar { default="00000000-0000-0000-0000-000000000000" })
 
 		schema.rename_column("boards", "posts",      "total_posts")
 		schema.rename_column("boards", "name",       "title")
@@ -123,36 +117,32 @@ return {
 		schema.rename_column("pages",  "name",       "title")
 		schema.rename_column("posts",  "post_id",    "post_number")
 
-		schema.drop_column("users", "admin")
-		schema.drop_column("users", "mod")
-		schema.drop_column("users", "janitor")
-
 		db.query("ALTER TABLE posts ALTER COLUMN file_type DROP DEFAULT")
 		db.query("ALTER TABLE posts ALTER COLUMN file_type DROP NOT NULL")
-	end,
-	-- TODO: COLLAPSE ALL CHANGES FROM HERE FORWARD INTO [200]
-	[201] = function()
-		schema.rename_column("boards", "name",       "title")
-		schema.rename_column("boards", "short_name", "name")
-	end,
-	[202] = function()
-		schema.rename_column("pages", "url",  "slug")
-		schema.rename_column("pages", "name", "title")
-	end,
-	[203] = function()
 		schema.add_column("boards", "anon_only", types.boolean { default=false })
 
-		schema.add_column("posts", "reports", types.integer)
-		schema.rename_column("posts", "post_id", "post_number")
-		db.query("ALTER TABLE posts ALTER COLUMN file_type DROP DEFAULT")
-		db.query("ALTER TABLE posts ALTER COLUMN file_type DROP NOT NULL")
+		local Users = require "src.models.users"
+		local uuid  = require "resty.jit-uuid"
+		uuid.seed()
 
-		schema.drop_table("reports")
+		schema.add_column("users", "api_key", types.varchar { default="00000000-0000-0000-0000-000000000000" })
+		local users = Users:get_all()
+		for _, user in ipairs(users) do
+			user.api_key = uuid()
+			user:update("api_key")
+		end
 
 		schema.add_column("users", "role", types.integer)
-		schema.add_column("users", "auth_key", types.varchar { default="00000000-0000-0000-0000-000000000000" })
-		schema.drop_column("users", "admin")
-		schema.drop_column("users", "mod")
+		db.query("UPDATE users SET role=? WHERE janitor=true", Users.role.JANITOR)
+		db.query("UPDATE users SET role=? WHERE mod=true", Users.role.MOD)
+		db.query("UPDATE users SET role=? WHERE admin=true", Users.role.ADMIN)
+		db.query("UPDATE users SET role=? WHERE id=1", Users.role.OWNER)
 		schema.drop_column("users", "janitor")
+		schema.drop_column("users", "mod")
+		schema.drop_column("users", "admin")
+
+		schema.add_column("posts",  "reports", types.integer)
+		db.query("UPDATE posts SET reports=reports.num_reports FROM reports WHERE posts.id=reports.post_id")
+		schema.drop_table("reports")
 	end
 }

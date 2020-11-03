@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - PGDATA:/var/lib/postgresql/data/pgdata
+      - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - postgres:/var/lib/postgresql/data
       - ./psql/pg_hba.conf:/var/lib/postgres/data/pg_hba.conf

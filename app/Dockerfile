@@ -48,6 +48,7 @@ RUN luarocks install luasec \
 		CRYPTO_INCDIR=${OPENSSL_DIR}/include \
 		OPENSSL_DIR=${OPENSSL_DIR} \
 		OPENSSL_INCDIR=${OPENSSL_DIR}/include \
+	&& luarocks install lua-resty-jit-uuid \
 	&& luarocks install luacov \
 	&& luarocks install luaposix \
 	&& luarocks install magick \

@@ -1,10 +1,25 @@
 local bcrypt   = require "bcrypt"
-local generate = require "utils.generate"
 local config   = require("lapis.config").get()
 local trim     = require("lapis.util").trim_filter
 local Model    = require("lapis.db.model").Model
 local Users    = Model:extend("users")
 local token    = config.secret
+
+Users.role = {
+	[1] = "USER",
+	[6] = "JANITOR",
+	[7] = "MOD",
+	[8] = "ADMIN",
+	[9] = "OWNER",
+
+	USER    = 1,
+	JANITOR = 6,
+	MOD     = 7,
+	ADMIN   = 8,
+	OWNER   = 9
+}
+
+Users.default_key = "00000000-0000-0000-0000-000000000000"
 
 --- Create a new user
 -- @tparam table user User data
@@ -91,8 +106,9 @@ end
 
 --- Get all users
 -- @treturn table users List of users
-function Users:get_users()
-	return self:select("order by username asc")
+function Users:get_all()
+	local users = self:select("order by username asc")
+	return users and users or nil, "FIXME"
 end
 
 --- Get user
@@ -108,6 +124,11 @@ end
 -- @treturn table user
 function Users:get_user_by_id(id)
 	return unpack(self:select("where id=? limit 1", id))
+end
+
+function Users:get_api(params)
+	local user = self:find(params)
+	return user and user or nil, "FIXME"
 end
 
 return Users

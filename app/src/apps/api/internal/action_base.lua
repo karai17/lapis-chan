@@ -1,8 +1,9 @@
+local ngx    = _G.ngx
 local action = {}
 
 local function errors()
 	return {
-		status = 405, --ngx.HTTP_NOT_ALLOWED
+		status = ngx.HTTP_NOT_ALLOWED,
 		json   = {}
 	}
 end
