@@ -83,12 +83,21 @@ return {
 	handle    = function(self)
 
 		-- Inject localized error messages
-		for err in ipairs(self.errors) do
-			err.message = self.i18n(err.code)
+		for _, err in ipairs(self.errors) do
+			--err.message = self.i18n(err.code)
+			if type(err) == "table" then
+				for k, v in pairs(err) do
+					print(k, ": ", v)
+				end
+			else
+				print(err)
+			end
 		end
 
-		return {
-			status = status[self.errors[1].code],
+		print(#self.errors)
+
+		return self:write {
+			status = 401,--status[self.errors[1].code],
 			json   = self.errors
 		}
 	end

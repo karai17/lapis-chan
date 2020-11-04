@@ -8,8 +8,18 @@ return function(self)
 	if self.req.headers["Authorization"] then
 
 		-- Decode auth info
-		local auth = mime.unb64(self.req.headers["Authorization"])
-		local username, api_key = auth:match("^Basic (.+)%:(.+)$")
+		local auth = mime.unb64(self.req.headers["Authorization"]:sub(7))
+		local username, api_key = auth:match("^(.+)%:(.+)$")
+
+		-- DENY if Authorization is malformed
+		if not username or not api_key then
+			assert_error(nil, "Corrupt auth!")
+		end
+
+		-- DENY if a user's key isn't properly set
+		if api_key == Users.default_key then
+			assert_error(nil, "Bad auth!")
+		end
 
 		local params = {
 			username = username,
@@ -28,5 +38,4 @@ return function(self)
 		id   = -1,
 		role = -1
 	}
-
 end

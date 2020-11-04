@@ -4,6 +4,18 @@ local assert_error = require("lapis.application").assert_error
 local models       = require "models"
 local Threads      = models.threads
 
+function action:GET()
+
+	-- Get Thread
+	local thread = assert_error(Threads:get(self.params.uri_id))
+	--Threads:format_from_db(thread)
+
+	return {
+		status = ngx.HTTP_OK,
+		json   = thread
+	}
+end
+
 function action:PUT()
 
 	local params = { id=self.params.uri_id }
@@ -48,6 +60,10 @@ function action:PUT()
 		status = ngx.HTTP_OK,
 		json   = thread
 	}
+end
+
+function action:DELETE()
+
 end
 
 return action

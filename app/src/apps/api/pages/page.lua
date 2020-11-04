@@ -4,14 +4,14 @@ local assert_error  = require("lapis.application").assert_error
 local assert_valid  = require("lapis.validate").assert_valid
 local trim_filter   = require("lapis.util").trim_filter
 local models        = require "models"
-local Announcements = models.announcements
+local Pages         = models.pages
 
 function action:GET()
-	local announcement = assert_error(Announcements:get(self.params.uri_id))
+	local page = assert_error(Pages:get(self.params.uri_id))
 
 	return {
 		status = ngx.HTTP_OK,
-		json   = announcement
+		json   = page
 	}
 end
 
@@ -24,27 +24,27 @@ function action:PUT()
 		text     = self.params.text,
 	}
 	trim_filter(params)
-	assert_valid(params, Announcements.valid_record)
+	assert_valid(params, Pages.valid_record)
 
-	-- Modify announcement
-	local announcement = assert_error(Announcements:modify(params))
+	-- Modify page
+	local page = assert_error(Pages:modify(params))
 
 	return {
 		status = ngx.HTTP_OK,
-		json   = announcement
+		json   = page
 	}
 end
 
 function action:DELETE()
 
-	-- Delete announcement
-	local announcement = assert_error(Announcements:delete(self.params.uri_id))
+	-- Delete page
+	local page = assert_error(Pages:delete(self.params.uri_id))
 
 	return {
 		status = ngx.HTTP_OK,
 		json   = {
-			id   = announcement.id,
-			text = announcement.text
+			id   = page.id,
+			text = page.text
 		}
 	}
 end

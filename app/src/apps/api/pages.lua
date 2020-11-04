@@ -4,10 +4,10 @@ local r2      = require("lapis.application").respond_to
 local handle  = require("utils.error").handle
 local app     = lapis.Application()
 app.__base    = app
-app.name      = "api.core."
-app.path      = "/api"
+app.name      = "api.pages."
+app.path      = "/api/pages"
 
-app:match("root",  "",       capture({ on_error=handle, r2(require "apps.api.core.root")  }))
-app:match("login", "/login", capture({ on_error=handle, r2(require "apps.api.core.login") }))
+app:match("pages", "",           capture({ on_error=handle, r2(require "apps.api.pages.pages") }))
+app:match("page",  "/:uri_page", capture({ on_error=handle, r2(require "apps.api.pages.page")  }))
 
 return app

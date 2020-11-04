@@ -9,8 +9,16 @@ local Threads      = models.threads
 local Posts        = models.posts
 
 function action:GET()
-	local board = assert_error(Boards:get(self.params.uri_name))
-	local posts = board:get_posts()
+
+	local posts
+
+	if self.params.uri_thread then
+		local thread = assert_error(Threads:get(self.params.uri_thread))
+		posts = thread:get_posts()
+	else
+		local board = assert_error(Boards:get(self.params.uri_board))
+		posts = board:get_posts()
+	end
 
 	return {
 		status = ngx.HTTP_OK,

@@ -2,17 +2,19 @@ local ngx          = _G.ngx
 local action       = setmetatable({}, require "apps.api.internal.action_base")
 local assert_error = require("lapis.application").assert_error
 local models       = require "models"
-local Threads      = models.threads
+local Boards       = models.boards
 
 function action:GET()
 
-	-- Get Thread
-	local thread = assert_error(Threads:get(self.params.uri_id))
-	--Threads:format_from_db(thread)
+	-- Get Board
+	local board = assert_error(Boards:get(self.params.uri_name))
+
+	-- Get Bans
+	local bans = board:get_bans()
 
 	return {
 		status = ngx.HTTP_OK,
-		json   = thread
+		json   = bans
 	}
 end
 
