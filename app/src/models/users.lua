@@ -81,27 +81,14 @@ end
 -- @tparam table params User data
 -- @treturn boolean success
 -- @treturn string error
-function Users:verify_user(params)
-	local user = self:get_user(params.username)
+function Users:login(params)
+	local user = self:get(params.username)
+	if not user then return nil, { "err_invalid_user" } end
 
-	-- No user found with that username
-	if not user then
-		return false, { "err_invalid_user" }
-	end
-
-	-- Prepare password and remove raw password from memory
 	local password = user.username .. params.password .. token
-	params.password = nil
-
-	-- Verify password and remove prepared password from memory
 	local verified = bcrypt.verify(password, user.password)
-	password = nil
 
-	if verified then
-		return user
-	else
-		return false, { "err_invalid_user" }
-	end
+	return verified and user or nil, { "err_invalid_user" }
 end
 
 --- Get all users
@@ -114,9 +101,10 @@ end
 --- Get user
 -- @tparam string username Username
 -- @treturn table user
-function Users:get_user(username)
+function Users:get(username)
 	username = string.lower(username)
-	return unpack(self:select("where lower(username)=? limit 1", username))
+	local users = self:select("where lower(username)=? limit 1", username)
+	return #users == 1 and users[1] or nil, "FIXME"
 end
 
 --- Get user by ID
