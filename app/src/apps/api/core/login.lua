@@ -7,11 +7,14 @@ local Users        = models.users
 
 function action:POST()
 
+	-- Normally we'd process these inputs a bit but in the case of
+	-- authentication credentials, we want to use the raw user inputs.
 	local params = {
 		username = self.params.username,
 		password = self.params.password
 	}
 
+	-- Early exit if credentials not sent
 	if not params.username or not params.password then
 		yield_error("FIXME")
 	end

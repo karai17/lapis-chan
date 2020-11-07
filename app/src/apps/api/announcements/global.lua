@@ -4,12 +4,17 @@ local assert_error  = require("lapis.application").assert_error
 local models        = require "models"
 local Announcements = models.announcements
 
-function action:GET()
-	local announcement = assert_error(Announcements:get_global())
+function action.GET()
+
+	-- Get global Announcements
+	local announcements = assert_error(Announcements:get_global())
+	for _, announcement in ipairs(announcements) do
+		Announcements:format_from_db(announcement)
+	end
 
 	return {
 		status = ngx.HTTP_OK,
-		json   = announcement
+		json   = announcements
 	}
 end
 

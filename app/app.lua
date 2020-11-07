@@ -7,6 +7,21 @@ end
 app:enable "etlua"
 app.layout = require "views.layout"
 
+do
+	function app.handle_404()
+		local api = _G.ngx.var.uri:match("^(/api).+$")
+
+		if not api then
+			return { render="code_404" }
+		else
+			return {
+				status = 404,
+				json   = { "Resource not found!" } -- FIXME: i18n
+			}
+		end
+	end
+end
+
 -- NOTE: https://github.com/leafo/lapis/issues/706
 do
 	local super = app.__index.dispatch
