@@ -6,8 +6,9 @@ local Bans  = Model:extend("bans", {
 })
 
 Bans.valid_record = {
-	{ "ip",   max_length=255, exists=true },
-	{ "time", exists=true }
+	{ "board_id", is_integer=true },
+	{ "ip",       max_length=255, exists=true },
+	{ "time",     exists=true }
 }
 
 --- Create a ban
@@ -16,7 +17,7 @@ Bans.valid_record = {
 -- @treturn string err
 function Bans:new(params)
 	local ban = self:create(params)
-	return ban and ban or false, { "err_create_ban", { params.ip } }
+	return ban and ban or nil, { "err_create_ban", { params.ip } }
 end
 
 --- Modify a ban
@@ -26,11 +27,11 @@ end
 function Bans:modify(params)
 	local ban = self:get(params.id)
 	if not ban then
-		return false, { "err_create_board", { params.name, params.title } } -- FIXME: wrong error message
+		return nil, { "err_create_board", { params.name, params.title } } -- FIXME: wrong error message
 	end
 
 	local success, err = ban:update(params)
-	return success and ban or false, "FIXME: " .. tostring(err)
+	return success and ban or nil, "FIXME: " .. tostring(err)
 end
 
 --- Delete a ban
@@ -40,24 +41,21 @@ end
 function Bans:delete(id)
 	local ban = self:get(id)
 	if not ban then
-		return false, "FIXME"
+		return nil, "FIXME"
 	end
 
 	local success = ban:delete()
-	return success and ban or false, "FIXME"
+	return success and ban or nil, "FIXME"
 end
 
 --- Get all bans
 -- @treturn table users List of bans
 function Bans:get_all()
 	local bans = self:select("order by board_id asc, time + duration desc, ip asc")
-	if not bans then
-		return false, "FIXME"
-	end
 
 	for i=#bans, 1, -1 do
 		local ban = bans[i]
-		if not self:validate_ban(ban) then
+		if not self:validate(ban) then
 			table.remove(bans, i)
 		end
 	end
@@ -70,7 +68,16 @@ end
 -- @treturn table ban
 function Bans:get(id)
 	local ban = self:find(id)
-	return ban and ban or false, "FIXME: ALART!"
+	if not ban then
+		return nil, "FIXME: ALART!"
+	end
+
+	local valid, err = self:validate(ban)
+	if not valid then
+		return nil, err
+	end
+
+	return ban
 end
 
 --- Get bans for specific ip
@@ -78,13 +85,10 @@ end
 -- @treturn table ban
 function Bans:get_ip(ip)
 	local bans = self:select("where ip=?", ip)
-	if not bans then
-		return false, "FIXME"
-	end
 
 	for i=#bans, 1, -1 do
 		local ban = bans[i]
-		if not self:validate_ban(ban) then
+		if not self:validate(ban) then
 			table.remove(bans, i)
 		end
 	end
@@ -95,13 +99,13 @@ end
 --- Validate ban
 -- @tparam table ban Ban data
 -- @treturn boolean valid
-function Bans:validate_ban(ban)
+function Bans:validate(ban)
 	local time   = os.time()
 	local finish = ban.time + ban.duration
 
 	if time >= finish then
 		self:delete(ban)
-		return false
+		return nil, "FIXME: ban has exired"
 	end
 
 	return true
@@ -112,6 +116,10 @@ end
 function Bans.format_to_db(_, params)
 	-- Convert duration from days to seconds
 	params.duration = (tonumber(params.duration) or 0) * 86400
+
+	if not params.board_id then
+		params.board_id = 0
+	end
 end
 
 --- Format ban parameters for User consumption
@@ -119,6 +127,10 @@ end
 function Bans.format_from_db(_, params)
 	-- Convert duration from seconds to days
 	params.duration = tonumber(params.duration) / 86400
+
+	if params.board_id == 0 then
+		params.board_id = nil
+	end
 end
 
 return Bans

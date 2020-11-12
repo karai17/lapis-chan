@@ -52,7 +52,7 @@ end
 -- @treturn string error
 function Announcements:get_all()
 	local announcements = self:select("order by board_id asc")
-	return announcements and announcements or nil, "FIXME"
+	return announcements
 end
 
 --- Get announcements
@@ -61,7 +61,7 @@ end
 -- @treturn string error
 function Announcements:get_global()
 	local announcements = self:select("where board_id=0")
-	return announcements and announcements or nil, "FIXME"
+	return announcements
 end
 
 --- Get announcement
