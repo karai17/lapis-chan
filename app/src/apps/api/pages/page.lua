@@ -1,13 +1,14 @@
-local ngx           = _G.ngx
-local action        = setmetatable({}, require "apps.api.internal.action_base")
-local assert_error  = require("lapis.application").assert_error
-local assert_valid  = require("lapis.validate").assert_valid
-local trim_filter   = require("lapis.util").trim_filter
-local models        = require "models"
-local Pages         = models.pages
+local ngx          = _G.ngx
+local action       = setmetatable({}, require "apps.api.internal.action_base")
+local assert_error = require("lapis.application").assert_error
+local assert_valid = require("lapis.validate").assert_valid
+local trim_filter  = require("lapis.util").trim_filter
+local role         = require "utils.role"
+local models       = require "models"
+local Pages        = models.pages
 
 function action:GET()
-	local page = assert_error(Pages:get(self.params.uri_id))
+	local page = assert_error(Pages:get(self.params.uri_page))
 
 	return {
 		status = ngx.HTTP_OK,
@@ -17,17 +18,21 @@ end
 
 function action:PUT()
 
+	-- Verify the User's permissions
+	assert_error(role.admin(self.api_user))
+
 	-- Validate parameters
 	local params = {
-		id       = tonumber(self.params.uri_id),
-		board_id = tonumber(self.params.board_id),
-		text     = self.params.text,
+		slug    = self.params.slug,
+		title   = self.params.title,
+		content = self.params.content
 	}
 	trim_filter(params)
+	Pages:format_to_db(params)
 	assert_valid(params, Pages.valid_record)
 
 	-- Modify page
-	local page = assert_error(Pages:modify(params))
+	local page = assert_error(Pages:modify(params, self.params.uri_page))
 
 	return {
 		status = ngx.HTTP_OK,
@@ -37,14 +42,17 @@ end
 
 function action:DELETE()
 
-	-- Delete page
-	local page = assert_error(Pages:delete(self.params.uri_id))
+	-- Verify the User's permissions
+	assert_error(role.admin(self.api_user))
+
+	-- Delete Page
+	local page = assert_error(Pages:delete(self.params.uri_page))
 
 	return {
 		status = ngx.HTTP_OK,
 		json   = {
-			id   = page.id,
-			text = page.text
+			slug  = page.slug,
+			title = page.title
 		}
 	}
 end
