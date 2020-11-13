@@ -2,7 +2,6 @@
 local config   = require("lapis.config").get()
 local encoding = require "lapis.util.encoding"
 local sha256   = require "resty.sha256"
-local bcrypt   = require "bcrypt"
 local ffi      = require "ffi"
 local posix    = require "posix"
 local salt     = loadfile("../data/secrets/salt.lua")()
@@ -77,11 +76,6 @@ function generate.tripcode(raw_name)
 	end
 
 	return name, tripcode
-end
-
--- Generate a hash with a 2^12 cost
-function generate.hash(password)
-	return bcrypt.digest(password, 12)
 end
 
 function generate.errors(i18n, errors)

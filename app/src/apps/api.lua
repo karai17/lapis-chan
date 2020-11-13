@@ -8,6 +8,7 @@ app.include   = function(self, a)
 end
 
 app:before_filter(capture({ on_error=handle, require "apps.api.internal.before_auth"   }))
+-- FIXME: app:before_filter(capture({ on_error=handle, require "apps.api.internal.before_ban"    }))
 app:before_filter(capture({ on_error=handle, require "apps.api.internal.before_locale" }))
 
 app:include("apps.api.core")

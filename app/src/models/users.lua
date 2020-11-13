@@ -1,22 +1,29 @@
-local bcrypt   = require "bcrypt"
-local config   = require("lapis.config").get()
-local trim     = require("lapis.util").trim_filter
-local Model    = require("lapis.db.model").Model
-local Users    = Model:extend("users")
-local token    = config.secret
+local bcrypt = require "bcrypt"
+local uuid   = require "resty.jit-uuid"
+local config = require("lapis.config").get()
+local Model  = require("lapis.db.model").Model
+local Users  = Model:extend("users")
+local token  = config.secret
 
 Users.role = {
-	[1] = "USER",
-	[6] = "JANITOR",
-	[7] = "MOD",
-	[8] = "ADMIN",
-	[9] = "OWNER",
+	[-1] = "INVALID",
+	[1]  = "USER",
+	[6]  = "JANITOR",
+	[7]  = "MOD",
+	[8]  = "ADMIN",
+	[9]  = "OWNER",
 
+	INVALID = -1,
 	USER    = 1,
 	JANITOR = 6,
 	MOD     = 7,
 	ADMIN   = 8,
 	OWNER   = 9
+}
+
+Users.valid_record = {
+	{ "username", exists=true },
+	{ "role",     exists=true, is_integer=true }
 }
 
 Users.default_key = "00000000-0000-0000-0000-000000000000"
@@ -25,56 +32,82 @@ Users.default_key = "00000000-0000-0000-0000-000000000000"
 -- @tparam table user User data
 -- @treturn boolean success
 -- @treturn string error
-function Users:create_user(user)
-	-- Trim white space
-	trim(user, {
-		"username", "password",
-		"admin", "mod", "janitor"
-	}, nil)
+function Users:new(params, raw_password)
 
-	-- Generate hash and remove raw password from memory
-	local hash = generate.hash(user.username .. user.password .. token)
-	user.password = nil
-
-	local u = self:create {
-		username = user.username,
-		password = hash,
-		admin    = user.admin,
-		mod      = user.mod,
-		janitor  = user.janitor
-	}
-
-	if u then
-		return u
+	-- Check if username is unique
+	do
+		local unique, err = self:is_unique(params.username)
+		if not unique then return nil, err end
 	end
 
-	return false, { "err_create_user", { user.username } }
+	-- Verify password
+	do
+		local valid, err = self:validate_password(params.password, params.confirm, raw_password)
+		if not valid then return nil, err end
+
+		params.confirm  = nil
+		params.password = bcrypt.digest(params.username:lower() .. params.password .. token, 12)
+	end
+
+	-- Generate unique API key
+	do
+		local api_key, err = self:generate_api_key()
+		if not api_key then return nil, err end
+
+		params.api_key = api_key
+	end
+
+	local user = self:create(params)
+	return user and user or nil, { "err_create_user", { params.username } }
 end
 
 --- Modify a user
 -- @tparam table user User data
 -- @treturn boolean success
 -- @treturn string error
-function Users:modify_user(user)
-	local columns = {}
-	for col in pairs(user) do
-		table.insert(columns, col)
+function Users:modify(params, raw_username, raw_password)
+	local user = self:get(raw_username)
+	if not user then return nil, "FIXME" end
+
+	-- Check if username is unique
+	do
+		local unique, err, u = self:is_unique(params.username)
+		if not unique and user.id ~= u.id then return nil, err end
 	end
 
-	-- Generate hash
-	if user.password then
-		user.password = generate.hash(user.username .. user.password .. token)
+	-- Verify password
+	if params.password then
+		local valid, err = self:validate_password(params.password, params.confirm, raw_password)
+		if not valid then return nil, err end
+
+		params.confirm  = nil
+		params.password = bcrypt.digest(params.username:lower() .. params.password .. token, 12)
 	end
 
-	return user:update(unpack(columns))
+	-- Generate unique API key
+	if params.api_key then
+		local api_key, err = self:generate_api_key()
+		if not api_key then return nil, err end
+
+		params.api_key = api_key
+	end
+
+	local success, err = user:update(params)
+	return success and user or nil, "FIXME: " .. tostring(err)
 end
 
 --- Delete user
 -- @tparam table user User data
 -- @treturn boolean success
 -- @treturn string error
-function Users:delete_user(user)
-	return user:delete()
+function Users:delete(username)
+	local user = self:get(username)
+	if not user then
+		return nil, "FIXME"
+	end
+
+	local success = user:delete()
+	return success and user or nil, "FIXME"
 end
 
 --- Verify user
@@ -95,28 +128,54 @@ end
 -- @treturn table users List of users
 function Users:get_all()
 	local users = self:select("order by username asc")
-	return users and users or nil, "FIXME"
+	return users
 end
 
 --- Get user
 -- @tparam string username Username
 -- @treturn table user
 function Users:get(username)
-	username = string.lower(username)
-	local users = self:select("where lower(username)=? limit 1", username)
+	local users = self:select("where lower(username)=? limit 1", username:lower())
 	return #users == 1 and users[1] or nil, "FIXME"
-end
-
---- Get user by ID
--- @tparam number id User ID
--- @treturn table user
-function Users:get_user_by_id(id)
-	return unpack(self:select("where id=? limit 1", id))
 end
 
 function Users:get_api(params)
 	local user = self:find(params)
 	return user and user or nil, "FIXME"
+end
+
+function Users:format_to_db(params)
+	if not params.role then
+		params.role = self.role.INVALID
+	end
+end
+
+function Users:format_from_db(params)
+	params.password = nil
+	params.api_key  = nil
+end
+
+function Users:is_unique(username)
+	local user = self:get(username)
+	return not user and true or nil, "FIXME", user
+end
+
+function Users.validate_password(_, password, confirm, old_password)
+	if password ~= confirm or password ~= old_password then
+		return nil, "FIXME"
+	end
+
+	return true
+end
+
+function Users:generate_api_key()
+	for _ = 1, 10 do
+		local api_key = uuid()
+		local user    = self:find { api_key=api_key }
+		if not user then return api_key end
+	end
+
+	return nil, "FIXME"
 end
 
 return Users

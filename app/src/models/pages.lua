@@ -12,8 +12,8 @@ Pages.valid_record = {
 -- @treturn boolean success
 -- @treturn string error
 function Pages:new(params)
-	local valid, err = self:check_unique(params.slug, params.title)
-	if not valid then
+	local unique, err = self:is_unique(params.slug, params.title)
+	if not unique then
 		return nil, err
 	end
 
@@ -36,8 +36,8 @@ function Pages:modify(params, slug)
 	-- If #pages > 1 then this will always fail since either the new slug or new
 	-- title is going to belong to some other page.
 	do
-		local valid, err, pages = self:check_unique(params.slug, params.title)
-		if not valid then
+		local unique, err, pages = self:is_unique(params.slug, params.title)
+		if not unique then
 			for _, p in ipairs(pages) do
 				if page.id ~= p.id then
 					return nil, err
@@ -78,7 +78,7 @@ function Pages:get(slug)
 	return page and page or nil, "FIXME"
 end
 
-function Pages:check_unique(slug, title)
+function Pages:is_unique(slug, title)
 	local pages = self:select("where slug=? or lower(title)=?", slug, title:lower())
 	return #pages == 0 and true or nil, "FIXME", pages
 end

@@ -1,4 +1,5 @@
 local assert_error = require("lapis.application").assert_error
+local yield_error  = require("lapis.application").yield_error
 local mime         = require "mime"
 local models       = require "models"
 local Users        = models.users
@@ -13,12 +14,12 @@ return function(self)
 
 		-- DENY if Authorization is malformed
 		if not username or not api_key then
-			assert_error(nil, "Corrupt auth!")
+			yield_error("FIXME: Corrupt auth!")
 		end
 
 		-- DENY if a user's key isn't properly set
 		if api_key == Users.default_key then
-			assert_error(nil, "Bad auth!")
+			yield_error("FIXME: Bad auth!")
 		end
 
 		local params = {
@@ -27,9 +28,8 @@ return function(self)
 		}
 
 		-- Get User
-		self.api_user          = assert_error(Users:get_api(params))
-		self.api_user.api_key  = nil -- This doesn't clear memory in time to be meaningful, but we
-		self.api_user.password = nil -- can prevent leaks if we accidentally send this in a response
+		self.api_user = assert_error(Users:get_api(params))
+		Users:format_from_db(self.api_user)
 		return
 	end
 
