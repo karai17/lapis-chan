@@ -10,7 +10,7 @@ RUN yum -y install --nogpgcheck \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
 		https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm \
 		https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm \
-	&& yum config-manager --set-enabled PowerTools
+	&& yum config-manager --set-enabled powertools
 
 # Install from repos
 RUN yum -y install \
