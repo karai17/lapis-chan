@@ -56,11 +56,19 @@ function Announcements:get_all()
 end
 
 --- Get announcements
--- @tparam number board_id Board ID
 -- @treturn boolean success
 -- @treturn string error
 function Announcements:get_global()
 	local announcements = self:select("where board_id=0")
+	return announcements
+end
+
+--- Get board announcements
+-- @tparam number board_id Board ID
+-- @treturn boolean success
+-- @treturn string error
+function Announcements:get_board(board_id)
+	local announcements = self:select("where board_id=?", board_id)
 	return announcements
 end
 

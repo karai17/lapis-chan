@@ -150,7 +150,7 @@ function Users:format_to_db(params)
 	end
 end
 
-function Users:format_from_db(params)
+function Users.format_from_db(_, params)
 	params.password = nil
 	params.api_key  = nil
 end

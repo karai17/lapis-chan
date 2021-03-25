@@ -63,6 +63,21 @@ function Bans:get_all()
 	return bans
 end
 
+--- Get board bans
+-- @treturn table users List of bans
+function Bans:get_board(board_id)
+	local bans = self:select("where board_id=? order by board_id asc, time + duration desc, ip asc", board_id)
+
+	for i=#bans, 1, -1 do
+		local ban = bans[i]
+		if not self:validate(ban) then
+			table.remove(bans, i)
+		end
+	end
+
+	return bans
+end
+
 --- Get ban data
 -- @tparam number id Ban's ID
 -- @treturn table ban
